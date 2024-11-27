@@ -16,7 +16,6 @@ find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(lbr_msgs REQUIRED)
-find_package(gazebo_ros2_control REQUIRED)
 
 add_executable(${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
 ament_target_dependencies(${PROJECT_NAME}

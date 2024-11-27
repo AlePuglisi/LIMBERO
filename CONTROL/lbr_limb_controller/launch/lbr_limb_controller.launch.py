@@ -61,7 +61,6 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        wheel_mode_arg,
         lbr_limb_controller_node_LF,
         RegisterEventHandler(
             OnProcessStart(

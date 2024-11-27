@@ -49,14 +49,6 @@ def generate_launch_description():
         launch_arguments= {'wheel_mode' : LaunchConfiguration('wheel_mode')}.items(),
     )
 
-    lbr_indipendent_joint_controller_node_group = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(
-            get_package_share_directory('lbr_indipendent_joint_controller'), 'launch'),
-            '/lbr_indipendent_joint_controller.launch.py']
-        ),
-        #launch_arguments= {'wheel_mode' : LaunchConfiguration('wheel_mode')}.items(),
-    )
-
     lbr_state_estimator_node = Node(
         package='lbr_state_estimator',
         executable='lbr_state_estimator',
@@ -81,14 +73,6 @@ def generate_launch_description():
                 target_action=lbr_low_level_controller_node,
                 on_start=[
                     lbr_limb_controller_node_group
-                ]
-            )
-        ),
-        RegisterEventHandler(
-            OnProcessStart(
-                target_action=lbr_low_level_controller_node,
-                on_start=[
-                    lbr_indipendent_joint_controller_node_group
                 ]
             )
         ),

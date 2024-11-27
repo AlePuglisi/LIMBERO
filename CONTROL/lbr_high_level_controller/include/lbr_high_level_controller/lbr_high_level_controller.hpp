@@ -79,6 +79,7 @@ private:
    * @param
    */
   void grieelTransformation();
+
   /**
    * @brief This function generates motion package for crawl gait and publish it to LLC.
    *
@@ -140,10 +141,6 @@ private:
    * @param grieel_finish_string
    */
   void grieelFinishCallback(const std_msgs::msg::String & grieel_finish_string);
-  /**
-   * @brief This function generates motion package for crawl gait and publish it to LLC.
-   */
-  void crawlGate();
 
   // Publisher
   rclcpp::Publisher<lbr_msgs::msg::BaseMotionTask>::SharedPtr base_motion_pub_;
@@ -177,8 +174,6 @@ private:
   bool motion_package_end;
   bool grieel_transformation_;
   bool single_transform_end_;
-  bool move;
-  bool crawl_gate;
   std::string grieel_state_;
   lbr_msgs::msg::EndEffectorContactState supporting_leg_polygon;
 

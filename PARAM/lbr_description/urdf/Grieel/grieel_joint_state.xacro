@@ -8,7 +8,7 @@
 
     <xacro:unless value="$(arg wheel_mode)">
         <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_description.xacro" />
-    </xacro:unless>
+    </xacro:unless>    
 
     <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_limb_description.xacro" />
 
@@ -21,7 +21,7 @@
                 <namespace>${prefix}</namespace>
                 <remapping>~/out:=joint_states</remapping>
             </ros>
-            <update_rate>500</update_rate>
+            <update_rate>30</update_rate>
             <!-- <joint_name>${prefix}_E2grieel</joint_name> -->
             <joint_name>${prefix}_B2C</joint_name>
             <joint_name>${prefix}_C2F</joint_name>

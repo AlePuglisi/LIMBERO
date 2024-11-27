@@ -11,9 +11,6 @@
 
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gazebo_phisics.xacro" />
 
-  <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_grieel_transmission.xacro" />
-
-  <xacro:include filename="$(find lbr_description)/urdf/Grieel/lidar.xacro" />
 
 
   <!-- Use macro to define base and four limbs -->
@@ -57,15 +54,12 @@
   </xacro:unless>
 
 
+
+
   <xacro:joint_state_macro prefix="LF"/>
   <xacro:joint_state_macro prefix="LH"/>
   <xacro:joint_state_macro prefix="RH"/>
   <xacro:joint_state_macro prefix="RF"/>
-
-  <!-- <xacro:transmission_macro prefix="LF"/>
-  <xacro:transmission_macro prefix="LH"/>
-  <xacro:transmission_macro prefix="RH"/>
-  <xacro:transmission_macro prefix="RF"/> -->
 
   <xacro:gazebo_phisics_macro prefix="LF"/>
   <xacro:gazebo_phisics_macro prefix="LH"/>
