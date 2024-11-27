@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com)
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="LIMBERO_v1_4_Limb" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="limb_macro" params="prefix parent radius">
+
+    <joint
+      name="${prefix}_joint"
+      type="fixed">
+      <origin
+        rpy="0 0 ${radians(radius)}"
+        xyz="${0.2*cos(radians(radius))} ${0.2*sin(radians(radius))} 0"/>
+      <parent
+        link="${parent}" />
+      <child
+        link="${prefix}_limb_root" />
+    </joint>
+
+    <link
+      name="${prefix}_limb_root">
+      <inertial>
+        <origin
+          xyz="-0.0149642229992232 -0.0473183300715678 0.00138939560478386"
+          rpy="0 0 0" />
+        <mass
+          value="0.0845895186390118" />
+        <inertia
+          ixx="2.1691798951859E-05"
+          ixy="-1.611902649885E-07"
+          ixz="1.54571395510868E-06"
+          iyy="3.17282415672239E-05"
+          iyz="1.49662485076318E-08"
+          izz="3.81961034645894E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/limb_root.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/limb_root.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link
+      name="${prefix}_coxa">
+      <inertial>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <mass
+          value="0.0910904516001775" />
+        <inertia
+          ixx="2.35199715515964E-05"
+          ixy="-1.61883588944024E-07"
+          ixz="4.58361342342776E-14"
+          iyy="3.36342088725393E-05"
+          iyz="9.80227931256417E-14"
+          izz="4.21224113002182E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/coxa.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/coxa.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="${prefix}_B2C"
+      type="revolute">
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${prefix}_limb_root" />
+      <child
+        link="${prefix}_coxa" />
+      <axis
+        xyz="0 0 1" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="5"
+        velocity="5" />
+    </joint>
+    <link
+      name="${prefix}_femur">
+      <inertial>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <mass
+          value="0.129292353660997" />
+        <inertia
+          ixx="3.70793324781204E-05"
+          ixy="-1.99855274014753E-08"
+          ixz="-2.24383694443323E-12"
+          iyy="2.99977097752115E-05"
+          iyz="-5.30954161320608E-11"
+          izz="4.8273158186895E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/femur.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/femur.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="${prefix}_C2F"
+      type="revolute">
+      <origin
+        xyz="0.031 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${prefix}_coxa" />
+      <child
+        link="${prefix}_femur" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="5"
+        velocity="5" />
+    </joint>
+    <link
+      name="${prefix}_tibia">
+      <inertial>
+        <origin
+          xyz="0.0946619702386496 6.08781284064386E-09 0.0205461098003761"
+          rpy="0 0 0" />
+        <mass
+          value="0.0676890627618107" />
+        <inertia
+          ixx="1.7486540883142E-05"
+          ixy="6.0148373110781E-09"
+          ixz="7.42858555071623E-06"
+          iyy="4.11795936765992E-05"
+          iyz="2.54760870059551E-08"
+          izz="4.72150906690907E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/tibia.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/tibia.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="${prefix}_F2T"
+      type="revolute">
+      <origin
+        xyz="0.2 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${prefix}_femur" />
+      <child
+        link="${prefix}_tibia" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="5"
+        velocity="5" />
+    </joint>
+    <link
+      name="${prefix}_end_effector">
+      <inertial>
+        <origin
+          xyz="0.0310375103143668 0.00031581620952336 -6.01936785153198E-10"
+          rpy="0 0 0" />
+        <mass
+          value="0.101884978033854" />
+        <inertia
+          ixx="2.11801400053304E-05"
+          ixy="1.85932040168811E-07"
+          ixz="-1.26555821423676E-13"
+          iyy="3.09244690687196E-05"
+          iyz="-1.05149784289276E-11"
+          izz="2.88344590903954E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/end_effector.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/end_effector.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="${prefix}_T2E"
+      type="revolute">
+      <origin
+        xyz="0.20029 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${prefix}_tibia" />
+      <child
+        link="${prefix}_end_effector" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="5"
+        velocity="5" />
+    </joint>
+    <link
+      name="${prefix}_foot">
+      <inertial>
+        <origin
+          xyz="-0.0187948041155833 -6.93889390390723E-18 -1.66414272382424E-16"
+          rpy="0 0 0" />
+        <mass
+          value="0.0290783866321465" />
+        <inertia
+          ixx="5.1844927665664E-06"
+          ixy="-7.94093388050907E-23"
+          ixz="5.88529380841861E-21"
+          iyy="4.56229619884267E-06"
+          iyz="3.43690454744652E-22"
+          izz="4.56229619884267E-06" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/palm.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision name="${prefix}_foot_collision">
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/palm.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="${prefix}_foot"
+      type="fixed">
+      <origin
+        xyz="0.0832 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${prefix}_end_effector" />
+      <child
+        link="${prefix}_foot" />
+      <axis
+        xyz="0 0 0" />
+    </joint>
+
+    <!-- Gazebo plugin for contact sensor  -->
+    <gazebo reference="${prefix}_foot">
+      <sensor name="${prefix}_foot_bumper_sensor" type="contact">
+        <always_on>true</always_on>
+        <update_rate>50</update_rate>
+        <contact>
+        <collision>${prefix}_end_effector_fixed_joint_lump__${prefix}_foot_collision_collision_1</collision>
+        </contact>
+        <plugin name="${prefix}_foot_bumper" filename="libgazebo_ros_bumper.so">
+          <ros>
+            <namespace>${prefix}</namespace>
+          </ros>
+          <frame_name>${prefix}_foot</frame_name>
+        </plugin>
+      </sensor>
+    </gazebo>
+    <!-- Gazebo plugin for joint state publisher  -->
+    <gazebo>
+      <plugin name="${prefix}_joint_state" filename="libgazebo_ros_joint_state_publisher.so">
+        <ros>
+          <namespace>${prefix}</namespace>
+          <remapping>~/out:=joint_states</remapping>
+        </ros>
+        <update_rate>30</update_rate>
+        <joint_name>${prefix}_B2C</joint_name>
+        <joint_name>${prefix}_C2F</joint_name>
+        <joint_name>${prefix}_F2T</joint_name>
+        <joint_name>${prefix}_T2E</joint_name>
+      </plugin>
+    </gazebo>
+
+  </xacro:macro>
+</robot>

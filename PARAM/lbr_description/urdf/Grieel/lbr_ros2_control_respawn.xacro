@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="define_initial_value_macro" params="prefix">
+    <xacro:arg name="${prefix}_B2C_initial_value" default="0.0" />
+    <xacro:arg name="${prefix}_C2F_initial_value" default="0.0" />
+    <xacro:arg name="${prefix}_F2T_initial_value" default="${pi/2}" />
+    <xacro:arg name="${prefix}_T2E_initial_value" default="0.0" />
+    <xacro:arg name="${prefix}_wristH_initial_value" default="0.0" />
+    <xacro:arg name="${prefix}_wristV_initial_value" default="0.0" />
+    <xacro:arg name="${prefix}_driving_initial_value" default="0.0" />
+  </xacro:macro>
+
+  <xacro:macro name="ros2_control_macro" params="prefix B2C_initial_value C2F_initial_value F2T_initial_value T2E_initial_value 
+               wristH_initial_value wristV_initial_value driving_initial_value">
+
+    <ros2_control name="${prefix}_ros2_control" type="system">
+
+      <hardware>
+        <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+      </hardware>
+
+      <joint name="${prefix}_B2C">
+        <command_interface name="position">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-0.5</param>
+          <param name="max">0.5</param>
+        </command_interface>
+        <command_interface name="effort">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="position">  <!-- Set initial joint position -->
+          <param name="initial_value" value="${B2C_initial_value}"/>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+
+      <joint name="${prefix}_C2F">
+        <command_interface name="position">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-0.5</param>
+          <param name="max">0.5</param>
+        </command_interface>
+        <command_interface name="effort">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="position">
+          <param name="initial_value" value="${C2F_initial_value}"/>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+
+      <joint name="${prefix}_F2T">
+        <command_interface name="position">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-0.5</param>
+          <param name="max">0.5</param>
+        </command_interface>
+        <command_interface name="effort">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="position"><xacro:define_initial_value_macro prefix="LF" />
+          <param name="initial_value" value="${F2T_initial_value}"/>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+
+      <joint name="${prefix}_T2E">
+        <command_interface name="position">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-0.5</param>
+          <param name="max">0.5</param>
+        </command_interface>
+        <command_interface name="effort">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="position">
+          <param name="initial_value" value="${T2E_initial_value}"/>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+
+
+      <joint name="${prefix}_wristH">
+        <command_interface name="position">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-0.5</param>
+          <param name="max">0.5</param>
+        </command_interface>
+        <command_interface name="effort">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="position">
+          <param name="initial_value" value="${wristH_initial_value}"/>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+
+      <joint name="${prefix}_wristV">
+        <command_interface name="position">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-0.5</param>
+          <param name="max">0.5</param>
+        </command_interface>
+        <command_interface name="effort">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="position">
+          <param name="initial_value" value="${wristV_initial_value}"/>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+
+      <joint name="${prefix}_driving">
+        <command_interface name="position">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-0.5</param>
+          <param name="max">0.5</param>
+        </command_interface>
+        <command_interface name="effort">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="position">
+          <param name="initial_value" value="${driving_initial_value}"/>
+        </state_interface>
+        <state_interface name="velocity"/>
+      </joint>
+
+    </ros2_control>
+
+  </xacro:macro>
+
+</robot>

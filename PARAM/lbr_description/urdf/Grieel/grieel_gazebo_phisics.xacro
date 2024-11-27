@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:arg name="wheel_mode" default="true" />
+
+    <xacro:if value="$(arg wheel_mode)">
+        <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_wheel_description.xacro" />
+    </xacro:if>
+
+    <xacro:unless value="$(arg wheel_mode)">
+        <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_description.xacro" />
+    </xacro:unless>
+
+    <xacro:macro name="gazebo_phisics_macro" params="prefix">
+
+        <!-- Gazebo tag for support gripper/wheel phisical characteristics -->
+        <xacro:if value="$(arg wheel_mode)">
+            <gazebo reference="${prefix}_wheel_Link">
+                <mu1>1.5</mu1>
+                <mu2>2.5</mu2>
+                <kp>1000000</kp>
+                <kd>1.0</kd>
+            </gazebo>
+        </xacro:if>
+
+        <xacro:unless value="$(arg wheel_mode)">
+            <gazebo reference="${prefix}_gripper_Link">
+                <mu1>1.2</mu1>
+                <mu2>1.2</mu2>
+                <kp>1000000</kp>
+                <kd>1.0</kd>
+            </gazebo>
+        </xacro:unless>
+
+        <gazebo reference="${prefix}_femur">
+          <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+          <gazebo reference="${prefix}_tibia">
+            <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+          <gazebo reference="${prefix}_limb_end">
+            <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+          <gazebo reference="${prefix}_limb_root">
+            <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+          <gazebo reference="${prefix}_coxa">
+            <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+          <gazebo reference="${prefix}_wristH_Link">
+            <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+          <gazebo reference="${prefix}_wristV_Link">
+            <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+          <gazebo reference="${prefix}_driving_Link">
+            <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+          <gazebo reference="${prefix}_gripper_Link">
+            <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+          <gazebo reference="${prefix}_wheel_Link">
+            <material>Gazebo/Black</material>
+            <visual>
+              <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+              </material>
+            </visual>
+          </gazebo>
+
+    </xacro:macro>
+
+</robot>

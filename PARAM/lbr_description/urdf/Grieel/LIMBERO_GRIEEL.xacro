@@ -1,0 +1,118 @@
+<robot name="LIMBERO" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_base_description.xacro" />
+  
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_limb_description.xacro" />
+  
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_gazebo.xacro" />
+  
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_ros2_control_respawn.xacro" />
+  
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_joint_state.xacro" />
+  
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gazebo_phisics_single_ee.xacro" />
+  
+  
+    <!-- Use macro to define base and four limbs -->
+    <xacro:base_macro/>
+  
+    <xacro:limb_macro prefix="LF" parent="base_link" radius="45"/>
+    <xacro:limb_macro prefix="LH" parent="base_link" radius="135"/>
+    <xacro:limb_macro prefix="RH" parent="base_link" radius="225"/>
+    <xacro:limb_macro prefix="RF" parent="base_link" radius="315"/>
+
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_wheel_description.xacro" />
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_description.xacro" />
+  
+    <xacro:arg name="LF_wheel_mode" default="true" />
+    <xacro:arg name="LH_wheel_mode" default="true" />
+    <xacro:arg name="RH_wheel_mode" default="true" />
+    <xacro:arg name="RF_wheel_mode" default="true" />
+
+    <xacro:define_initial_value_macro prefix="LF" />
+    <xacro:define_initial_value_macro prefix="LH" />
+    <xacro:define_initial_value_macro prefix="RH" />
+    <xacro:define_initial_value_macro prefix="RF" />
+
+  
+    <xacro:if value="$(arg LF_wheel_mode)">
+      <xacro:grieel_wheel_macro prefix="LF" parent="LF"/>
+    </xacro:if>
+    <xacro:unless value="$(arg LF_wheel_mode)">
+      <xacro:grieel_gripper_macro prefix="LF" parent="LF"/>
+    </xacro:unless>
+
+    <xacro:if value="$(arg LH_wheel_mode)">
+        <xacro:grieel_wheel_macro prefix="LH" parent="LH"/>
+    </xacro:if>
+    <xacro:unless value="$(arg LH_wheel_mode)">
+        <xacro:grieel_gripper_macro prefix="LH" parent="LH"/>
+    </xacro:unless>
+
+    <xacro:if value="$(arg RH_wheel_mode)">
+        <xacro:grieel_wheel_macro prefix="RH" parent="RH"/>
+     </xacro:if>
+    <xacro:unless value="$(arg RH_wheel_mode)">
+        <xacro:grieel_gripper_macro prefix="RH" parent="RH"/>
+    </xacro:unless>
+
+    <xacro:if value="$(arg RF_wheel_mode)">
+      <xacro:grieel_wheel_macro prefix="RF" parent="RF"/>
+    </xacro:if>
+    <xacro:unless value="$(arg RF_wheel_mode)">
+      <xacro:grieel_gripper_macro prefix="RF" parent="RF"/>
+    </xacro:unless>
+    
+    <xacro:property name="LF_B2C_initial_value_p" value="$(arg LF_B2C_initial_value)" />
+    <xacro:property name="LF_C2F_initial_value_p" value="$(arg LF_C2F_initial_value)" />
+    <xacro:property name="LF_F2T_initial_value_p" value="$(arg LF_F2T_initial_value)" />
+    <xacro:property name="LF_T2E_initial_value_p" value="$(arg LF_T2E_initial_value)" />
+    <xacro:property name="LF_wristH_initial_value_p" value="$(arg LF_wristH_initial_value)" />
+    <xacro:property name="LF_wristV_initial_value_p" value="$(arg LF_wristV_initial_value)" />
+    <xacro:property name="LF_driving_initial_value_p" value="$(arg LF_driving_initial_value)" />
+
+    <xacro:property name="LH_B2C_initial_value_p" value="$(arg LH_B2C_initial_value)" />
+    <xacro:property name="LH_C2F_initial_value_p" value="$(arg LH_C2F_initial_value)" />
+    <xacro:property name="LH_F2T_initial_value_p" value="$(arg LH_F2T_initial_value)" />
+    <xacro:property name="LH_T2E_initial_value_p" value="$(arg LH_T2E_initial_value)" />
+    <xacro:property name="LH_wristH_initial_value_p" value="$(arg LH_wristH_initial_value)" />
+    <xacro:property name="LH_wristV_initial_value_p" value="$(arg LH_wristV_initial_value)" />
+    <xacro:property name="LH_driving_initial_value_p" value="$(arg LH_driving_initial_value)" />
+
+    <xacro:property name="RF_B2C_initial_value_p" value="$(arg RF_B2C_initial_value)" />
+    <xacro:property name="RF_C2F_initial_value_p" value="$(arg RF_C2F_initial_value)" />
+    <xacro:property name="RF_F2T_initial_value_p" value="$(arg RF_F2T_initial_value)" />
+    <xacro:property name="RF_T2E_initial_value_p" value="$(arg RF_T2E_initial_value)" />
+    <xacro:property name="RF_wristH_initial_value_p" value="$(arg RF_wristH_initial_value)" />
+    <xacro:property name="RF_wristV_initial_value_p" value="$(arg RF_wristV_initial_value)" />
+    <xacro:property name="RF_driving_initial_value_p" value="$(arg RF_driving_initial_value)" />
+
+    <xacro:property name="RH_B2C_initial_value_p" value="$(arg RH_B2C_initial_value)" />
+    <xacro:property name="RH_C2F_initial_value_p" value="$(arg RH_C2F_initial_value)" />
+    <xacro:property name="RH_F2T_initial_value_p" value="$(arg RH_F2T_initial_value)" />
+    <xacro:property name="RH_T2E_initial_value_p" value="$(arg RH_T2E_initial_value)" />
+    <xacro:property name="RH_wristH_initial_value_p" value="$(arg RH_wristH_initial_value)" />
+    <xacro:property name="RH_wristV_initial_value_p" value="$(arg RH_wristV_initial_value)" />
+    <xacro:property name="RH_driving_initial_value_p" value="$(arg RH_driving_initial_value)" />
+
+
+    <xacro:ros2_control_macro prefix="LF" B2C_initial_value="${LF_B2C_initial_value_p}" C2F_initial_value="${LF_C2F_initial_value_p}" F2T_initial_value= "${LF_F2T_initial_value_p}" 
+    T2E_initial_value="${LF_T2E_initial_value_p}" wristH_initial_value="${LF_wristH_initial_value_p}" wristV_initial_value="${LF_wristV_initial_value_p}"  driving_initial_value="${LF_driving_initial_value_p}"/>
+    <xacro:ros2_control_macro prefix="LH" B2C_initial_value="${LH_B2C_initial_value_p}" C2F_initial_value="${LH_C2F_initial_value_p}" F2T_initial_value= "${LH_F2T_initial_value_p}" 
+    T2E_initial_value="${LH_T2E_initial_value_p}" wristH_initial_value="${LH_wristH_initial_value_p}" wristV_initial_value="${LH_wristV_initial_value_p}"  driving_initial_value="${LH_driving_initial_value_p}"/>
+    <xacro:ros2_control_macro prefix="RF" B2C_initial_value="${RF_B2C_initial_value_p}" C2F_initial_value="${RF_C2F_initial_value_p}" F2T_initial_value= "${RF_F2T_initial_value_p}" 
+    T2E_initial_value="${RF_T2E_initial_value_p}" wristH_initial_value="${RF_wristH_initial_value_p}" wristV_initial_value="${RF_wristV_initial_value_p}"  driving_initial_value="${RF_driving_initial_value_p}"/>
+    <xacro:ros2_control_macro prefix="RH" B2C_initial_value="${RH_B2C_initial_value_p}" C2F_initial_value="${RH_C2F_initial_value_p}" F2T_initial_value= "${RH_F2T_initial_value_p}" 
+    T2E_initial_value="${RH_T2E_initial_value_p}" wristH_initial_value="${RH_wristH_initial_value_p}" wristV_initial_value="${RH_wristV_initial_value_p}"  driving_initial_value="${RH_driving_initial_value_p}"/>
+  
+    <xacro:joint_state_macro prefix="LF"/>
+    <xacro:joint_state_macro prefix="LH"/>
+    <xacro:joint_state_macro prefix="RH"/>
+    <xacro:joint_state_macro prefix="RF"/> 
+  
+    <xacro:gazebo_phisics_single_ee_macro prefix="LF"/>
+    <xacro:gazebo_phisics_single_ee_macro prefix="LH"/>
+    <xacro:gazebo_phisics_single_ee_macro prefix="RH"/>
+    <xacro:gazebo_phisics_single_ee_macro prefix="RF"/>
+  
+  </robot>
+  
