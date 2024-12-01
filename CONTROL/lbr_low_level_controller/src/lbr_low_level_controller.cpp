@@ -99,7 +99,7 @@ LowLevelController::LowLevelController()
     "/lbr_command_interface/motion_package/base_motion_task", 5,
     std::bind(&LowLevelController::baseMotionCallback, this, std::placeholders::_1));
   motion_package_sub_ = this->create_subscription<lbr_msgs::msg::MotionPackage>(
-    "/lbr_high_level_controller/motion_package", 5,
+    "/lbr_high_level_controller/motion_package", 10,
     std::bind(&LowLevelController::motionPackageCallback, this, std::placeholders::_1));
   grieel_command_sub_ = this->create_subscription<lbr_msgs::msg::GrieelModeChange>(
     "/lbr_high_level_controller/grieel_mode_change_config", 5,
@@ -801,8 +801,10 @@ void LowLevelController::motionPackageCallback(const lbr_msgs::msg::MotionPackag
     int task_id = motion_package.motion_task_array.at(i).task_id_array.at(i);
     if (task_id == 0) {  // ID 0: Limb motion
       execLimbMotion(motion_package.motion_task_array.at(i).limb_motion_task);
+      //std::cout << "Executing limb motion = " << i << "\n" << std::endl;
     } else if (task_id == 1) {  // ID 1: Base motion
       execBaseMotion(motion_package.motion_task_array.at(i).base_motion_task);
+      //std::cout << "Executing Base motion = " << i << "\n" << std::endl;
     } else if (task_id == 2) {  // ID 2: Limb motion array
       execLimbMotionArray(motion_package.motion_task_array.at(i).limb_motion_task_array);
     } else {

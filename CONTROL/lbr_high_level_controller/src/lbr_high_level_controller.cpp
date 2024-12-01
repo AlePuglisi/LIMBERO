@@ -35,7 +35,7 @@ HighLevelController::HighLevelController()
   limb_motion_pub_ = this->create_publisher<lbr_msgs::msg::LimbMotionTask>(
     topic_prefix + "/motion_package/limb_motion_task", 1);
   motion_package_pub_ = this->create_publisher<lbr_msgs::msg::MotionPackage>(
-    topic_prefix + "/motion_package", 1);
+    topic_prefix + "/motion_package", 10);
   grasping_detect_pub_ = this->create_publisher<std_msgs::msg::Bool>(
     "/lbr_low_level_controller/grasping_detect", 1);
   grasping_trace_pub_ = this->create_publisher<std_msgs::msg::Bool>(
@@ -325,12 +325,13 @@ void::HighLevelController::grieelTransformation()
   int i= 0;
   bool first_time = true;
   while(i < LIMB_NUM){
-#if SIMULATION
+//#if SIMULATION
     if((motion_package_end || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
-#endif //SIMULATION
-#if !SIMULATION
-    if((single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
-#endif //NOT IN SIMULATION
+//#endif //SIMULATION
+
+//#if !SIMULATION
+//    if((single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
+//#endif //NOT IN SIMULATION
       // for(int j=0; (j<LIMB_NUM) ; j++ ){
       //   if(j==i){fake_contact.is_contact.at(i) = false;}
       //   else{
@@ -346,7 +347,8 @@ void::HighLevelController::grieelTransformation()
       singleLegGrieelTransformation(supporting_leg_polygon, i);
 
       i = i+1;
-    }
+   }
+   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
   std::cout << "Grieel Transform task end" << std::endl;
   grieel_transformation_ = false;
@@ -357,8 +359,8 @@ void::HighLevelController::grieelTransformation()
   } else if(grieel_state_ == "gripper"){
     grieel_state_ = "wheel";
   }
+}
 
- }
 
 
 void HighLevelController::singleLegGrieelTransformation(
@@ -415,7 +417,7 @@ void HighLevelController::singleLegGrieelTransformation(
       next_support_polygon.end_effector_position.at(2).y,
       next_support_polygon.end_effector_position.at(2).z};
 
-  Eigen::Vector3d base_link = {0.0, 0.0, 0.0};  // Base link x, y position
+  Eigen::Vector3d base_link = {0.0, 0.0, 0.0};  // Base link x, y, z position
 
   lbr_msgs::msg::BaseMotionTask base_motion;
     // if (isInsideTriangle(base_link, p1, p2, p3)) {
@@ -437,10 +439,11 @@ void HighLevelController::singleLegGrieelTransformation(
   base_motion.motion_duration = 3000;
   base_motion.base_displacement.x = vecX_final;
   base_motion.base_displacement.y = vecY_final;
+  base_motion.header.stamp = this->now();
     //}
 
-  base_motion.header.stamp = this->now();
   //base_motion_pub_->publish(base_motion);
+
   motion_task.base_motion_task = base_motion;
   motion_task.task_id_array.at(0) = 1;
   basic_transfrom_sequence.motion_task_array.at(0) = motion_task;
@@ -471,7 +474,7 @@ void HighLevelController::singleLegGrieelTransformation(
 #if SIMULATION
   // SEND COMMAND TO GRIEEL FOR TRANSITION MODE
   limb_motion_task.limb_id = limb_id;
-  limb_motion_task.swing_duration = 6000;  // [ms]
+  limb_motion_task.swing_duration = 3000;  // [ms]
   limb_motion_task.end_effector_displacement.x = 0.0;  // [m]
   limb_motion_task.end_effector_displacement.y = 0.0;
   limb_motion_task.end_effector_displacement.z = 0.0;
@@ -495,10 +498,25 @@ void HighLevelController::singleLegGrieelTransformation(
   motion_task.limb_motion_task = limb_motion_task;
   motion_task.task_id_array.at(3) = 0;
   basic_transfrom_sequence.motion_task_array.at(3) = motion_task;
+
+  basic_transfrom_sequence.header.stamp = this->now();
 #endif //SIMULATION
 
   motion_package_pub_->publish(basic_transfrom_sequence);
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
+  std::cout << "Published Motion Package:\n stamp: " << basic_transfrom_sequence.header.stamp.sec << "\nmotion_task_array:\nbase task: " << 
+                basic_transfrom_sequence.motion_task_array.at(0).task_id_array.at(0) << "\nbase x motion:" <<
+                 basic_transfrom_sequence.motion_task_array.at(0).base_motion_task.base_displacement.x << "\nbase y motion:" <<
+                basic_transfrom_sequence.motion_task_array.at(0).base_motion_task.base_displacement.y << "\nlimb task: id: " <<
+
+                basic_transfrom_sequence.motion_task_array.at(1).task_id_array.at(1) << "\nz motion: " <<
+                basic_transfrom_sequence.motion_task_array.at(1).limb_motion_task.end_effector_displacement.z << "\nlimb task: id: " <<
+                basic_transfrom_sequence.motion_task_array.at(2).task_id_array.at(2) << "\nz motion: " <<
+                basic_transfrom_sequence.motion_task_array.at(2).limb_motion_task.end_effector_displacement.z << "\nlimb task: id: " <<
+                basic_transfrom_sequence.motion_task_array.at(3).task_id_array.at(3) << "\nz motion: " <<
+                basic_transfrom_sequence.motion_task_array.at(3).limb_motion_task.end_effector_displacement.z << "\n" <<
+                std::endl;
   // SEND COMMAND TO GRIEEL FOR TRANSITION MODE
 #if !SIMULATION
   std::thread wait_thread([this, limb_id]() {
@@ -574,8 +592,6 @@ void HighLevelController::grieelFinishCallback(const std_msgs::msg::String &grie
 
 
 }
-
-
 
 
 // TODO(RN): Implement gait generator
@@ -721,6 +737,7 @@ void HighLevelController::motionFinishSignalCallback(const std_msgs::msg::String
   if (signal.data == "fin") {
     //trot_gait_is_executing = false;
     motion_package_end = true;
+    std::cout << " motion package end" << std::endl;
   }
 }
 

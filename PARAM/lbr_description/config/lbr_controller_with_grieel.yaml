@@ -1,12 +1,13 @@
 controller_manager:
   ros__parameters:
-    update_rate: 1000  # Hz
+    update_rate: 500  # Hz
+    use_sim_time: true
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    forward_effort_controller:
-      type: forward_command_controller/ForwardCommandController
+    # forward_effort_controller:
+    #   type: forward_command_controller/ForwardCommandController
 
     joint_trajectory_controller:
       type: joint_trajectory_controller/JointTrajectoryController
@@ -43,38 +44,38 @@ joint_state_broadcaster:
       - RF_wristV
       - RF_driving
 
-forward_effort_controller:
-  ros__parameters:
-    joints:
-      - LF_B2C
-      - LF_C2F
-      - LF_F2T
-      - LF_T2E
-      - LF_wristH
-      - LF_wristV
-      - LF_driving
-      - LH_B2C
-      - LH_C2F
-      - LH_F2T
-      - LH_T2E
-      - LH_wristH
-      - LH_wristV
-      - LH_driving
-      - RH_B2C
-      - RH_C2F
-      - RH_F2T
-      - RH_T2E
-      - RH_wristH
-      - RH_wristV
-      - RH_driving
-      - RF_B2C
-      - RF_C2F
-      - RF_F2T
-      - RF_T2E
-      - RF_wristH
-      - RF_wristV
-      - RF_driving
-    interface_name: effort
+# forward_effort_controller:
+#   ros__parameters:
+#     joints:
+#       - LF_B2C
+#       - LF_C2F
+#       - LF_F2T
+#       - LF_T2E
+#       - LF_wristH
+#       - LF_wristV
+#       - LF_driving
+#       - LH_B2C
+#       - LH_C2F
+#       - LH_F2T
+#       - LH_T2E
+#       - LH_wristH
+#       - LH_wristV
+#       - LH_driving
+#       - RH_B2C
+#       - RH_C2F
+#       - RH_F2T
+#       - RH_T2E
+#       - RH_wristH
+#       - RH_wristV
+#       - RH_driving
+#       - RF_B2C
+#       - RF_C2F
+#       - RF_F2T
+#       - RF_T2E
+#       - RF_wristH
+#       - RF_wristV
+#       - RF_driving
+#     interface_name: effort
 
 joint_trajectory_controller:
   ros__parameters:
@@ -116,164 +117,187 @@ joint_trajectory_controller:
       - velocity
 
     action_monitor_rate: 20.0  # Defaults to 20
+    state_publish_rate: 50.0 # Defaults to 50
 
     allow_partial_joints_goal: false  # Defaults to false
-    open_loop_control: true # has to be false
+    open_loop_control: false # has to be false
     allow_integration_in_goal_trajectories: true
     constraints:
-      stopped_velocity_tolerance: 0.001  # Defaults to 0.01
+      stopped_velocity_tolerance: 0.01  # Defaults to 0.01
       goal_time: 0.0  # Defaults to 0.0 (start immediately)
 
     gains:
       LF_B2C:
-        p: 65.0
-        i: 0.01
-        d: 1.2
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LF_C2F:
-        p: 90.0
-        i: 0.1
-        d: 2.0
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LF_F2T:
-        p: 55.0
-        i: 0.01
-        d: 1.4
+        p: 35.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LF_T2E:
-        p: 100.0
+        p: 30.0
         i: 0.0
         d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LF_wristH:
-        p: 100.0
-        i: 0.001
-        d: 0.05
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LF_wristV:
-        p: 100.0
+        p: 30.0
         i: 0.0
-        d: 0.01
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LF_driving:
-        p: 80.0
+        p: 0.0
         i: 0.0
         d: 0.0
-        #i_max: 0.05
-        #i_min: -0.05
-        #antiwindup: true
-        ff_velocity_scale: 1.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
       LH_B2C:
-        p: 65.0
-        i: 0.01
-        d: 1.2
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LH_C2F:
-        p: 90.0
-        i: 0.1
-        d: 2.0
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LH_F2T:
-        p: 55.0
-        i: 0.01
-        d: 1.4
+        p: 35.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LH_T2E:
-        p: 100.0
+        p: 30.0
         i: 0.0
         d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LH_wristH:
-        p: 100.0
-        i: 0.001
-        d: 0.05
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LH_wristV:
-        p: 100.0
+        p: 30.0
         i: 0.0
-        d: 0.01
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       LH_driving:
-        p: 80.0
+        p: 0.0
         i: 0.0
         d: 0.0
-        #i_max: 0.05
-        #i_min: -0.05
-        #antiwindup: true
-        ff_velocity_scale: 1.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
       RH_B2C:
-        p: 65.0
-        i: 0.01
-        d: 1.2
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       RH_C2F:
-        p: 90.0
-        i: 0.1
-        d: 2.0
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       RH_F2T:
-        p: 55.0
-        i: 0.01
-        d: 1.4
+        p: 35.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       RH_T2E:
-        p: 100.0
+        p: 30.0
         i: 0.0
         d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       RH_wristH:
-        p: 100.0
-        i: 0.001
-        d: 0.05
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       RH_wristV:
-        p: 100.0
+        p: 30.0
         i: 0.0
-        d: 0.01
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
       RH_driving:
-        p: 80.0
+        p: 0.0
         i: 0.0
         d: 0.0
-        #i_max: 0.1
-        #i_min: -0.1
-        #antiwindup: true
-        ff_velocity_scale: 1.0
-      RF_B2C:
-        p: 65.0
-        i: 0.01
-        d: 1.2
-        ff_velocity_scale: 1.0
-      RF_C2F:
-        p: 90.0
-        i: 0.1
-        d: 2.0
-        ff_velocity_scale: 1.0
-      RF_F2T:
-        p: 55.0
-        i: 0.01
-        d: 1.4
-        ff_velocity_scale: 1.0
-      RF_T2E:
-        p: 100.0
-        i: 0.0
-        d: 0.0
-        ff_velocity_scale: 1.0
-      RF_wristH:
-        p: 100.0
-        i: 0.001
-        d: 0.05
-        ff_velocity_scale: 1.0
-      RF_wristV:
-        p: 100.0
-        i: 0.0
-        d: 0.01
-        ff_velocity_scale: 1.0
-      RF_driving:
-        p: 80.0
-        i: 0.0
-        d: 0.0
+        i_clamp: 1.0
         #i_max: 0.05
         #i_min: -0.05
         #antiwindup: true
+        ff_velocity_scale: 0.0
+      RF_B2C:
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
         ff_velocity_scale: 1.0
+      RF_C2F:
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 1.0
+      RF_F2T:
+        p: 35.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 1.0
+      RF_T2E:
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 1.0
+      RF_wristH:
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 1.0
+      RF_wristV:
+        p: 30.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 1.0
+      RF_driving:
+        p: 0.0
+        i: 0.0
+        d: 0.0
+        i_clamp: 1.0
+        #i_max: 0.05
+        #i_min: -0.05
+        #antiwindup: true
+        ff_velocity_scale: 0.0                    

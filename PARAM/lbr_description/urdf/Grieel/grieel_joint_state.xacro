@@ -21,7 +21,7 @@
                 <namespace>${prefix}</namespace>
                 <remapping>~/out:=joint_states</remapping>
             </ros>
-            <update_rate>30</update_rate>
+            <update_rate>50</update_rate>
             <!-- <joint_name>${prefix}_E2grieel</joint_name> -->
             <joint_name>${prefix}_B2C</joint_name>
             <joint_name>${prefix}_C2F</joint_name>

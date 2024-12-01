@@ -40,7 +40,7 @@ constexpr double JOINT4_LOWER = -JOINT4_UPPER;
 constexpr double JOINT5_UPPER = M_PI;
 constexpr double JOINT5_LOWER = -M_PI;
 constexpr double JOINT6_UPPER = 0.5*M_PI;
-constexpr double JOINT6_LOWER = 0;
+constexpr double JOINT6_LOWER = -0.25*M_PI;
 constexpr double JOINT7_UPPER = INFINITY;
 constexpr double JOINT7_LOWER = -INFINITY;
 
