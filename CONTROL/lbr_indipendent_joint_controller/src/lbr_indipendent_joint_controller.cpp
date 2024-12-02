@@ -339,7 +339,7 @@ void IndipendentJointController::controlLoopPPI()
 
       joint_velocity_reference[i] = joint_position_error[i] * Kpp[i] + joint_velocity_feed_forward[i];
 
-      estimated_joint_velocity[i] = (1-10*Ts*1e-3)*estimated_joint_velocity[i] + 10*(current_joint_state.position.at(i) - previous_joint_position[i]);
+      estimated_joint_velocity[i] = (1-100*Ts*1e-3)*estimated_joint_velocity[i] + 100*(current_joint_state.position.at(i) - previous_joint_position[i]);
 
 
       // tau(t) = kpv*(dq_d(t) - dq(t)) + Ts*(dq_d(t) - dq(t))*kpv/Tiv, Propodtional Integral controller + gravity compensation (to estimate)
