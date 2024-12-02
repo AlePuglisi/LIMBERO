@@ -9,8 +9,8 @@ constexpr float TS = 2; // sampling time of discrete time controller [ms]
 constexpr float KPP[JOINT_NUM] =  {30.0, 30.0, 30.0, 30.0, 20.0, 20.0, 0.0};           // Position P gains
 // constexpr float KPV[JOINT_NUM] =  {1090.0, 970.0, 680.0, 820.0, 680.0, 970.0, 0.0}; // Velocity P gains
 // constexpr float TIV[JOINT_NUM] = {0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 1.0};            // Velocity I gains
-constexpr float KPV[JOINT_NUM] =  {500.0, 700.0, 600.0, 400.0, 240.0, 350.0, 0.0}; // Velocity P gains
-constexpr float TIV[JOINT_NUM] = {0.03, 0.03, 0.03, 0.03, 0.3, 0.3, 1.0};            // Velocity I gains
+constexpr float KPV[JOINT_NUM] =  {50.0, 70.0, 60.0, 40.0, 24.0, 35.0, 0.0}; // Velocity P gains
+constexpr float TIV[JOINT_NUM] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 1.0};            // Velocity I gains
 
 // Saturation on control action, for anti-wind up implementation
 constexpr float SATURATION[JOINT_NUM] = {15.0, 15.0, 15.0, 10.0, 8.0, 10.0, 6.0};
@@ -21,11 +21,14 @@ constexpr float WCV_F = 50.0; // [Hz] cut off frequency of velocity derivation (
 
 constexpr float TF = 1.0/(WCP_F*2*M_PI);  // position refrence smoothed, LP filter time constant
 constexpr float TDF = 1.0/(WCV_F*2*M_PI); // velocity derivative feed forward, LP filter time constant
-constexpr float TC = 0.173; // anti-wind up feedback gain =~ sqrt(TIV)
+constexpr float TC = 0.3; // anti-wind up feedback gain =~ sqrt(TIV)
 constexpr float L = 20.0; // additional paramter for the de-saturation dynamic
+
+constexpr float N_PID = 10.0; // realizability gain for derivative PID action
 
 constexpr int GRAVITY_COMPENSATION = 1; // flag variable to know if use or not gravity compensation action
 constexpr int ANTI_WINDUP_METHOD = 1; // 1 = back-calculation; 2 = de saturation; 3 = conditional integration (Clamping)
+constexpr int PID = 0; // decide if using 1 = PID or 0 = (cascade) PPI 
 
 // SYSTEM PARAMETER:
 

@@ -37,7 +37,12 @@ private:
    * @brief This function runs periodically when called by the control_loop_timer_.
    *        It publish the torque control action to the effort_controller.
    */
-  void controlLoop();
+  void controlLoopPPI();
+  /**
+   * @brief This function runs periodically when called by the control_loop_timer_.
+   *        It publish the torque control action to the effort_controller.
+   */
+  void controlLoopPID();
   /**
    * @brief This function is used to compute gravutational torque, used for feed forward gravity compensation in the control loop
    *
@@ -93,6 +98,10 @@ private:
   float Tiv[JOINT_NUM]; // velocity controller D gain
   float torque_limit[JOINT_NUM]; // Saturation limit of joint motors
 
+  float KP[JOINT_NUM];
+  float TI[JOINT_NUM];
+  float TD[JOINT_NUM];
+
   float N[JOINT_NUM]; // reduction ratio
 
   float joint_velocity_feed_forward[JOINT_NUM]; // feed forward velocity, to speed up control
@@ -103,6 +112,12 @@ private:
   float previous_u1[JOINT_NUM]; // additional variable for desaturation anti-windup
   float previous_u2[JOINT_NUM]; // additional variable for desaturation anti-windup
   float reference_joint_position_filtered[JOINT_NUM]; // filtered set point to avoid abrupt controller action
+
+  float estimated_joint_velocity[JOINT_NUM];
+  float previous_joint_position[JOINT_NUM];
+
+  float previous_position_error[JOINT_NUM];
+  float derivative_torque[JOINT_NUM];
 
   float integral[JOINT_NUM]; //keep track of cumulative integrator
   float anti_wind_up[JOINT_NUM]; // additional anti-wind up action

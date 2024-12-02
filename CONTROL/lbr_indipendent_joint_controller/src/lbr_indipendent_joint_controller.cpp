@@ -36,6 +36,17 @@ IndipendentJointController::IndipendentJointController()
     torque_limit[i] = SATURATION[i];
   }
 
+  if(PID == 1){
+    for (int i=0; i < JOINT_NUM-1; i++){
+      KP[i] = Kpv[i]*(Kpp[i] + 1/Tiv[i]);
+      TI[i] = KP[i]*Tiv[i]/(Kpp[i]*Kpv[i]);
+      TD[i] = Kpv[i]/KP[i];
+    }
+    KP[JOINT_NUM-1] = 0.0; 
+    TD[JOINT_NUM-1] = 1.0; 
+    TI[JOINT_NUM-1] = 1.0;  
+  }
+
   // initialize all controller related signals and reference joint state (only F2T as pi/2 initial desired position)
   for (int i=0; i < JOINT_NUM; i++){
     if(i==2){
@@ -58,6 +69,14 @@ IndipendentJointController::IndipendentJointController()
     previous_u2[i] = 0.0;
     joint_velocity_feed_forward[i] = 0.0;
     gravitational_torque[i] = 0.0;
+
+    previous_joint_position[i] = 0.0; 
+    estimated_joint_velocity[i] = 0.0; 
+
+    if(PID == 1){
+      derivative_torque[i] = 0.0;
+      previous_position_error[i] = 0.0; 
+    }
   }
 
   // Identification of namespace for limb controller set-up
@@ -77,13 +96,23 @@ IndipendentJointController::IndipendentJointController()
 
   // Open the csv file to save control results and tracking
   file_out.open("/home/ale/lbr_ws/src/LIMBERO/CONTROL/lbr_indipendent_joint_controller/" + joint_prefix + "_data_record.csv",std::ofstream::out | std::ofstream::trunc);
-  file_out << "time,limb_in_contact,B2C_reference_position,B2C_reference_position_filtered,B2C_current_position,B2C_position_error,B2C_reference_velocity,B2C_current_velocity,B2C_feed_forward_velocity,B2C_velocity_error,B2C_integral_action,B2C_control_torque,B2C_gravity_torque,"
-           << "C2F_reference_position,C2F_reference_position_filtered,C2F_current_position,C2F_position_error,C2F_reference_velocity,C2F_current_velocity,C2F_feed_forward_velocity,C2F_velocity_error,C2F_integral_action,C2F_control_torque,C2F_gravity_torque,"
-           << "F2T_reference_position,F2T_reference_position_filtered,F2T_current_position,F2T_position_error,F2T_reference_velocity,F2T_current_velocity,F2T_feed_forward_velocity,F2T_velocity_error,F2T_integral_action,F2T_control_torque,F2T_gravity_torque,"
-           << "T2E_reference_position,T2E_reference_position_filtered,T2E_current_position,T2E_position_error,T2E_reference_velocity,T2E_current_velocity,T2E_feed_forward_velocity,T2E_velocity_error,T2E_integral_action,T2E_control_torque,T2E_gravity_torque,"
-           << "wristH_reference_position,wristH_reference_position_filtered,wristH_current_position,wristH_position_error,wristH_reference_velocity,wristH_current_velocity,wristH_feed_forward_velocity,wristH_velocity_error,wristH_integral_action,wristH_control_torque,wristH_gravity_torque,"
-           << "wristV_reference_position,wristV_reference_position_filtered,wristV_current_position,wristV_position_error,wristV_reference_velocity,wristV_current_velocity,wristV_feed_forward_velocity,wristV_velocity_error,wristV_integral_action,wristV_control_torque,wristV_gravity_torque,"
-           << "driving_reference_position,driving_reference_position_filtered,driving_current_position,driving_position_error,driving_reference_velocity,driving_current_velocity,driving_feed_forward_velocity,driving_velocity_error,driving_integral_action,driving_control_torque,driving_gravity_torque,\n";
+  if(PID == 0){
+    file_out << "time,limb_in_contact,B2C_reference_position,B2C_reference_position_filtered,B2C_current_position,B2C_position_error,B2C_reference_velocity,B2C_current_velocity,B2C_feed_forward_velocity,B2C_velocity_error,B2C_integral_action,B2C_control_torque,B2C_gravity_torque,"
+            << "C2F_reference_position,C2F_reference_position_filtered,C2F_current_position,C2F_position_error,C2F_reference_velocity,C2F_current_velocity,C2F_feed_forward_velocity,C2F_velocity_error,C2F_integral_action,C2F_control_torque,C2F_gravity_torque,"
+            << "F2T_reference_position,F2T_reference_position_filtered,F2T_current_position,F2T_position_error,F2T_reference_velocity,F2T_current_velocity,F2T_feed_forward_velocity,F2T_velocity_error,F2T_integral_action,F2T_control_torque,F2T_gravity_torque,"
+            << "T2E_reference_position,T2E_reference_position_filtered,T2E_current_position,T2E_position_error,T2E_reference_velocity,T2E_current_velocity,T2E_feed_forward_velocity,T2E_velocity_error,T2E_integral_action,T2E_control_torque,T2E_gravity_torque,"
+            << "wristH_reference_position,wristH_reference_position_filtered,wristH_current_position,wristH_position_error,wristH_reference_velocity,wristH_current_velocity,wristH_feed_forward_velocity,wristH_velocity_error,wristH_integral_action,wristH_control_torque,wristH_gravity_torque,"
+            << "wristV_reference_position,wristV_reference_position_filtered,wristV_current_position,wristV_position_error,wristV_reference_velocity,wristV_current_velocity,wristV_feed_forward_velocity,wristV_velocity_error,wristV_integral_action,wristV_control_torque,wristV_gravity_torque,"
+            << "driving_reference_position,driving_reference_position_filtered,driving_current_position,driving_position_error,driving_reference_velocity,driving_current_velocity,driving_feed_forward_velocity,driving_velocity_error,driving_integral_action,driving_control_torque,driving_gravity_torque,\n";
+  } else if(PID == 1){
+    file_out << "time,limb_in_contact,B2C_reference_position,B2C_reference_position_filtered,B2C_current_position,B2C_position_error,B2C_integral_action,B2C_control_torque,B2C_gravity_torque,"
+            << "C2F_reference_position,C2F_reference_position_filtered,C2F_current_position,C2F_position_error,C2F_integral_action,C2F_control_torque,C2F_gravity_torque,"
+            << "F2T_reference_position,F2T_reference_position_filtered,F2T_current_position,F2T_position_error,F2T_integral_action,F2T_control_torque,F2T_gravity_torque,"
+            << "T2E_reference_position,T2E_reference_position_filtered,T2E_current_position,T2E_position_error,T2E_integral_action,T2E_control_torque,T2E_gravity_torque,"
+            << "wristH_reference_position,wristH_reference_position_filtered,wristH_current_position,wristH_position_error,wristH_integral_action,wristH_control_torque,wristH_gravity_torque,"
+            << "wristV_reference_position,wristV_reference_position_filtered,wristV_current_position,wristV_position_error,wristV_integral_action,wristV_control_torque,wristV_gravity_torque,"
+            << "driving_reference_position,driving_reference_position_filtered,driving_current_position,driving_position_error,driving_integral_action,driving_control_torque,driving_gravity_torque,\n";
+  }
 
   // initialize Publisher and Subscirbers
   current_joint_state_sub_ = this->create_subscription<sensor_msgs::msg::JointState>(
@@ -104,8 +133,13 @@ IndipendentJointController::IndipendentJointController()
     "/effort_controller/commands", 10);
 
   // Set up control loop rate
-  control_loop_timer_ = this->create_wall_timer(
-            std::chrono::milliseconds(Ts), std::bind(&IndipendentJointController::controlLoop, this));
+  if(PID == 0){
+    control_loop_timer_ = this->create_wall_timer(
+              std::chrono::milliseconds(Ts), std::bind(&IndipendentJointController::controlLoopPPI, this));
+  } else if(PID == 1){
+    control_loop_timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(Ts), std::bind(&IndipendentJointController::controlLoopPID, this));
+  }
 }
 
 void IndipendentJointController::currentJointStateCallback(
@@ -263,7 +297,7 @@ std::array<float, JOINT_NUM> IndipendentJointController::GravityCompensation(){
   return Tau_g;
 }
 
-void IndipendentJointController::controlLoop()
+void IndipendentJointController::controlLoopPPI()
 {
   // compute control action
   // definition of support variables
@@ -272,6 +306,149 @@ void IndipendentJointController::controlLoop()
   float joint_velocity_reference[JOINT_NUM];
   float u1[JOINT_NUM];
   float u2[JOINT_NUM];
+
+
+
+  if(start_control){
+      if(initial_time == 0){
+          initial_time = this->get_clock()->now().seconds();
+      }
+      double current_time = this->get_clock()->now().seconds() - initial_time;
+      file_out << current_time << ",";
+      if(in_contact){
+        file_out << 1.0 << ",";
+      } else{
+        file_out << 0.0 <<",";
+      }
+      gravitational_torque = GravityCompensation();
+
+    // computation of all control signal components
+    for (int i=0; i < JOINT_NUM; i++){
+      // dq_d(t) = kpp*(q_d(t) - q(t)) + dq_ff(t), Proportional position controller + feedforwaed velocity
+
+      reference_joint_position_filtered[i] = reference_joint_position_filtered[i]*(Tf-(Ts*1e-3))/Tf + (Ts*1e-3)/Tf * previous_reference_joint_position[i];
+      joint_position_error[i] = (reference_joint_position_filtered[i] - current_joint_state.position.at(i));
+
+      // joint_velocity_feed_forward[i] = (reference_joint_state.position.at(i) - previous_reference_joint_position[i]) / (Ts*1e-3); // Ts is in [ms], convert into [s]
+      joint_velocity_feed_forward[i] = joint_velocity_feed_forward[i]*(1-(Ts*1e-3)*(1/Tdf)) + (reference_joint_position_filtered[i] - previous_reference_joint_position_filtered[i])*(1/Tdf) ;
+      // if (joint_velocity_feed_forward[i] > velocity_limit){
+      //   joint_velocity_feed_forward[i] = velocity_limit;
+      // } else if(joint_velocity_feed_forward[i] < -velocity_limit ){
+      //   joint_velocity_feed_forward[i] = -velocity_limit;
+      // }
+
+      joint_velocity_reference[i] = joint_position_error[i] * Kpp[i] + joint_velocity_feed_forward[i];
+
+      estimated_joint_velocity[i] = (1-10*Ts*1e-3)*estimated_joint_velocity[i] + 10*(current_joint_state.position.at(i) - previous_joint_position[i]);
+
+
+      // tau(t) = kpv*(dq_d(t) - dq(t)) + Ts*(dq_d(t) - dq(t))*kpv/Tiv, Propodtional Integral controller + gravity compensation (to estimate)
+      
+      //joint_velocity_error[i] = joint_velocity_reference[i] - current_joint_state.velocity.at(i);
+      joint_velocity_error[i] = joint_velocity_reference[i] - estimated_joint_velocity[i];
+
+      if(ANTI_WINDUP_METHOD == 1){ // back-calculation
+        integral[i] += (Ts*1e-3)*(Kpv[i]/Tiv[i]*joint_velocity_error[i] + anti_wind_up[i]);
+
+
+        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = Kpv[i] * joint_velocity_error[i] + integral[i] + gravity_compensation*gravitational_torque[i];
+
+        // ANTI-WIND-UP computation and Torque SATURATION
+        if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) > torque_limit[i]){
+          anti_wind_up[i] = (torque_limit[i] - torque_control_output.data.at(LIMB_ID*JOINT_NUM + i))*1/Tc;
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = torque_limit[i];
+        } else if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) < - torque_limit[i]){
+          anti_wind_up[i] = (-torque_limit[i] - torque_control_output.data.at(LIMB_ID*JOINT_NUM + i))*1/Tc;
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = - torque_limit[i];
+        } else {
+          anti_wind_up[i] = 0.0;
+        }
+
+      } else if(ANTI_WINDUP_METHOD == 2){ // de-saturation
+          float T = Ts*1e-3;
+          u1[i] = (Tiv[i]- L*T)*previous_u1[i]/Tiv[i] + Kpv[i]*joint_velocity_error[i] + Kpv[i]*(T-Tiv[i])*previous_velocity_error[i]/Tiv[i];
+          u2[i] = (Tiv[i]-L*T)*previous_u2[i]/Tiv[i] + L*T*previous_saturated_torque[i]/Tiv[i];
+
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = u1[i] + u2[i] + gravity_compensation*gravitational_torque[i];
+
+          if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) > torque_limit[i]){
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = torque_limit[i];
+          } else if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) < - torque_limit[i]){
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = - torque_limit[i];
+          }
+
+          previous_saturated_torque[i] = torque_control_output.data.at(LIMB_ID*JOINT_NUM + i);
+          previous_velocity_error[i] = joint_velocity_error[i];
+          previous_u1[i] = u1[i];
+          previous_u2[i] = u2[i];
+
+      } else if(ANTI_WINDUP_METHOD == 3){ // conditional integration (clamping)
+        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = Kpv[i]*joint_velocity_error[i] + Kpv[i]/Tiv[i] * integral[i] + gravity_compensation*gravitational_torque[i];;
+        if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) >= torque_limit[i] && joint_velocity_error[i] >= 0){
+          // don't update integral
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = torque_limit[i];
+        } else if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <= -torque_limit[i] && joint_velocity_error[i] <= 0){
+          // don't update integral
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = -torque_limit[i];
+        } else{
+          integral[i] += Ts*1e-3*joint_velocity_error[i];
+        }
+      }
+
+      previous_reference_joint_position[i] = reference_joint_state.position.at(i); // store reference joint state for next iteration
+      previous_reference_joint_position_filtered[i] = reference_joint_position_filtered[i];
+      previous_joint_position[i] = current_joint_state.position.at(i);
+
+      if(ANTI_WINDUP_METHOD == 1){
+          file_out << reference_joint_state.position.at(i) << ","
+                  << reference_joint_position_filtered[i] << ","
+                  << current_joint_state.position.at(i)   << ","
+                  << joint_position_error[i]              << ","
+                  << joint_velocity_reference[i]          << ","
+                  //<< current_joint_state.velocity.at(i)   << ","
+                  << estimated_joint_velocity[i]          << ","
+                  << joint_velocity_feed_forward[i]       << ","
+                  << joint_velocity_error[i]              << ","
+                  << integral[i]                          << ","
+                  << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
+                  << gravitational_torque[i] <<",";
+      }else if(ANTI_WINDUP_METHOD == 2){
+          file_out << reference_joint_state.position.at(i) << ","
+                  << reference_joint_position_filtered[i] << ","
+                  << current_joint_state.position.at(i)   << ","
+                  << joint_position_error[i]              << ","
+                  << joint_velocity_reference[i]          << ","
+                  << current_joint_state.velocity.at(i)   << ","
+                  << joint_velocity_feed_forward[i]       << ","
+                  << joint_velocity_error[i]              << ","
+                  <<  u2[i]                          << ","
+                  << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
+                  << gravitational_torque[i] <<",";
+      }else if(ANTI_WINDUP_METHOD == 3){
+          file_out << reference_joint_state.position.at(i) << ","
+                  << reference_joint_position_filtered[i] << ","
+                  << current_joint_state.position.at(i)   << ","
+                  << joint_position_error[i]              << ","
+                  << joint_velocity_reference[i]          << ","
+                  << current_joint_state.velocity.at(i)   << ","
+                  << joint_velocity_feed_forward[i]       << ","
+                  << joint_velocity_error[i]              << ","
+                  << integral[i]                          << ","
+                  << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
+                  << gravitational_torque[i] <<",";
+      }
+    }
+    // Publish controller Torque output
+    file_out << "\n";
+    torque_control_pub_->publish(torque_control_output);
+  }
+}
+
+void IndipendentJointController::controlLoopPID()
+{
+  // compute control action
+  // definition of support variables
+  float joint_position_error[JOINT_NUM];
 
 
   if(start_control){
@@ -286,124 +463,105 @@ void IndipendentJointController::controlLoop()
       file_out << 0.0 <<",";
     }
     gravitational_torque = GravityCompensation();
-  }
+  
 
-  // computation of all control signal components
-  for (int i=0; i < JOINT_NUM; i++){
-    // dq_d(t) = kpp*(q_d(t) - q(t)) + dq_ff(t), Proportional position controller + feedforwaed velocity
+    // computation of all control signal components
+    for (int i=0; i < JOINT_NUM; i++){
+      // dq_d(t) = kpp*(q_d(t) - q(t)) + dq_ff(t), Proportional position controller + feedforwaed velocity
 
-    reference_joint_position_filtered[i] = reference_joint_position_filtered[i]*(Tf-(Ts*1e-3))/Tf + (Ts*1e-3)/Tf * previous_reference_joint_position[i];
-    joint_position_error[i] = (reference_joint_position_filtered[i] - current_joint_state.position.at(i));
+      reference_joint_position_filtered[i] = reference_joint_position_filtered[i]*(Tf-(Ts*1e-3))/Tf + (Ts*1e-3)/Tf * previous_reference_joint_position[i];
+      
+      joint_position_error[i] = (reference_joint_position_filtered[i] - current_joint_state.position.at(i));
 
-    // joint_velocity_feed_forward[i] = (reference_joint_state.position.at(i) - previous_reference_joint_position[i]) / (Ts*1e-3); // Ts is in [ms], convert into [s]
-    joint_velocity_feed_forward[i] = joint_velocity_feed_forward[i]*(1-(Ts*1e-3)*(1/Tdf)) + (reference_joint_position_filtered[i] - previous_reference_joint_position_filtered[i])*(1/Tdf) ;
-    // if (joint_velocity_feed_forward[i] > velocity_limit){
-    //   joint_velocity_feed_forward[i] = velocity_limit;
-    // } else if(joint_velocity_feed_forward[i] < -velocity_limit ){
-    //   joint_velocity_feed_forward[i] = -velocity_limit;
-    // }
+      derivative_torque[i] = derivative_torque[i]*(TD[i]-N_PID*Ts*1e-3)/TD[i] + (joint_position_error[i] - previous_position_error[i])*KP[i]/TD[i];
 
-    joint_velocity_reference[i] = joint_position_error[i] * Kpp[i] + joint_velocity_feed_forward[i];
-
-    // tau(t) = kpv*(dq_d(t) - dq(t)) + Ts*(dq_d(t) - dq(t))*kpv/Tiv, Propodtional Integral controller + gravity compensation (to estimate)
-    joint_velocity_error[i] = joint_velocity_reference[i] - current_joint_state.velocity.at(i);
-
-    if(ANTI_WINDUP_METHOD == 1){ // back-calculation
-      integral[i] += (Ts*1e-3)*(Kpv[i]/Tiv[i]*joint_velocity_error[i] + anti_wind_up[i]);
+      if(ANTI_WINDUP_METHOD == 1){ // back-calculation
+        integral[i] += (Ts*1e-3)*(KP[i]/TI[i]*previous_position_error[i] + anti_wind_up[i]);
 
 
-      torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = Kpv[i] * joint_velocity_error[i] + integral[i] + gravity_compensation*gravitational_torque[i];
+        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = KP[i]*joint_position_error[i] + derivative_torque[i] + integral[i] + gravity_compensation*gravitational_torque[i];
 
-      // ANTI-WIND-UP computation and Torque SATURATION
-      if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) > torque_limit[i]){
-        anti_wind_up[i] = (torque_limit[i] - torque_control_output.data.at(LIMB_ID*JOINT_NUM + i))*1/Tc;
-        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = torque_limit[i];
-      } else if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) < - torque_limit[i]){
-        anti_wind_up[i] = (-torque_limit[i] - torque_control_output.data.at(LIMB_ID*JOINT_NUM + i))*1/Tc;
-        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = - torque_limit[i];
-      } else {
-        anti_wind_up[i] = 0.0;
-      }
-
-    } else if(ANTI_WINDUP_METHOD == 2){ // de-saturation
-        float T = Ts*1e-3;
-        u1[i] = (Tiv[i]- L*T)*previous_u1[i]/Tiv[i] + Kpv[i]*joint_velocity_error[i] + Kpv[i]*(T-Tiv[i])*previous_velocity_error[i]/Tiv[i];
-        u2[i] = (Tiv[i]-L*T)*previous_u2[i]/Tiv[i] + L*T*previous_saturated_torque[i]/Tiv[i];
-
-        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = u1[i] + u2[i] + gravity_compensation*gravitational_torque[i];
-
+        // ANTI-WIND-UP computation and Torque SATURATION
         if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) > torque_limit[i]){
-        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = torque_limit[i];
+          anti_wind_up[i] = (torque_limit[i] - torque_control_output.data.at(LIMB_ID*JOINT_NUM + i))*1/Tc;
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = torque_limit[i];
         } else if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) < - torque_limit[i]){
-        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = - torque_limit[i];
+          anti_wind_up[i] = (-torque_limit[i] - torque_control_output.data.at(LIMB_ID*JOINT_NUM + i))*1/Tc;
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = - torque_limit[i];
+        } else {
+          anti_wind_up[i] = 0.0;
         }
 
-        previous_saturated_torque[i] = torque_control_output.data.at(LIMB_ID*JOINT_NUM + i);
-        previous_velocity_error[i] = joint_velocity_error[i];
-        previous_u1[i] = u1[i];
-        previous_u2[i] = u2[i];
+      } else if(ANTI_WINDUP_METHOD == 2){ // de-saturation NOT WORKING FOR PID!!!
+          // float T = Ts*1e-3;
+          // u1[i] = (Tiv[i]- L*T)*previous_u1[i]/Tiv[i] + Kpv[i]*joint_velocity_error[i] + Kpv[i]*(T-Tiv[i])*previous_velocity_error[i]/Tiv[i];
+          // u2[i] = (Tiv[i]-L*T)*previous_u2[i]/Tiv[i] + L*T*previous_saturated_torque[i]/Tiv[i];
 
-    } else if(ANTI_WINDUP_METHOD == 3){ // conditional integration (clamping)
-      torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = Kpv[i]*joint_velocity_error[i] + Kpv[i]/Tiv[i] * integral[i] + gravity_compensation*gravitational_torque[i];;
-      if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) >= torque_limit[i] && joint_velocity_error[i] >= 0){
-        // don't update integral
-        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = torque_limit[i];
-      } else if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <= -torque_limit[i] && joint_velocity_error[i] <= 0){
-         // don't update integral
-         torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = -torque_limit[i];
-      } else{
-        integral[i] += Ts*1e-3*joint_velocity_error[i];
+          // torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = u1[i] + u2[i] + gravity_compensation*gravitational_torque[i];
+
+          // if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) > torque_limit[i]){
+          // torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = torque_limit[i];
+          // } else if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) < - torque_limit[i]){
+          // torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = - torque_limit[i];
+          // }
+
+          // previous_saturated_torque[i] = torque_control_output.data.at(LIMB_ID*JOINT_NUM + i);
+          // previous_velocity_error[i] = joint_velocity_error[i];
+          // previous_u1[i] = u1[i];
+          // previous_u2[i] = u2[i];
+
+      } else if(ANTI_WINDUP_METHOD == 3){ // conditional integration (clamping)
+        torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = KP[i]*joint_position_error[i] + derivative_torque[i] + KP[i]/TI[i]*integral[i] + gravity_compensation*gravitational_torque[i];
+        if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) >= torque_limit[i] && joint_position_error[i] >= 0){
+          // don't update integral
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = torque_limit[i];
+        } else if(torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <= -torque_limit[i] && joint_position_error[i] <= 0){
+          // don't update integral
+          torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) = -torque_limit[i];
+        } else{
+          integral[i] += Ts*1e-3*joint_position_error[i];
+        }
       }
-    }
 
-    previous_reference_joint_position[i] = reference_joint_state.position.at(i); // store reference joint state for next iteration
-    previous_reference_joint_position_filtered[i] = reference_joint_position_filtered[i];
+      previous_reference_joint_position[i] = reference_joint_state.position.at(i); // store reference joint state for next iteration
+      previous_position_error[i] = joint_position_error[i];
 
-    if(start_control){
+      previous_reference_joint_position_filtered[i] = reference_joint_position_filtered[i];
+
       if(ANTI_WINDUP_METHOD == 1){
-        file_out << reference_joint_state.position.at(i) << ","
-                << reference_joint_position_filtered[i] << ","
-                << current_joint_state.position.at(i)   << ","
-                << joint_position_error[i]              << ","
-                << joint_velocity_reference[i]          << ","
-                << current_joint_state.velocity.at(i)   << ","
-                << joint_velocity_feed_forward[i]       << ","
-                << joint_velocity_error[i]              << ","
-                << integral[i]                          << ","
-                << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
-                << gravitational_torque[i] <<",";
+          file_out << reference_joint_state.position.at(i) << ","
+                  << reference_joint_position_filtered[i] << ","
+                  << current_joint_state.position.at(i)   << ","
+                  << joint_position_error[i]              << ","
+                  << integral[i]                          << ","
+                  << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
+                  << gravitational_torque[i] <<",";
       }else if(ANTI_WINDUP_METHOD == 2){
-        file_out << reference_joint_state.position.at(i) << ","
-                << reference_joint_position_filtered[i] << ","
-                << current_joint_state.position.at(i)   << ","
-                << joint_position_error[i]              << ","
-                << joint_velocity_reference[i]          << ","
-                << current_joint_state.velocity.at(i)   << ","
-                << joint_velocity_feed_forward[i]       << ","
-                << joint_velocity_error[i]              << ","
-                <<  u2[i]                          << ","
-                << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
-                << gravitational_torque[i] <<",";
+          // file_out << reference_joint_state.position.at(i) << ","
+          //         << reference_joint_position_filtered[i] << ","
+          //         << current_joint_state.position.at(i)   << ","
+          //         << joint_position_error[i]              << ","
+          //         << joint_velocity_reference[i]          << ","
+          //         << current_joint_state.velocity.at(i)   << ","
+          //         << joint_velocity_feed_forward[i]       << ","
+          //         << joint_velocity_error[i]              << ","
+          //         <<  u2[i]                          << ","
+          //         << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
+          //         << gravitational_torque[i] <<",";
       }else if(ANTI_WINDUP_METHOD == 3){
-        file_out << reference_joint_state.position.at(i) << ","
-                << reference_joint_position_filtered[i] << ","
-                << current_joint_state.position.at(i)   << ","
-                << joint_position_error[i]              << ","
-                << joint_velocity_reference[i]          << ","
-                << current_joint_state.velocity.at(i)   << ","
-                << joint_velocity_feed_forward[i]       << ","
-                << joint_velocity_error[i]              << ","
-                << integral[i]                          << ","
-                << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
-                << gravitational_torque[i] <<",";
+          file_out << reference_joint_state.position.at(i) << ","
+                  << reference_joint_position_filtered[i] << ","
+                  << current_joint_state.position.at(i)   << ","
+                  << joint_position_error[i]              << ","
+                  << integral[i]                          << ","
+                  << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
+                  << gravitational_torque[i] <<",";
       }
     }
-  }
+    // Publish controller Torque output
 
-  // Publish controller Torque output
-  if(start_control){
-   file_out << "\n";
-   torque_control_pub_->publish(torque_control_output);
+    file_out << "\n";
+    torque_control_pub_->publish(torque_control_output);
   }
 }
 
