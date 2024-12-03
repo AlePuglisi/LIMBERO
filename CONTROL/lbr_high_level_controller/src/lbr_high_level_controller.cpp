@@ -643,67 +643,109 @@ void HighLevelController::crawlGate(){
 
   //   // std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   // });
-  bool first_time = true;
-  float i = 0;
-  if(move){
-    if(motion_package_end || first_time){
-      std::cout << "Crawl gate step: " << i << " start." << std::endl;
-      i = i+1;
-      int task_num = 5;  // One sequence consists of 4 limb motion and 1 base motion.
-      lbr_msgs::msg::MotionPackage crawl_gait_motion_package;
-      crawl_gait_motion_package.motion_task_array.resize(task_num);
-      lbr_msgs::msg::MotionTask motion_task;
-      motion_task.task_id_array.resize(task_num);
+  std::thread crawl_step([this]() {
+    bool first_time = true;
+    float i = 0;
+    while(move){
+      if(motion_package_end || first_time){
+        std::cout << "Crawl gate step: " << i << " start." << std::endl;
+        i = i+1;
+        int task_num = 4*3+1;  // One sequence consists of 4 limb motion and 1 base motion.
+        lbr_msgs::msg::MotionPackage crawl_gait_motion_package;
+        crawl_gait_motion_package.motion_task_array.resize(task_num);
+        lbr_msgs::msg::MotionTask motion_task;
+        motion_task.task_id_array.resize(task_num);
 
-      lbr_msgs::msg::LimbMotionTask limb_forward_swing;
-      limb_forward_swing.end_effector_displacement.x = 0.15;
-      limb_forward_swing.end_effector_displacement.y = 0.0;
-      limb_forward_swing.end_effector_displacement.z = 0.0;
-      limb_forward_swing.swing_mid_point.x = 0.15/2;
-      limb_forward_swing.swing_mid_point.y = 0.0;
-      limb_forward_swing.swing_mid_point.z = 0.20;
-      limb_forward_swing.swing_duration = 3500;
-      limb_forward_swing.pitch_angle_displacement = 0.0;  // [rad]
+        lbr_msgs::msg::LimbMotionTask limb_up;
+        limb_up.end_effector_displacement.x = 0.0;
+        limb_up.end_effector_displacement.y = 0.0;
+        limb_up.end_effector_displacement.z = 0.2;
+        limb_up.swing_duration = 1500;
+        limb_up.pitch_angle_displacement = 0.0;  // [rad]
 
-      std::vector<int> gait_numbers = {0, 2, 1, 3};
-      for (int i = 0; i < 2; i++) {
-        limb_forward_swing.limb_id = gait_numbers.at(i);
-        limb_forward_swing.header.stamp = this->now();
-        motion_task.limb_motion_task = limb_forward_swing;
-        motion_task.task_id_array.at(i) = 0;  // ID of limb motion task is 0.
-        crawl_gait_motion_package.motion_task_array.at(i) = motion_task;
+        lbr_msgs::msg::LimbMotionTask limb_forward;
+        limb_forward.end_effector_displacement.x = 0.15;
+        limb_forward.end_effector_displacement.y = 0.0;
+        limb_forward.end_effector_displacement.z = 0.0;
+        limb_forward.swing_duration = 1500;
+        limb_forward.pitch_angle_displacement = 0.0;  // [rad]
+
+        lbr_msgs::msg::LimbMotionTask limb_down;
+        limb_down.end_effector_displacement.x = 0.0;
+        limb_down.end_effector_displacement.y = 0.0;
+        limb_down.end_effector_displacement.z = -0.2;
+        limb_down.swing_duration = 1500;
+        limb_down.pitch_angle_displacement = 0.0;  // [rad]
+
+
+        std::vector<int> gait_numbers = {0, 2, 1, 3};
+        for (int i = 0; i < 2; i++) {
+          limb_up.limb_id = gait_numbers.at(0+i*3);
+          limb_up.header.stamp = this->now();
+          motion_task.limb_motion_task = limb_up;
+          motion_task.task_id_array.at(0+i*3) = 0;  // ID of limb motion task is 0.
+          crawl_gait_motion_package.motion_task_array.at(0+i*3) = motion_task;
+          
+          limb_forward.limb_id = gait_numbers.at(i);
+          limb_forward.header.stamp = this->now();
+          motion_task.limb_motion_task = limb_forward;
+          motion_task.task_id_array.at(1+i*3) = 0;  // ID of limb motion task is 0.
+          crawl_gait_motion_package.motion_task_array.at(1+i*3) = motion_task;
+          
+          limb_down.limb_id = gait_numbers.at(i);
+          limb_down.header.stamp = this->now();
+          motion_task.limb_motion_task = limb_down;
+          motion_task.task_id_array.at(2+i*3) = 0;  // ID of limb motion task is 0.
+          crawl_gait_motion_package.motion_task_array.at(2+i*3) = motion_task;
+        }
+
+        lbr_msgs::msg::BaseMotionTask base_motion;
+        base_motion.motion_duration = 3000;
+        base_motion.base_displacement.x = 0.15;
+        base_motion.base_displacement.y = 0.0;
+        base_motion.base_displacement.z = 0.0;
+        base_motion.base_angle_displacement.x = 0.0;
+        base_motion.base_angle_displacement.y = 0.0;
+        base_motion.base_angle_displacement.z = 0.0;
+        base_motion.header.stamp = this->now();
+        motion_task.base_motion_task = base_motion;
+        motion_task.task_id_array.at(6) = 1;  // ID of base motion task is 1.
+        crawl_gait_motion_package.motion_task_array.at(6) = motion_task;
+
+        for (int i = 2; i < 4; i++) {
+          limb_up.limb_id = gait_numbers.at(i);
+          limb_up.header.stamp = this->now();
+          motion_task.limb_motion_task = limb_up;
+          motion_task.task_id_array.at(1+i*3) = 0;  // ID of limb motion task is 0.
+          crawl_gait_motion_package.motion_task_array.at(1+i*3) = motion_task;
+          
+          limb_forward.limb_id = gait_numbers.at(i);
+          limb_forward.header.stamp = this->now();
+          motion_task.limb_motion_task = limb_forward;
+          motion_task.task_id_array.at(2+i*3) = 0;  // ID of limb motion task is 0.
+          crawl_gait_motion_package.motion_task_array.at(2+i*3) = motion_task;
+          
+          limb_down.limb_id = gait_numbers.at(i);
+          limb_down.header.stamp = this->now();
+          motion_task.limb_motion_task = limb_down;
+          motion_task.task_id_array.at(3+i*3) = 0;  // ID of limb motion task is 0.
+          crawl_gait_motion_package.motion_task_array.at(3+i*3) = motion_task;
+        }
+
+        crawl_gait_motion_package.header.stamp = this->now();
+
+        motion_package_pub_->publish(crawl_gait_motion_package);
+        motion_package_end = false;
+        std::this_thread::sleep_for(std::chrono::seconds(20));
       }
-      lbr_msgs::msg::BaseMotionTask base_motion;
-      base_motion.motion_duration = 3000;
-      base_motion.base_displacement.x = 0.15;
-      base_motion.base_displacement.y = 0.0;
-      base_motion.base_displacement.z = 0.0;
-      base_motion.base_angle_displacement.x = 0.0;
-      base_motion.base_angle_displacement.y = 0.0;
-      base_motion.base_angle_displacement.z = 0.0;
-      base_motion.header.stamp = this->now();
-      motion_task.base_motion_task = base_motion;
-      motion_task.task_id_array.at(2) = 1;  // ID of base motion task is 1.
-      crawl_gait_motion_package.motion_task_array.at(2) = motion_task;
-
-      for (int i = 2; i < 4; i++) {
-        limb_forward_swing.limb_id = gait_numbers.at(i);
-        limb_forward_swing.header.stamp = this->now();
-        motion_task.limb_motion_task = limb_forward_swing;
-        motion_task.task_id_array.at(i+1) = 0;  // ID of limb motion task is 0.
-        crawl_gait_motion_package.motion_task_array.at(i+1) = motion_task;
+      if(first_time == true){
+        first_time = false;
       }
-
-      crawl_gait_motion_package.header.stamp = this->now();
-
-      motion_package_pub_->publish(crawl_gait_motion_package);
-      motion_package_end = false;
-      std::this_thread::sleep_for(std::chrono::seconds(20));
     }
-    if(first_time == true){
-      first_time = false;
-    }
-  }
+    
+
+  });
+  crawl_step.detach();
 }
 
 // TODO(RN): Implement gait generator

@@ -320,6 +320,7 @@ void IndipendentJointController::controlLoopPPI()
       } else{
         file_out << 0.0 <<",";
       }
+      
       gravitational_torque = GravityCompensation();
 
     // computation of all control signal components
@@ -329,8 +330,8 @@ void IndipendentJointController::controlLoopPPI()
       reference_joint_position_filtered[i] = reference_joint_position_filtered[i]*(Tf-(Ts*1e-3))/Tf + (Ts*1e-3)/Tf * previous_reference_joint_position[i];
       joint_position_error[i] = (reference_joint_position_filtered[i] - current_joint_state.position.at(i));
 
-      // joint_velocity_feed_forward[i] = (reference_joint_state.position.at(i) - previous_reference_joint_position[i]) / (Ts*1e-3); // Ts is in [ms], convert into [s]
       joint_velocity_feed_forward[i] = joint_velocity_feed_forward[i]*(1-(Ts*1e-3)*(1/Tdf)) + (reference_joint_position_filtered[i] - previous_reference_joint_position_filtered[i])*(1/Tdf) ;
+      
       // if (joint_velocity_feed_forward[i] > velocity_limit){
       //   joint_velocity_feed_forward[i] = velocity_limit;
       // } else if(joint_velocity_feed_forward[i] < -velocity_limit ){
@@ -339,7 +340,7 @@ void IndipendentJointController::controlLoopPPI()
 
       joint_velocity_reference[i] = joint_position_error[i] * Kpp[i] + joint_velocity_feed_forward[i];
 
-      estimated_joint_velocity[i] = (1-100*Ts*1e-3)*estimated_joint_velocity[i] + 100*(current_joint_state.position.at(i) - previous_joint_position[i]);
+      estimated_joint_velocity[i] = (1-(1/Tdf)*Ts*1e-3)*estimated_joint_velocity[i] + (1/Tdf)*(current_joint_state.position.at(i) - previous_joint_position[i]);
 
 
       // tau(t) = kpv*(dq_d(t) - dq(t)) + Ts*(dq_d(t) - dq(t))*kpv/Tiv, Propodtional Integral controller + gravity compensation (to estimate)
