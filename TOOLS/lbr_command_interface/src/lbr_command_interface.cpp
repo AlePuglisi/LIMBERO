@@ -98,27 +98,27 @@ void CommandInterface::timerCallback()
   bool stick_is_pressed = input_joy_cmd.buttons.at(11) == 1 || input_joy_cmd.buttons.at(12) == 1;
   bool left_joy_stick_used = input_joy_cmd.axes.at(0) != 0.0 || input_joy_cmd.axes.at(1) != 0.0;
 
-  bool squarecircletriangle = input_joy_cmd.buttons.at(3) == 1 && input_joy_cmd.buttons.at(1) == 1 && input_joy_cmd.buttons.at(2) == 1;
-  bool xcircletraingle =  input_joy_cmd.buttons.at(0) == 1 && input_joy_cmd.buttons.at(1) == 1 && input_joy_cmd.buttons.at(2) == 1;
+  bool circletriangle = circle_button_pressed && triangle_button_pressed;
+  bool xsquare =  X_button_pressed && square_button_pressed;
 
   bool xy_base_motion = (left_joystick_input && right_joystick_input);
   bool z_base_motion = (L1_R1_are_pressed || L2_R2_are_pressed);
   bool rpy_base_motion = (axes_are_pressed || stick_is_pressed);
 
-
-  if (squarecircletriangle){
-    std_msgs::msg::String msg;
-    msg.data = "move_forward";
-    command_to_HLC_pub_->publish(msg);
-    std::cout << "Input command is<" << "\033[32m move forward\033[m" << ">." << std::endl;
-  }
-  if (xcircletraingle){
+  if (xsquare){
     std_msgs::msg::String msg;
     msg.data = "stop_move";
     command_to_HLC_pub_->publish(msg);
     std::cout << "Input command is<" << "\033[32m stop move\033[m" << ">." << std::endl;
   }
 
+  if (circletriangle){
+    std_msgs::msg::String msg;
+    msg.data = "move_forward";
+    command_to_HLC_pub_->publish(msg);
+    std::cout << "Input command is<" << "\033[32m move forward\033[m" << ">." << std::endl;
+  }
+  
   if (square_button_pressed) {
     if (left_joy_stick_used || L1_or_L2_pressed) {
       joyLimbMotionTask(0, input_joy_cmd);  // Limb control
