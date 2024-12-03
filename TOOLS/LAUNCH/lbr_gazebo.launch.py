@@ -7,6 +7,8 @@ from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
+from launch_ros.actions import Node
+
 launch_dir_path = os.path.dirname(os.path.realpath(__file__))
 default_wheel_mode = 'true'
 
@@ -30,8 +32,17 @@ def generate_launch_description():
         launch_arguments = {'wheel_mode': LaunchConfiguration('wheel_mode')}.items(),
     )
 
+    analysis_node = Node(
+        package='lbr_data_analysis',
+        executable='lbr_data_analysis',
+        name='lbr_data_analysis',
+        output='screen',
+    )
+
     return LaunchDescription([
         wheel_mode_arg,
         lbr_controller,
-        simulation_nodes
+        simulation_nodes,
+        analysis_node
     ])
+

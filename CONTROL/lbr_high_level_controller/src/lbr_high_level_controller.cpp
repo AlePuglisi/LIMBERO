@@ -504,19 +504,7 @@ void HighLevelController::singleLegGrieelTransformation(
 
   motion_package_pub_->publish(basic_transfrom_sequence);
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-  std::cout << "Published Motion Package:\n stamp: " << basic_transfrom_sequence.header.stamp.sec << "\nmotion_task_array:\nbase task: " << 
-                basic_transfrom_sequence.motion_task_array.at(0).task_id_array.at(0) << "\nbase x motion:" <<
-                 basic_transfrom_sequence.motion_task_array.at(0).base_motion_task.base_displacement.x << "\nbase y motion:" <<
-                basic_transfrom_sequence.motion_task_array.at(0).base_motion_task.base_displacement.y << "\nlimb task: id: " <<
-
-                basic_transfrom_sequence.motion_task_array.at(1).task_id_array.at(1) << "\nz motion: " <<
-                basic_transfrom_sequence.motion_task_array.at(1).limb_motion_task.end_effector_displacement.z << "\nlimb task: id: " <<
-                basic_transfrom_sequence.motion_task_array.at(2).task_id_array.at(2) << "\nz motion: " <<
-                basic_transfrom_sequence.motion_task_array.at(2).limb_motion_task.end_effector_displacement.z << "\nlimb task: id: " <<
-                basic_transfrom_sequence.motion_task_array.at(3).task_id_array.at(3) << "\nz motion: " <<
-                basic_transfrom_sequence.motion_task_array.at(3).limb_motion_task.end_effector_displacement.z << "\n" <<
-                std::endl;
+  
   // SEND COMMAND TO GRIEEL FOR TRANSITION MODE
 #if !SIMULATION
   std::thread wait_thread([this, limb_id]() {

@@ -23,6 +23,10 @@ class DataAnalysis(Node):
 
         self.joint_reference_.position = numpy.zeros(len(self.joint_reference_.name)).tolist()
         self.joint_states_.position = numpy.zeros(len(self.joint_states_.name)).tolist()
+        self.joint_states_.effort = numpy.zeros(len(self.joint_states_.name)).tolist()
+
+        self.last_command = numpy.zeros(len(self.joint_reference_.name)).tolist()
+        
 
         self.file_name = 'lbr_data.csv'
         self.file_path = '/home/ale/lbr_ws/src/LIMBERO/TOOLS/lbr_data_analysis/script/'+self.file_name
@@ -31,7 +35,7 @@ class DataAnalysis(Node):
         self.csv_writer = csv.writer(self.file)
         
         # Write header
-        self.csv_writer.writerow(['time', 'joint_name', 'joint_state', 'joint_reference'])
+        self.csv_writer.writerow(['time', 'joint_name', 'joint_state', 'joint_reference', 'joint_torque'])
 
         self.joint_states_subscriber_ = self.create_subscription(JointState, "/joint_states", self.joint_states_callback, 10)
         self.joint_reference_subscriber_LF_ = self.create_subscription(JointState, "/LF/lbr_limb_controller/joint_state", self.joint_reference_callback_LF, 10)
@@ -45,6 +49,12 @@ class DataAnalysis(Node):
         for name in self.joint_states_.name:
             joint_index_msg = msg.name.index(name)
             self.joint_states_.position[self.joint_states_.name.index(name)] = msg.position[joint_index_msg]
+            # some effort message are lost 
+            if len(msg.effort) == len(self.joint_states_.name):  
+                self.joint_states_.effort[self.joint_states_.name.index(name)] = msg.effort[joint_index_msg]
+                self.last_command[joint_index_msg] = msg.effort[joint_index_msg]
+            else:
+                self.joint_states_.effort[self.joint_states_.name.index(name)] = self.last_command[joint_index_msg]
 
         if self.joint_reference_ is not None:
             time = self.get_clock().now().to_msg().sec + self.get_clock().now().to_msg().nanosec / 1e9
@@ -52,7 +62,9 @@ class DataAnalysis(Node):
             positions = ', '.join(map(str, self.joint_states_.position))
             control_positions = ','.join(map(str,self.joint_reference_.position))
 
-            self.csv_writer.writerow([time, name, positions, control_positions])
+            control_torque = ','.join(map(str,self.joint_states_.effort))
+
+            self.csv_writer.writerow([time, name, positions, control_positions, control_torque])
 
 
     def joint_reference_callback_LF(self,msg):
