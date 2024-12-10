@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com)
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="LIMBERO_v1_7_Limb" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="limb_macro" params="prefix parent radius">
+
+    <joint
+      name="${prefix}_joint"
+      type="fixed">
+      <origin
+        rpy="0 0 ${radians(radius)}"
+        xyz="${0.2*cos(radians(radius))} ${0.2*sin(radians(radius))} 0"/>
+      <parent
+        link="${parent}" />
+      <child
+        link="${prefix}_limb_root" /> <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_description.xacro" />
+    </joint>
+
+    <link
+      name="${prefix}_limb_root">
+      <inertial>
+        <origin
+          xyz="-0.015029 -7.7571E-11 -0.047318"
+          rpy="0 0 0" />
+        <mass
+          value="0.08459" />
+        <inertia
+          ixx="2.1548E-05"
+          ixy="-4.775E-14"
+          ixz="-1.6188E-07"
+          iyy="3.834E-05"
+          iyz="-8.2973E-14"
+          izz="3.1728E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/limb_root.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/limb_root.STL" />
+        </geometry>
+      </collision>
+    </link>
+
+    <link
+      name="${prefix}_coxa">
+      <inertial>
+        <origin
+          xyz="0.015938 0.00063302 -0.0015013"
+          rpy="0 0 0" />
+        <mass
+          value="0.09109" />
+        <inertia
+          ixx="2.352E-05"
+          ixy="-1.6188E-07"
+          ixz="4.775E-14"
+          iyy="3.3634E-05"
+          iyz="8.2973E-14"
+          izz="4.2122E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/coxa.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/coxa.STL" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint
+      name="${prefix}_B2C"
+      type="revolute">
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${prefix}_limb_root" />
+      <child
+        link="${prefix}_coxa" />
+      <axis
+        xyz="0 0 1" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="5"
+        velocity="5" />
+      <dynamics damping="0.1" friction="0.4"/>
+    </joint>
+
+    <link
+      name="${prefix}_femur">
+      <inertial>
+        <origin
+          xyz="0.10083 0.00014739 -3.217E-08"
+          rpy="0 0 0" />
+        <mass
+          value="0.12821" />
+        <inertia
+          ixx="3.7005E-05"
+          ixy="-1.9987E-08"
+          ixz="-3.8346E-12"
+          iyy="2.9934E-05"
+          iyz="2.5988E-11"
+          izz="4.8164E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/femur.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/femur.STL" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint
+      name="${prefix}_C2F"
+      type="revolute">
+      <origin
+        xyz="0.031 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${prefix}_coxa" />
+      <child
+        link="${prefix}_femur" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="5"
+        velocity="5" />
+      <dynamics damping="0.1" friction="0.4"/>
+    </joint>
+
+    <link
+      name="${prefix}_tibia">
+      <inertial>
+        <origin
+          xyz="0.10298 1.1638E-07 0.019231"
+          rpy="0 0 0" />
+        <mass
+          value="0.061841" />
+        <inertia
+          ixx="1.5486E-05"
+          ixy="4.7072E-09"
+          ixz="2.5637E-06"
+          iyy="2.1826E-05"
+          iyz="2.414E-08"
+          izz="2.8843E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/tibia.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/tibia.STL" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint
+      name="${prefix}_F2T"
+      type="revolute">
+      <origin
+        xyz="0.2 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${prefix}_femur" />
+      <child
+        link="${prefix}_tibia" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="5"
+        velocity="5" />
+      <dynamics damping="0.1" friction="0.4"/>
+    </joint>
+
+    <link
+      name="${prefix}_limb_end">
+      <inertial>
+        <origin
+          xyz="-0.011645 0.00042918 -9.53E-12"
+          rpy="0 0 0" />
+        <mass
+          value="0.081999" />
+        <inertia
+          ixx="1.3061E-05"
+          ixy="-3.7211E-08"
+          ixz="3.1094E-14"
+          iyy="1.9634E-05"
+          iyz="-3.9438E-17"
+          izz="2.2308E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/limb_end.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="file://$(find lbr_description)/meshes/limb_end.STL" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint
+      name="${prefix}_T2E"
+      type="revolute">
+      <origin
+        xyz="0.2 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${prefix}_tibia" />
+      <child
+        link="${prefix}_limb_end" />
+      <axis
+        xyz="0 1 0" />
+      <limit
+        lower="-3.14"
+        upper="3.14"
+        effort="5"
+        velocity="5" />
+      <dynamics damping="0.1" friction="0.4"/>
+    </joint>
+
+  </xacro:macro>
+
+</robot>
