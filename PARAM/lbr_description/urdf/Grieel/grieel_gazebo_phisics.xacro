@@ -24,8 +24,8 @@
 
         <xacro:unless value="$(arg wheel_mode)">
             <gazebo reference="${prefix}_gripper_Link">
-                <mu1>1.2</mu1>
-                <mu2>1.2</mu2>
+                <mu1>0.6</mu1>
+                <mu2>0.6</mu2>
                 <kp>1000000</kp>
                 <kd>1.0</kd>
             </gazebo>

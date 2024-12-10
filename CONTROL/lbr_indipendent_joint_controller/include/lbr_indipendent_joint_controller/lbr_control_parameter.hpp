@@ -6,11 +6,11 @@
 constexpr float TS = 2; // sampling time of discrete time controller [ms]
 
 // P+PI gains, tuned in MATLAB
-constexpr float KPP[JOINT_NUM] =  {25.0, 25.0, 25.0, 25.0, 20.0, 20.0, 0.0};           // Position P gains
-// constexpr float KPV[JOINT_NUM] =  {1090.0, 970.0, 680.0, 820.0, 680.0, 970.0, 0.0}; // Velocity P gains
-// constexpr float TIV[JOINT_NUM] = {0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 1.0};            // Velocity I gains
-constexpr float KPV[JOINT_NUM] =  {400.0, 300.0, 300.0, 250.0, 250.0, 300.0, 0.0}; // Velocity P gains
-constexpr float TIV[JOINT_NUM] = {0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 1.0};            // Velocity I gains
+constexpr float KPP[JOINT_NUM] =  {20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 0.0};             // Position P gains
+// constexpr float KPV[JOINT_NUM] =  {1090.0, 970.0, 680.0, 820.0, 680.0, 970.0, 0.0};   // Velocity P gains
+// constexpr float TIV[JOINT_NUM] = {0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 1.0};           // Velocity I gains
+constexpr float KPV[JOINT_NUM] =  {700.0, 600.0, 400.0, 500.0, 400.0, 500.0, 0.0};       // Velocity P gains
+constexpr float TIV[JOINT_NUM] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 1.0};                    // Velocity I gains
 
 // Saturation on control action, for anti-wind up implementation
 // constexpr float SATURATION[JOINT_NUM] = {15.0, 15.0, 15.0, 10.0, 8.0, 10.0, 6.0};
@@ -19,8 +19,8 @@ constexpr float SATURATION[JOINT_NUM] = {16.0, 16.0, 8.0, 8.0, 5.0, 5.0, 5.0};
 
 
 // additional control paramater
-constexpr float WCP_F = 5.0; // [Hz] cut off frequency of refernce position LP filter
-constexpr float WCV_F = 50.0; // [Hz] cut off frequency of velocity derivation (feed forward action) LP filter, for REALIZABILITY of derivative
+constexpr float WCP_F = 3.0; // [Hz] cut off frequency of refernce position LP filter
+constexpr float WCV_F = 15.0; // [Hz] cut off frequency of velocity derivation (feed forward action) LP filter, for REALIZABILITY of derivative
 
 constexpr float TF = 1.0/(WCP_F*2*M_PI);  // position refrence smoothed, LP filter time constant
 constexpr float TDF = 1.0/(WCV_F*2*M_PI); // velocity derivative feed forward, LP filter time constant

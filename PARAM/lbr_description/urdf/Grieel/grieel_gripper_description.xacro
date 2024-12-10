@@ -23,7 +23,7 @@
         lower="0"
         upper="0"
         effort="0"
-        velocity="0" /> -->
+        velocity="0" /> --> 
     </joint>
 
   <link
@@ -256,7 +256,7 @@
       upper="0.0"
       effort="0.0"
       velocity="0.0" />
-    <dynamics damping="0.1" friction="1.5"/>
+    <dynamics damping="0.1" friction="0.4"/>
   </joint>
 
     <!-- Gazebo plugin for contact sensor, collision name like that because of parsing errors in the urdf  -->
