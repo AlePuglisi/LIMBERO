@@ -32,6 +32,9 @@ class DataAnalysis(Node):
         self.file_path = '/home/ale/lbr_ws/src/LIMBERO/TOOLS/lbr_data_analysis/script/'+self.file_name
 
         self.file = open(self.file_path, mode='w', newline='')
+        self.file.seek(0,0)
+        self.file.truncate(0)
+        
         self.csv_writer = csv.writer(self.file)
         
         # Write header

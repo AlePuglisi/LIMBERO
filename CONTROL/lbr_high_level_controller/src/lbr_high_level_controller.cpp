@@ -326,7 +326,7 @@ void::HighLevelController::grieelTransformation()
   bool first_time = true;
   while(i < LIMB_NUM){
 //#if SIMULATION
-    if((motion_package_end || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
+    if((motion_package_end || single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
 //#endif //SIMULATION
 
 //#if !SIMULATION
@@ -362,6 +362,9 @@ void::HighLevelController::grieelTransformation()
 }
 
 
+// [TODO]
+// Fix this code, somehow it is not working properly!
+// the motion package sequence need to be fixed, find a way and all is fixed!
 
 void HighLevelController::singleLegGrieelTransformation(
   const lbr_msgs::msg::EndEffectorContactState & supporting_leg_polygon, int limb_id)
@@ -442,7 +445,9 @@ void HighLevelController::singleLegGrieelTransformation(
   base_motion.header.stamp = this->now();
     //}
 
-  //base_motion_pub_->publish(base_motion);
+  // base_motion_pub_->publish(base_motion);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(3500));
+  // std::cout << "Leg " << limb_id << " transformation: BASE MOTION"<< std::endl;
 
   motion_task.base_motion_task = base_motion;
   motion_task.task_id_array.at(0) = 1;
@@ -467,6 +472,10 @@ void HighLevelController::singleLegGrieelTransformation(
   limb_motion_task.pitch_angle_displacement = 0.0;  // [rad]
   limb_motion_task.header.stamp = this->now();
 
+  // limb_motion_pub_->publish(limb_motion_task);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(4000));
+  // std::cout << "Leg " << limb_id << " transformation: LIMB UP MOTION"<< std::endl;
+
   motion_task.limb_motion_task = limb_motion_task;
   motion_task.task_id_array.at(1) = 0;
   basic_transfrom_sequence.motion_task_array.at(1) = motion_task;
@@ -480,6 +489,10 @@ void HighLevelController::singleLegGrieelTransformation(
   limb_motion_task.end_effector_displacement.z = 0.0;
   limb_motion_task.pitch_angle_displacement = 0.0;  // [rad]
   limb_motion_task.header.stamp = this->now();
+
+  // limb_motion_pub_->publish(limb_motion_task);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(3500));
+  // std::cout << "Leg " << limb_id << " transformation: LIMB WHAIT MOTION"<< std::endl;
 
   motion_task.limb_motion_task = limb_motion_task;
   motion_task.task_id_array.at(2) = 0;
@@ -495,6 +508,12 @@ void HighLevelController::singleLegGrieelTransformation(
   limb_motion_task.pitch_angle_displacement = 0.0;  // [rad]
   limb_motion_task.header.stamp = this->now();
 
+  // limb_motion_pub_->publish(limb_motion_task);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(4000));
+  // std::cout << "Leg " << limb_id << " transformation: LIMB DOWN MOTION"<< std::endl;
+
+  single_transform_end_ = true; 
+
   motion_task.limb_motion_task = limb_motion_task;
   motion_task.task_id_array.at(3) = 0;
   basic_transfrom_sequence.motion_task_array.at(3) = motion_task;
@@ -502,8 +521,8 @@ void HighLevelController::singleLegGrieelTransformation(
   basic_transfrom_sequence.header.stamp = this->now();
 #endif //SIMULATION
 
-  motion_package_pub_->publish(basic_transfrom_sequence);
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  //motion_package_pub_->publish(basic_transfrom_sequence);
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
   
   // SEND COMMAND TO GRIEEL FOR TRANSITION MODE
 #if !SIMULATION
