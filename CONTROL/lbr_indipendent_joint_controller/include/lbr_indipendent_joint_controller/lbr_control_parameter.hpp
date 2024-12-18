@@ -7,10 +7,10 @@ constexpr float TS = 2; // sampling time of discrete time controller [ms]
 
 // P+PI gains, tuned in MATLAB
 constexpr float KPP[JOINT_NUM] =  {20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 0.0};             // Position P gains
-constexpr float KPV[JOINT_NUM] =  {1090.0, 970.0, 680.0, 820.0, 680.0, 970.0, 0.0};   // Velocity P gains
-constexpr float TIV[JOINT_NUM] = {0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 1.0};           // Velocity I gains
-//constexpr float KPV[JOINT_NUM] =  {700.0, 600.0, 400.0, 500.0, 400.0, 500.0, 0.0};       // Velocity P gains
-//constexpr float TIV[JOINT_NUM] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 1.0};                    // Velocity I gains
+// constexpr float KPV[JOINT_NUM] =  {1090.0, 970.0, 680.0, 820.0, 680.0, 970.0, 0.0};   // Velocity P gains
+// constexpr float TIV[JOINT_NUM] = {0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 1.0};           // Velocity I gains
+constexpr float KPV[JOINT_NUM] =  {500.0, 600.0, 500.0, 400.0, 400.0, 500.0, 0.0};       // Velocity P gains
+constexpr float TIV[JOINT_NUM] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 1.0};                    // Velocity I gains
 
 // Saturation on control action, for anti-wind up implementation
 // constexpr float SATURATION[JOINT_NUM] = {15.0, 15.0, 15.0, 10.0, 8.0, 10.0, 6.0};
@@ -30,8 +30,8 @@ constexpr float L = 20.0; // additional paramter for the de-saturation dynamic
 
 constexpr float N_PID = 10.0; // realizability gain for derivative PID action
 
-constexpr int GRAVITY_COMPENSATION = 1; // flag variable to know if use or not gravity compensation action
-constexpr int ANTI_WINDUP_METHOD = 1; // 1 = back-calculation; 2 = de saturation; 3 = conditional integration (Clamping)
+constexpr int GRAVITY_COMPENSATION = 0; // flag variable to know if use or not gravity compensation action
+constexpr int ANTI_WINDUP_METHOD = 3; // 1 = back-calculation; 2 = de saturation; 3 = conditional integration (Clamping)
 constexpr int PID = 0; // decide if using 1 = PID or 0 = (cascade) PPI 
 
 // SYSTEM PARAMETER:

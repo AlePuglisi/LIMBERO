@@ -51,7 +51,7 @@ constexpr double BODY_MASS = 3.1152;
 
 // limb in swing phase (joint from coxa to driving)
 // link masses
-constexpr double MASS[JOINT_NUM] = {0.0911, 0.1282, 0.6018, 0.0820, 0.1103, 0.1327, 0.4158};
+constexpr double MASS[JOINT_NUM] = {0.0911, 0.1282, 0.0618, 0.0820, 0.1103, 0.1327, 0.4158};
 // CoM vector in the link frame (DH frames)
 constexpr double CoM_LINK_FRAME[JOINT_NUM][3] = {{-0.0151, 0.0015, 0.0006},
                                                  {-0.0992, 0.0000, 0.0001},
@@ -68,15 +68,15 @@ constexpr double OFFSET[JOINT_NUM] = {0, 0, 0, -M_PI_2, 0, 0, 0};
 
 // limb in contact phase (joint from driving to coxa)
 // link masses
-constexpr double MASS_CONTACT[JOINT_NUM] = {0.4158, 0.1327, 0.1103, 0.0830, 0.6018, 0.1282, 0.0911};
+constexpr double MASS_CONTACT[JOINT_NUM] = {0.4158, 0.1327, 0.0121, 0.0902, 0.0618, 0.1282, 0.0911};
 // CoM vector in the link frame (DH frames)
-constexpr double CoM_LINK_FRAME_CONTACT[JOINT_NUM][3] = {{-0.04353, -0.08413, 0.003714},
-                                                 {-0.0689, 0.004313, 0.000054},
-                                                 {-0.01132, -0.04727, 0.0004711},
-                                                 {-0.1884, 0.0000, 0.0004292},
-                                                 {-0.2192, -0.103, 0.0000},
-                                                 {-0.1318, -0.0001474, 0.0000},
-                                                 { 0.18-0.0159, -0.18-0.0006, 0.0185}};
+constexpr double CoM_LINK_FRAME_CONTACT[JOINT_NUM][3] = {{-0.0435, -0.0841, 0.0037},
+                                                         {-0.0689, 0.0043, 0.0001},
+                                                         {-0.0113, -0.0473, 0.0005},
+                                                         {-0.1884, 0.0000, 0.0004},
+                                                         {-0.2192, -0.1030, 0.0000},
+                                                         {-0.1318, -0.0001, 0.0000},
+                                                         {-0.0159, -0.0006, 0.0185}};
 // DH parameters (a,d,alpha,offset)
 constexpr double A_CONTACT[JOINT_NUM] = {0.0458, 0.0240, 0, 0.2, 0.2, 0.0310, 0};
 constexpr double D_CONTACT[JOINT_NUM] = {0, 0, -0.0468, 0, 0, 0, -0.02};

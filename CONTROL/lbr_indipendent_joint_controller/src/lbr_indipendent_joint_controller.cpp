@@ -206,6 +206,8 @@ std::array<float, JOINT_NUM> IndipendentJointController::GravityCompensation(){
   Eigen::Vector3d g0;
   Eigen::Matrix<double, 3, JOINT_NUM> Jp_l[JOINT_NUM];
 
+  bool contact = in_contact;
+
   // properly select the model
   double a[JOINT_NUM];
   double d[JOINT_NUM];
@@ -213,7 +215,7 @@ std::array<float, JOINT_NUM> IndipendentJointController::GravityCompensation(){
   double offset[JOINT_NUM];
   double m[JOINT_NUM];
 
-  if(in_contact){
+  if(contact){
     for(int i=0; i<JOINT_NUM; i++){
       a[i] = A_CONTACT[i];
       d[i] = D_CONTACT[i];
@@ -226,7 +228,7 @@ std::array<float, JOINT_NUM> IndipendentJointController::GravityCompensation(){
     if(limb_in_contact!=0){ // avoid numerical problem
       m[JOINT_NUM-1] += BODY_MASS/limb_in_contact;
     }
-  }else if(!in_contact){
+  }else if(!contact){
     for(int i=0; i<JOINT_NUM; i++){
       a[i] = A[i];
       d[i] = D[i];
@@ -242,8 +244,11 @@ std::array<float, JOINT_NUM> IndipendentJointController::GravityCompensation(){
   float q[JOINT_NUM];
   for(int i=0; i<JOINT_NUM; i++){
     q[i] = current_joint_state.position.at(i);
-    if(in_contact){
+    if(contact){
       q[i] = current_joint_state.position.at(JOINT_NUM - i - 1);
+      if(i == 4){
+        q[i] = current_joint_state.position.at(JOINT_NUM - i - 1) - M_PI_2;
+      }
     }
     A_beforei_i[i].row(0) << std::cos(q[i]+offset[i]), -std::sin(q[i]+offset[i])*std::cos(alpha[i]), std::sin(q[i]+offset[i])*std::sin(alpha[i]), a[i]*std::cos(q[i]+offset[i]);
     A_beforei_i[i].row(1) << std::sin(q[i]+offset[i]),  std::cos(q[i]+offset[i])*std::cos(alpha[i]), -std::cos(q[i]+offset[i])*std::sin(alpha[i]), a[i]*std::sin(q[i]+offset[i]);
@@ -286,7 +291,7 @@ std::array<float, JOINT_NUM> IndipendentJointController::GravityCompensation(){
   }
 
   std::array<float, JOINT_NUM>  Tau_g_contact;
-  if(in_contact){
+  if(contact){
     for(int i=0; i<JOINT_NUM; i++){
       Tau_g_contact[i] = Tau_g[JOINT_NUM-i-1];
     }
