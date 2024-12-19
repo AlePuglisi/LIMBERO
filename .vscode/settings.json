@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "array": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "vector": "cpp"
     },
     "python.autoComplete.extraPaths": [
         "/home/ale/lbr_ws/install/lbr_msgs/local/lib/python3.10/dist-packages",
