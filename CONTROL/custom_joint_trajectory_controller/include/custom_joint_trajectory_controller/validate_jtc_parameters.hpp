@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 
+#include "parameter_traits/parameter_traits.hpp"
 #include "rclcpp/parameter.hpp"
 #include "rsl/algorithm.hpp"
 #include "tl_expected/expected.hpp"
@@ -94,6 +95,6 @@ tl::expected<void, std::string> state_interface_type_combinations(
   return {};
 }
 
-}  // namespace joint_trajectory_controller
+}  // namespace custom_joint_trajectory_controller
 
 #endif  // CUSTOM_JOINT_TRAJECTORY_CONTROLLER__VALIDATE_JTC_PARAMETERS_HPP_

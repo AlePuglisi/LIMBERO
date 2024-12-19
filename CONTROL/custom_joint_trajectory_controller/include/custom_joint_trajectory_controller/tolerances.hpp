@@ -38,6 +38,9 @@
 #include "control_msgs/action/follow_joint_trajectory.hpp"
 #include "custom_joint_trajectory_controller_parameters.hpp"
 
+#include "rclcpp/node.hpp"
+#include "rclcpp/time.hpp"
+
 namespace custom_joint_trajectory_controller
 {
 /**
@@ -313,7 +316,7 @@ inline bool check_state_tolerance_per_joint(
   if (show_errors)
   {
     const auto logger = rclcpp::get_logger("tolerances");
-    RCLCPP_ERROR(logger, "State tolerances failed for joint %lu:", joint_idx);
+    RCLCPP_ERROR(logger, "State tolerances failed for joint %d:", joint_idx);
 
     if (state_tolerance.position > 0.0 && abs(error_position) > state_tolerance.position)
     {
@@ -338,6 +341,6 @@ inline bool check_state_tolerance_per_joint(
   return false;
 }
 
-}  // namespace joint_trajectory_controller
+}  // namespace custom_joint_trajectory_controller
 
 #endif  // CUSTOM_JOINT_TRAJECTORY_CONTROLLER__TOLERANCES_HPP_
