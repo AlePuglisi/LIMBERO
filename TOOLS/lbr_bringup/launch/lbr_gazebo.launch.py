@@ -26,9 +26,9 @@ def generate_launch_description():
     #data_analysis = LaunchConfiguration('data_analysis')
 
     analysis_node = Node(
-        package='lbr_data_analysis',
-        executable='lbr_data_analysis',
-        name='lbr_data_analysis',
+        package='lbr_data_record',
+        executable='lbr_data_record',
+        name='lbr_data_record',
         output='screen'
     )
 
