@@ -107,7 +107,7 @@ LimberoSim::LimberoSim()
     "/" + topic_prefix + "/RF/encoder_joint_state", 10);
 
   joint_trajectory_pub_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>(
-    "/joint_trajectory_controller/joint_trajectory", 1);
+    "/custom_joint_trajectory_controller/joint_trajectory", 1);
   whole_end_effector_contact_state_pub_ =
     this->create_publisher<lbr_msgs::msg::EndEffectorContactState>(
     "/" + topic_prefix + "/contact_state", 10);

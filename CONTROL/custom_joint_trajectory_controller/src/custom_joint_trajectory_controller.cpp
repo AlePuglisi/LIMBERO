@@ -156,8 +156,7 @@ controller_interface::return_type CustomJointTrajectoryController::update(
       has_velocity_state_interface_ &&
       (has_velocity_command_interface_ || has_effort_command_interface_))
     {
-      const auto & gains = params_.gains.joints_map.at(params_.joints[index]);
-      error.velocities[index] = error.positions[index]* gains.kpp - current.velocities[index];
+      error.velocities[index] = desired.velocities[index] - current.velocities[index];
     }
     if (has_acceleration_state_interface_ && has_acceleration_command_interface_)
     {
@@ -299,7 +298,7 @@ controller_interface::return_type CustomJointTrajectoryController::update(
           {
             tmp_command_[i] = (state_desired_.velocities[i] * ff_velocity_scale_[i]) +
                               pids_[i]->computeCommand(
-                                state_error_.positions[i], state_error_.velocities[i],
+                                state_error_.positions[i],
                                 (uint64_t)period.nanoseconds());
           }
         }
@@ -1675,13 +1674,13 @@ void CustomJointTrajectoryController::update_pids()
     if (pids_[i])
     {
       // update PIDs with gains from ROS parameters
-      pids_[i]->setGains(gains.kpv, gains.kiv, gains.kdv, gains.i_clamp, -gains.i_clamp);
+      pids_[i]->setGains(gains.kpv, gains.kiv, gains.kdv, gains.i_clamp, -gains.i_clamp, true);
     }
     else
     {
       // Init PIDs with gains from ROS parameters
       pids_[i] = std::make_shared<control_toolbox::Pid>(
-        gains.kpv, gains.kiv, gains.kdv, gains.i_clamp, -gains.i_clamp);
+        gains.kpv, gains.kiv, gains.kdv, gains.i_clamp, -gains.i_clamp, true);
     }
     // Check deprecated style for "ff_velocity_scale" parameter definition.
     if (gains.ff_velocity_scale == 0.0)

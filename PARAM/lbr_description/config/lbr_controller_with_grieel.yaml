@@ -128,198 +128,198 @@ custom_joint_trajectory_controller:
 
     gains:
       LF_B2C:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 200.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 35.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LF_C2F:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 400.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 30.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LF_F2T:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 300.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 30.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LF_T2E:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 250.0
+        kiv: 30.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LF_wristH:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 250.0
+        kiv: 30.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LF_wristV:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 400.0
+        kiv: 40.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LF_driving:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
+        kpp: 0.0
+        kpv: 10.0
+        kiv: 0.0
         kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        i_clamp: 0.0
+        ff_velocity_scale: 0.01
       LH_B2C:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 200.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 35.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LH_C2F:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 400.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 30.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LH_F2T:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 300.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 30.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LH_T2E:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 250.0
+        kiv: 30.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LH_wristH:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 250.0
+        kiv: 30.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LH_wristV:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 400.0
+        kiv: 40.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       LH_driving:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
+        kpp: 0.0
+        kpv: 10.0
+        kiv: 0.0
         kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        i_clamp: 0.0
+        ff_velocity_scale: 0.01
       RH_B2C:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 200.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 35.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RH_C2F:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 400.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 30.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RH_F2T:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 300.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 30.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RH_T2E:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 250.0
+        kiv: 30.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RH_wristH:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 250.0
+        kiv: 30.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RH_wristV:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 400.0
+        kiv: 40.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RH_driving:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
+        kpp: 0.0
+        kpv: 10.0
+        kiv: 0.0
         kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        i_clamp: 0.0
+        ff_velocity_scale: 0.01
       RF_B2C:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 200.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 35.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RF_C2F:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 400.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 30.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RF_F2T:
-        kpp: 30.0
-        kpv: 100.0
+        kpp: 0.0
+        kpv: 300.0
         kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kdv: 30.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RF_T2E:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 250.0
+        kiv: 30.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RF_wristH:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 250.0
+        kiv: 30.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RF_wristV:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
-        kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        kpp: 0.0
+        kpv: 400.0
+        kiv: 40.0
+        kdv: 20.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.01
       RF_driving:
-        kpp: 30.0
-        kpv: 100.0
-        kiv: 50.0
+        kpp: 0.0
+        kpv: 10.0
+        kiv: 0.0
         kdv: 0.0
-        #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        i_clamp: 0.0
+        ff_velocity_scale: 0.01

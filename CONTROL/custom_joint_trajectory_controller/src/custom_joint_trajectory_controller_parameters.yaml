@@ -113,22 +113,22 @@ custom_joint_trajectory_controller:
       kpp: {
         type: double,
         default_value: 0.0,
-        description: "Proportional gain :math:`k_p` for position P"
+        description: "Proportional gain :math:`k_pp` for position P"
       }
       kpv: {
         type: double,
         default_value: 0.0,
-        description: "Integral gain :math:`k_p` for velocity PID"
+        description: "Integral gain :math:`k_pv` for velocity PID"
       }
       kiv: {
         type: double,
         default_value: 0.0,
-        description: "Integral gain :math:`k_i` for velocity PID"
+        description: "Integral gain :math:`k_iv` for velocity PID"
       }
       kdv: {
         type: double,
         default_value: 0.0,
-        description: "Derivative gain :math:`k_d` for velocity PID"
+        description: "Derivative gain :math:`k_dv` for velocity PID"
       }
       i_clamp: {
         type: double,
