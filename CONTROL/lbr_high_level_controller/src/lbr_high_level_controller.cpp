@@ -326,7 +326,7 @@ void::HighLevelController::grieelTransformation()
   bool first_time = true;
   while(i < LIMB_NUM){
 //#if SIMULATION
-    if((motion_package_end || single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
+    if((motion_package_end || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
 //#endif //SIMULATION
 
 //#if !SIMULATION
@@ -512,8 +512,6 @@ void HighLevelController::singleLegGrieelTransformation(
   // std::this_thread::sleep_for(std::chrono::milliseconds(4000));
   // std::cout << "Leg " << limb_id << " transformation: LIMB DOWN MOTION"<< std::endl;
 
-  single_transform_end_ = true; 
-
   motion_task.limb_motion_task = limb_motion_task;
   motion_task.task_id_array.at(3) = 0;
   basic_transfrom_sequence.motion_task_array.at(3) = motion_task;
@@ -521,7 +519,7 @@ void HighLevelController::singleLegGrieelTransformation(
   basic_transfrom_sequence.header.stamp = this->now();
 #endif //SIMULATION
 
-  //motion_package_pub_->publish(basic_transfrom_sequence);
+  motion_package_pub_->publish(basic_transfrom_sequence);
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
   
   // SEND COMMAND TO GRIEEL FOR TRANSITION MODE
