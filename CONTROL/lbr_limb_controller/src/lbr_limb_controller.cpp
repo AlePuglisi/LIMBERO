@@ -123,13 +123,13 @@ LimbController::LimbController()
   current_joint_state.position.resize(JOINT_NUM);
   current_joint_state.velocity.resize(JOINT_NUM);
   current_joint_state.name.resize(JOINT_NUM);
-  current_joint_state.name.at(0) = joint_prefix + "_Joint1";
-  current_joint_state.name.at(1) = joint_prefix + "_Joint2";
-  current_joint_state.name.at(2) = joint_prefix + "_Joint3";
-  current_joint_state.name.at(3) = joint_prefix + "_Joint4";
-  current_joint_state.name.at(4) = joint_prefix + "_Joint5";
-  current_joint_state.name.at(5) = joint_prefix + "_Joint6";
-  current_joint_state.name.at(6) = joint_prefix + "_Joint7";
+  current_joint_state.name.at(0) = joint_prefix + "_B2C";
+  current_joint_state.name.at(1) = joint_prefix + "_C2F";
+  current_joint_state.name.at(2) = joint_prefix + "_F2T";
+  current_joint_state.name.at(3) = joint_prefix + "_T2E";
+  current_joint_state.name.at(4) = joint_prefix + "_wristH";
+  current_joint_state.name.at(5) = joint_prefix + "_wristV";
+  current_joint_state.name.at(6) = joint_prefix + "_driving";
   current_joint_state.header.frame_id = this->get_namespace();
 
   // TODO(KT): Separate visualization to different class for clarity.
