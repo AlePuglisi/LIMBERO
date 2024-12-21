@@ -283,7 +283,7 @@ void LimberoSim::targetJointStateCallback(
     limb_id = 3;
   }
 
-  lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM) = target_joint_state.position.at(0);
+  lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM) =     target_joint_state.position.at(0);
   lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 1) = target_joint_state.position.at(1);
   lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 2) = target_joint_state.position.at(2);
   lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 3) = target_joint_state.position.at(3);
@@ -291,7 +291,7 @@ void LimberoSim::targetJointStateCallback(
   lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 5) = target_joint_state.position.at(5);
   lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 6) = 0.0;
 
-  lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM) = 0.0;
+  lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM) =     0.0;
   lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 1) = 0.0;
   lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 2) = 0.0;
   lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 3) = 0.0;
@@ -299,7 +299,7 @@ void LimberoSim::targetJointStateCallback(
   lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 5) = 0.0;
   lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 6) = target_joint_state.velocity.at(6);
 
-  lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM) = 0.0;
+  lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM) =     0.0;
   lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM + 1) = 0.0;
   lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM + 2) = 0.0;
   lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM + 3) = 0.0;

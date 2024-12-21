@@ -274,6 +274,7 @@ void StateEstimator::encoderJointStateCallback(
     all_joint_state.position.at(JOINT_NUM * limb_id + i) = encoder_joint_state.position.at(i);
   }
   all_joint_state.velocity.at(JOINT_NUM*limb_id + 6) = encoder_joint_state.velocity.at(6);
+  
   joint_state_pub_->publish(all_joint_state);
 
   // TODO(KT): Implement joint current margin.

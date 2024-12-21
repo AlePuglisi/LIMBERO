@@ -16,6 +16,7 @@ def plot_joint_states(file_path):
 
     # Extract joint states and references, ensuring correct parsing
     joints = ["B2C", "C2F", "F2T", "T2E", "wristH", "wristV", "driving"]
+    position_reference_pub = dict()
     position_feedback = dict()
     position_references = dict()
     position_error = dict()
@@ -28,6 +29,7 @@ def plot_joint_states(file_path):
     #gravity_torque = dict()
 
     for joint in joints:
+        position_reference_pub[joint] = df[ joint + '_joint_pub'].tolist()
         position_feedback[joint] = df[ joint + '_feedback_position'].tolist()
         position_references[joint] = df[ joint + '_reference_position'].tolist()
         position_error[joint] = df[ joint + '_position_error'].tolist()
@@ -44,6 +46,7 @@ def plot_joint_states(file_path):
         plt.figure( "limb: " + limb + " joint: " + joint + ' Joint State tracking' )
 
         plt.subplot(2,3,1)
+        plt.plot(time, position_reference_pub[joint], 'g', label= joint + ' joint position from lbr')
         plt.plot(time, position_feedback[joint],'b', label= joint + ' joint position feedback')
         plt.plot(time, position_references[joint], 'r--', label= joint + ' joint position reference')
         plt.legend()

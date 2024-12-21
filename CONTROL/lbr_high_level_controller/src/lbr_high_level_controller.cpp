@@ -353,12 +353,12 @@ void::HighLevelController::grieelTransformation()
   std::cout << "Grieel Transform task end" << std::endl;
   grieel_transformation_ = false;
   // update overall grieel state
-  std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-  if(grieel_state_ == "wheel"){
-    grieel_state_ = "gripper";
-  } else if(grieel_state_ == "gripper"){
-    grieel_state_ = "wheel";
-  }
+  // std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+  // if(grieel_state_ == "wheel"){
+  //   grieel_state_ = "gripper";
+  // } else if(grieel_state_ == "gripper"){
+  //   grieel_state_ = "wheel";
+  // }
 }
 
 
@@ -376,8 +376,7 @@ void HighLevelController::singleLegGrieelTransformation(
     if(j!=limb_id){
       if(j>limb_id){
         next_support_polygon.end_effector_position.at(j-1) = supporting_leg_polygon.end_effector_position.at(j);
-      }
-      else{
+      }else{
         next_support_polygon.end_effector_position.at(j) = supporting_leg_polygon.end_effector_position.at(j);
       }
     }
