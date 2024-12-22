@@ -235,6 +235,7 @@ void HighLevelController::interfaceCommandCallback(const std_msgs::msg::String &
 
     if((supporting_leg_polygon.end_effector_position.size() > 3)&&!(grieel_transformation_)){
       grieel_transformation_ = true;
+      std::this_thread::sleep_for(std::chrono::milliseconds(100)); // small delay to avoid multiple request
       std::cout << "Grieel Transformation task start" << std::endl;
       std::thread(&HighLevelController::grieelTransformation, this).detach();
     }
@@ -342,7 +343,7 @@ void::HighLevelController::grieelTransformation()
     if((motion_package_end || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
 #endif //SIMULATION
 #if !SIMULATION
-    if((single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
+    //if((single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
 #endif //NOT IN SIMULATION
       // for(int j=0; (j<LIMB_NUM) ; j++ ){
       //   if(j==i){fake_contact.is_contact.at(i) = false;}
@@ -360,11 +361,26 @@ void::HighLevelController::grieelTransformation()
 
       i = i+1;
     }
-  }
-  std::cout << "Grieel Transform task end" << std::endl;
   grieel_transformation_ = false;
   // update overall grieel state
   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+  }
+
+  while(!motion_package_end){
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // wait for final task to end
+  }
+  std::cout << "Grieel Transform task end" << std::endl;
+
+  while(supporting_leg_polygon.end_effector_position.size() < 4){
+    // wait for final limb to lay on the ground
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    if(supporting_leg_polygon.end_effector_position.size() == 4){
+      centerBase(supporting_leg_polygon);
+    std::cout << "Centering Base" << std::endl;
+    }
+  }
+
   if(grieel_state_ == "wheel"){
     grieel_state_ = "gripper";
   } else if(grieel_state_ == "gripper"){
@@ -963,7 +979,10 @@ void HighLevelController::centerBase(
     supporting_leg_polygon.end_effector_position.size() << std::endl;
 #endif  // DEBUG_ENABLED
 
+ 
   if (supporting_leg_polygon.end_effector_position.size() > 3) {
+     std::cout << "Centering Base" << std::endl;
+
     Eigen::Vector3d p1 = {supporting_leg_polygon.end_effector_position.at(0).x,
       supporting_leg_polygon.end_effector_position.at(0).y,
       supporting_leg_polygon.end_effector_position.at(0).z};
