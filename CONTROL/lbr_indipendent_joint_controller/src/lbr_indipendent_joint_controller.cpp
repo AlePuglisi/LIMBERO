@@ -337,13 +337,18 @@ void IndipendentJointController::controlLoopPPI()
 
       joint_velocity_feed_forward[i] = joint_velocity_feed_forward[i]*(1-(Ts*1e-3)*(1/Tdf)) + (reference_joint_position_filtered[i] - previous_reference_joint_position_filtered[i])*(1/Tdf) ;
       
-      // if (joint_velocity_feed_forward[i] > velocity_limit){
-      //   joint_velocity_feed_forward[i] = velocity_limit;
-      // } else if(joint_velocity_feed_forward[i] < -velocity_limit ){
-      //   joint_velocity_feed_forward[i] = -velocity_limit;
-      // }
+      if (joint_velocity_feed_forward[i] > velocity_limit[i]){
+        joint_velocity_feed_forward[i] = velocity_limit[i];
+      } else if(joint_velocity_feed_forward[i] < -velocity_limit[i] ){
+        joint_velocity_feed_forward[i] = -velocity_limit[i];
+      }
 
-      joint_velocity_reference[i] = joint_position_error[i] * Kpp[i] + joint_velocity_feed_forward[i];
+      joint_velocity_reference[i] = joint_position_error[i] * Kpp[i] + Vff*joint_velocity_feed_forward[i];
+      if (joint_velocity_reference[i] > velocity_limit[i]){
+        joint_velocity_reference[i] = velocity_limit[i];
+      } else if(joint_velocity_reference[i] < -velocity_limit[i] ){
+        joint_velocity_reference[i] = -velocity_limit[i];
+      }
 
       estimated_joint_velocity[i] = (1-(1/Tdf)*Ts*1e-3)*estimated_joint_velocity[i] + (1/Tdf)*(current_joint_state.position.at(i) - previous_joint_position[i]);
 
@@ -436,7 +441,8 @@ void IndipendentJointController::controlLoopPPI()
                   << current_joint_state.position.at(i)   << ","
                   << joint_position_error[i]              << ","
                   << joint_velocity_reference[i]          << ","
-                  << current_joint_state.velocity.at(i)   << ","
+                  // << current_joint_state.velocity.at(i)   << ","
+                  << estimated_joint_velocity[i]          << ","
                   << joint_velocity_feed_forward[i]       << ","
                   << joint_velocity_error[i]              << ","
                   << integral[i]                          << ","
