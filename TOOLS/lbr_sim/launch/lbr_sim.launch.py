@@ -94,6 +94,13 @@ def generate_launch_description():
         parameters=[{'robot_description': Command(robot_description_command)}]
     )
 
+    kin_analysis_node = Node(
+        package='kin_analysis',
+        executable='kin_analysis',
+        name='kin_analysis',
+        output='screen',
+    )
+
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
@@ -188,7 +195,7 @@ def generate_launch_description():
         model_arg,
         rviz_arg,
         wheel_mode_arg,
-        joint_state_publisher_node,
+        #joint_state_publisher_node,
         robot_state_publisher_node,
         rviz_node,
         lbr_sim_node,
@@ -196,5 +203,6 @@ def generate_launch_description():
         #robot_controller_spawner_effort,
         robot_controller_spawner_effort,
         gazebo,
-        gazebo_spawner
+        gazebo_spawner,
+        kin_analysis_node,
     ])
