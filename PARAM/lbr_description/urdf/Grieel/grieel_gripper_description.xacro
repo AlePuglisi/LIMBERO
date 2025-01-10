@@ -259,6 +259,20 @@
     <dynamics damping="0.1" friction="0.4"/>
   </joint>
 
+  <link name="${prefix}_end_effector_DH_Link"/>
+
+  <joint
+    name="${prefix}_end_effector_DH"
+    type="fixed">
+    <origin
+      xyz="0.0 0 0.0"
+      rpy="-3.1416 -1.5708  0" />
+    <parent
+      link="${prefix}_gripper_Link" />
+    <child
+      link="${prefix}_end_effector_DH_Link" />
+  </joint>
+
     <!-- Gazebo plugin for contact sensor, collision name like that because of parsing errors in the urdf  -->
     <gazebo reference="${prefix}_gripper_Link">
       <sensor name="${prefix}_gripper_bumper_sensor" type="contact">
