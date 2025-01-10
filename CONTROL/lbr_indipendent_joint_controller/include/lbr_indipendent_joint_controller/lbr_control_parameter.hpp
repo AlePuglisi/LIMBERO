@@ -12,6 +12,9 @@ constexpr float KPP[JOINT_NUM] =  {20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 0.0};    
 constexpr float KPV[JOINT_NUM] =  {40.0, 80.0, 60.0, 40.0, 60.0, 50.0, 0.0};       // Velocity P gains
 constexpr float TIV[JOINT_NUM] = {10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 1.0};                    // Velocity I gains
 
+constexpr float KPP_PI[JOINT_NUM] = {100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 0.0};  // (PI Position) Position P gains
+constexpr float TIP_PI[JOINT_NUM] = {0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 1.0};  // (PI Position) Position I gains 
+
 // Saturation on control action, for anti-wind up implementation
 // constexpr float SATURATION[JOINT_NUM] = {15.0, 15.0, 15.0, 10.0, 8.0, 10.0, 6.0};
 
@@ -32,8 +35,8 @@ constexpr float N_PID = 10.0; // realizability gain for derivative PID action
 
 constexpr int GRAVITY_COMPENSATION = 0; // flag variable to know if use or not gravity compensation action
 constexpr double Vff = 0.1; //flag variable for velocity feed forward action (between 0 and 1 to modulate the effect)
-constexpr int ANTI_WINDUP_METHOD = 1; // 1 = back-calculation; 2 = de saturation; 3 = conditional integration (Clamping)
-constexpr int PID = 0; // decide if using 1 = PID or 0 = (cascade) PPI 
+constexpr int ANTI_WINDUP_METHOD = 2; // 1 = back-calculation; 2 = de saturation; 3 = conditional integration (Clamping)
+constexpr int PID = 2; // decide if using 0 = (cascade) PPI; 1 = Position PID;  2 = Position PI 
 
 // SYSTEM PARAMETER:
 

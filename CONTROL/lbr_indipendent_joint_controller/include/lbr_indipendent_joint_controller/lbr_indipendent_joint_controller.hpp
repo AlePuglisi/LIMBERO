@@ -44,6 +44,11 @@ private:
    */
   void controlLoopPID();
   /**
+   * @brief This function runs periodically when called by the control_loop_timer_.
+   *        It publish the torque control action to the effort_controller.
+   */
+  void controlLoopPositionPI();
+  /**
    * @brief This function is used to compute gravutational torque, used for feed forward gravity compensation in the control loop
    *
    */
@@ -97,6 +102,8 @@ private:
   float Kpv[JOINT_NUM]; // velocity controller P gain
   float Tiv[JOINT_NUM]; // velocity controller D gain
   float torque_limit[JOINT_NUM]; // Saturation limit of joint motors
+
+  float Tip[JOINT_NUM]; 
 
   float KP[JOINT_NUM];
   float TI[JOINT_NUM];

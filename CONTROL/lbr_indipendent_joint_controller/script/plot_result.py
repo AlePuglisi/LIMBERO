@@ -6,7 +6,7 @@ import sys
 def plot_joint_states(file_path):
 
     limb = sys.argv[1]
-
+    PID = 1
     # Read the CSV file into a DataFrame
     df = pd.read_csv(file_path)
 
@@ -21,28 +21,34 @@ def plot_joint_states(file_path):
     position_references_filtered = dict()
     position_references = dict()
     position_error = dict()
-    velocity = dict()
-    velocity_references = dict()
-    velocity_feed_forward = dict()
-    velocity_error = dict()
     integral = dict()
-    #proportional = dict()
     control_torque = dict()
     gravity_torque = dict()
+    if PID == 0: 
+        velocity = dict()
+        velocity_references = dict()
+        velocity_feed_forward = dict()
+        velocity_error = dict()
+    
+    #proportional = dict()
+
 
     for joint in joints:
         position[joint] = df[ joint + '_current_position'].tolist()
         position_references_filtered[joint] = df[ joint + '_reference_position_filtered'].tolist()
         position_references[joint] = df[ joint + '_reference_position'].tolist()
         position_error[joint] = df[ joint + '_position_error'].tolist()
-        velocity[joint] = df[ joint + '_current_velocity'].tolist()
-        velocity_references[joint] = df[ joint + '_reference_velocity'].tolist()
-        velocity_feed_forward[joint] = df[ joint + '_feed_forward_velocity'].tolist()
-        velocity_error[joint] = df[ joint + '_velocity_error'].tolist()
         integral[joint] = df[ joint + '_integral_action'].tolist()
         # proportional[joint] = df[ joint + '_proportional_action'].tolist()
         control_torque[joint] = df[ joint + '_control_torque'].tolist()
         gravity_torque[joint] = df[ joint + '_gravity_torque'].tolist()
+        if PID == 0: 
+            velocity[joint] = df[ joint + '_current_velocity'].tolist()
+            velocity_references[joint] = df[ joint + '_reference_velocity'].tolist()
+            velocity_feed_forward[joint] = df[ joint + '_feed_forward_velocity'].tolist()
+            velocity_error[joint] = df[ joint + '_velocity_error'].tolist()
+
+
 
 
 
@@ -58,22 +64,31 @@ def plot_joint_states(file_path):
         plt.title(joint + ' Motor Joint Position States and References')
         plt.grid(True)
 
-        plt.subplot(3,3,2)
-        plt.plot(time, velocity[joint],'b', label= joint + ' joint velocity')
-        plt.plot(time, velocity_references[joint], 'r--', label= joint + ' joint velocity reference')
-        plt.legend()
-        plt.xlabel('Time [s]')
-        plt.ylabel( joint + ' Joint velocity [rad/s]')
-        plt.title(joint + ' Motor Joint Velocity States and References')
-        plt.grid(True)
+        if PID == 0: 
+            plt.subplot(3,3,2)
+            plt.plot(time, velocity[joint],'b', label= joint + ' joint velocity')
+            plt.plot(time, velocity_references[joint], 'r--', label= joint + ' joint velocity reference')
+            plt.legend()
+            plt.xlabel('Time [s]')
+            plt.ylabel( joint + ' Joint velocity [rad/s]')
+            plt.title(joint + ' Motor Joint Velocity States and References')
+            plt.grid(True)
 
-        plt.subplot(3,3,3)
-        plt.plot(time, velocity_feed_forward[joint], 'g', label= joint + ' joint velocity feed forward')
-        plt.legend()
-        plt.xlabel('Time [s]')
-        plt.ylabel(joint + ' Joint velocity feed forward [rad/s]')
-        plt.title( joint + ' Motor Joint Velocity Feed Forward')
-        plt.grid(True)
+            plt.subplot(3,3,3)
+            plt.plot(time, velocity_feed_forward[joint], 'g', label= joint + ' joint velocity feed forward')
+            plt.legend()
+            plt.xlabel('Time [s]')
+            plt.ylabel(joint + ' Joint velocity feed forward [rad/s]')
+            plt.title( joint + ' Motor Joint Velocity Feed Forward')
+            plt.grid(True)
+
+            plt.subplot(3,3,5)
+            plt.plot(time,velocity_error[joint],'r', label= joint + ' joint velocity error')
+            plt.legend()
+            plt.xlabel('Time [s]')
+            plt.ylabel('velocity error [rad/s]')
+            plt.title('Motor Joint Velocity error')
+            plt.grid(True)
 
         plt.subplot(3,3,4)
         plt.plot(time,position_error[joint], 'r', label= joint + ' joint position error')
@@ -83,13 +98,6 @@ def plot_joint_states(file_path):
         plt.title( joint + ' Motor Joint Position error')
         plt.grid(True)
 
-        plt.subplot(3,3,5)
-        plt.plot(time,velocity_error[joint],'r', label= joint + ' joint velocity error')
-        plt.legend()
-        plt.xlabel('Time [s]')
-        plt.ylabel('velocity error [rad/s]')
-        plt.title('Motor Joint Velocity error')
-        plt.grid(True)
 
         plt.subplot(3,3,6)
         plt.plot(time,integral[joint],'b', label= joint + ' integral action')

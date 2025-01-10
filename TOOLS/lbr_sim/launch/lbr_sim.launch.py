@@ -195,7 +195,7 @@ def generate_launch_description():
         model_arg,
         rviz_arg,
         wheel_mode_arg,
-        #joint_state_publisher_node,
+        joint_state_publisher_node,
         robot_state_publisher_node,
         rviz_node,
         lbr_sim_node,
