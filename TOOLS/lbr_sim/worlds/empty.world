@@ -43,7 +43,7 @@
     <model name="ground_plane">
       <static>true</static>
       <link name="link">
-        <collision name="collision">
+        <collision name="collision_plane">
           <geometry>
             <plane>
               <normal>0 0 1</normal>
@@ -53,10 +53,9 @@
         </collision>
         <sensor name='sensor_contact' type='contact'>
           <contact>
-            <collision>collision</collision>
+            <collision>collision_plane</collision>
+            
           </contact>
-          <always_on>1</always_on>
-          <update_rate>1000</update_rate>
         </sensor> 
         <visual name="visual">
           <geometry>
@@ -72,6 +71,7 @@
           </material>
         </visual>
       </link>
+
       <plugin filename="gz-sim-touchplugin-system"
               name="gz::sim::systems::TouchPlugin">
         <target>LIMBERO/link/LF_gripper_Link</target>

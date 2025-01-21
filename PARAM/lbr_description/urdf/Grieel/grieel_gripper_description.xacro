@@ -273,28 +273,42 @@
       link="${prefix}_end_effector_DH_Link" />
   </joint>
 
-    <!-- Gazebo plugin for contact sensor, collision name like that because of parsing errors in the urdf  -->
+  <link name="${prefix}_gripper_end"/>
+
+
+  <joint
+    name="${prefix}_gripper_Root2End"
+    type="fixed">
+    <origin
+      xyz="0.0975 0 0.0"
+      rpy="0 1.5708  0" />
+    <parent
+      link="${prefix}_gripper_Link" />
+    <child
+      link="${prefix}_gripper_end" />
+  </joint>
+
+
+    <!-- Gazebo plugin for contact sensor -->
   <!-- <gazebo reference="${prefix}_gripper_Link">
-    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact">
-          <target>ground_plane</target>
-          <time>0.001</time>
-          <enabled>true</enabled>
-          <namespace>${prefix}</namespace> 
-    </plugin>
     <sensor name="sensor_contact" type="contact">
         <contact>
-            <collision>${prefix}_gripper_Link_collision</collision>
+            <collision>${prefix}_gripper_Link_collision_collision</collision>
         </contact>
-        <always_on>1</always_on>
-        <update_rate>1000</update_rate>
     </sensor>
-    <plugin filename="gz-sim-touchplugin-system" name="gz::sim::systems::TouchPlugin">
-        <target>LIMBERO/link/${prefix}_gripper_Link</target>
+  </gazebo>
+
+  <gazebo>
+    <plugin filename="gz-sim-touchplugin-system" 
+                name="gz::sim::systems::TouchPlugin">
+        <target>ground_plane</target>
         <namespace>${prefix}</namespace>
-        <time>0.001</time>
+        <time>0.01</time>
         <enabled>true</enabled>
     </plugin>
   </gazebo> -->
+
+
 
   </xacro:macro>
 

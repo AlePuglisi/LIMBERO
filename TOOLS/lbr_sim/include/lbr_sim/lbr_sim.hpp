@@ -18,6 +18,8 @@
 #include <vector>
 #include <array>
 #include <cmath>
+#include <cstdlib> // For std::system
+
 //#include "gazebo_msgs/msg/contacts_state.hpp"
 #include "std_msgs/msg/bool.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -81,6 +83,10 @@ private:
   void endEffectorContactStateCallback_RH(const std_msgs::msg::Bool & contact_state);
   void endEffectorContactStateCallback_RF(const std_msgs::msg::Bool & contact_state);
   void dynamixelContactStateCallback(const lbr_msgs::msg::SingleEndEffectorContactState & contact_state);
+  void checkingContact_LF();
+  void checkingContact_LH();
+  void checkingContact_RH();
+  void checkingContact_RF();
   // void timerCallback();
   // void fakeContactStateCallback(const lbr_msgs::msg::EndEffectorContactState &whole_contact_state);
 
@@ -136,6 +142,15 @@ private:
   //std::array<std::array<SlewRateLimiter, JOINT_NUM>, LIMB_NUM> joint_limiters_;
   //double dt; // signal interval
   // rclcpp::TimerBase::SharedPtr timer_;
+
+  bool checking_contact_LF; 
+  int count_contact_LF; 
+  bool checking_contact_LH; 
+  int count_contact_LH; 
+  bool checking_contact_RH; 
+  int count_contact_RH; 
+  bool checking_contact_RF; 
+  int count_contact_RF; 
 
 };
 
