@@ -16,13 +16,13 @@
 
             <!-- Gazebo plugin for joint state publisher  -->
         <gazebo>
-            <plugin name="${prefix}_joint_state" filename="libgazebo_ros_joint_state_publisher.so">
-            <ros>
+            <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
+            <!-- <ros>
                 <namespace>${prefix}</namespace>
                 <remapping>~/out:=joint_states</remapping>
-            </ros>
-            <update_rate>500</update_rate>
-            <!-- <joint_name>${prefix}_E2grieel</joint_name> -->
+            </ros> -->
+            <!-- <update_rate>500</update_rate> -->
+            <topic>${prefix}/joint_states</topic>
             <joint_name>${prefix}_B2C</joint_name>
             <joint_name>${prefix}_C2F</joint_name>
             <joint_name>${prefix}_F2T</joint_name>

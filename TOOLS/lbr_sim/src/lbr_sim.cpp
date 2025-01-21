@@ -139,18 +139,18 @@ LimberoSim::LimberoSim()
     "/RF/lbr_limb_controller/joint_state", 100,
     std::bind(&LimberoSim::targetJointStateCallback, this, std::placeholders::_1));
 
-  end_effector_contact_state_sub_LF_ = this->create_subscription<gazebo_msgs::msg::ContactsState>(
-    "/LF/bumper_states", 10,
-    std::bind(&LimberoSim::endEffectorContactStateCallback, this, std::placeholders::_1));
-  end_effector_contact_state_sub_LH_ = this->create_subscription<gazebo_msgs::msg::ContactsState>(
-    "/LH/bumper_states", 10,
-    std::bind(&LimberoSim::endEffectorContactStateCallback, this, std::placeholders::_1));
-  end_effector_contact_state_sub_RH_ = this->create_subscription<gazebo_msgs::msg::ContactsState>(
-    "/RH/bumper_states", 10,
-    std::bind(&LimberoSim::endEffectorContactStateCallback, this, std::placeholders::_1));
-  end_effector_contact_state_sub_RF_ = this->create_subscription<gazebo_msgs::msg::ContactsState>(
-    "/RF/bumper_states", 10,
-    std::bind(&LimberoSim::endEffectorContactStateCallback, this, std::placeholders::_1));
+  end_effector_contact_state_sub_LF_ = this->create_subscription<std_msgs::msg::Bool>(
+    "/LF/contact", 10,
+    std::bind(&LimberoSim::endEffectorContactStateCallback_LF, this, std::placeholders::_1));
+  end_effector_contact_state_sub_LH_ = this->create_subscription<std_msgs::msg::Bool>(
+    "/LH/contact", 10,
+    std::bind(&LimberoSim::endEffectorContactStateCallback_LH, this, std::placeholders::_1));
+  end_effector_contact_state_sub_RH_ = this->create_subscription<std_msgs::msg::Bool>(
+    "/RH/contact", 10,
+    std::bind(&LimberoSim::endEffectorContactStateCallback_RH, this, std::placeholders::_1));
+  end_effector_contact_state_sub_RF_ = this->create_subscription<std_msgs::msg::Bool>(
+    "/RF/contact", 10,
+    std::bind(&LimberoSim::endEffectorContactStateCallback_RF, this, std::placeholders::_1));
 
   dynamixel_contact_state_sub_LF_ = this->create_subscription<lbr_msgs::msg::SingleEndEffectorContactState>(
     "/LF/lbr_dynamixel_controller/contact_state", 10,
@@ -350,28 +350,87 @@ void LimberoSim::targetJointStateCallback(
 }
 
 // IF NOT IN SIMULATION WE NEED TO USE THE CURRENT FEEDBACK FROM LBR_DYNAMIXEL CONTROLLER
-void LimberoSim::endEffectorContactStateCallback(
-  const gazebo_msgs::msg::ContactsState & contact_state)
+void LimberoSim::endEffectorContactStateCallback_LF(
+  const std_msgs::msg::Bool& contact_state)
 {
   int limb_id;
-  if (contact_state.header.frame_id.find("LF") != std::string::npos) {
-    limb_id = 0;
-    whole_end_effector_contact_state.header.frame_id = "LF";
-  } else if (contact_state.header.frame_id.find("LH") != std::string::npos) {
-    limb_id = 1;
-    whole_end_effector_contact_state.header.frame_id = "LH";
-  } else if (contact_state.header.frame_id.find("RH") != std::string::npos) {
-    limb_id = 2;
-    whole_end_effector_contact_state.header.frame_id = "RH";
-  } else if (contact_state.header.frame_id.find("RF") != std::string::npos) {
-    limb_id = 3;
-    whole_end_effector_contact_state.header.frame_id = "RF";
-  }
 
-  if (contact_state.states.empty() == true) {
-    whole_end_effector_contact_state.is_contact.at(limb_id) = false;
-  } else if (contact_state.states.empty() == false) {
+  limb_id = 0;
+  whole_end_effector_contact_state.header.frame_id = "LF";
+
+  if (contact_state.data == true) {
     whole_end_effector_contact_state.is_contact.at(limb_id) = true;
+  } else if (contact_state.data == false) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+  }
+#if DEBUG_ENABLED
+  for (int i = 0; i < LIMB_NUM; i++) {
+    std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+      whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+  }
+#endif  // DEBUG_ENABLED
+  whole_end_effector_contact_state.header.stamp = this->now();
+  whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+}
+
+void LimberoSim::endEffectorContactStateCallback_LH(
+  const std_msgs::msg::Bool& contact_state)
+{
+  int limb_id;
+
+  limb_id = 1;
+  whole_end_effector_contact_state.header.frame_id = "LH";
+
+  if (contact_state.data == true) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = true;
+  } else if (contact_state.data == false) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+  }
+#if DEBUG_ENABLED
+  for (int i = 0; i < LIMB_NUM; i++) {
+    std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+      whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+  }
+#endif  // DEBUG_ENABLED
+  whole_end_effector_contact_state.header.stamp = this->now();
+  whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+}
+
+void LimberoSim::endEffectorContactStateCallback_RH(
+  const std_msgs::msg::Bool& contact_state)
+{
+  int limb_id;
+
+  limb_id = 2;
+  whole_end_effector_contact_state.header.frame_id = "RH";
+
+  if (contact_state.data == true) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = true;
+  } else if (contact_state.data == false) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+  }
+#if DEBUG_ENABLED
+  for (int i = 0; i < LIMB_NUM; i++) {
+    std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+      whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+  }
+#endif  // DEBUG_ENABLED
+  whole_end_effector_contact_state.header.stamp = this->now();
+  whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+}
+
+void LimberoSim::endEffectorContactStateCallback_RF(
+  const std_msgs::msg::Bool& contact_state)
+{
+  int limb_id;
+
+  limb_id = 3;
+  whole_end_effector_contact_state.header.frame_id = "RF";
+
+  if (contact_state.data == true) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = true;
+  } else if (contact_state.data == false) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = false;
   }
 #if DEBUG_ENABLED
   for (int i = 0; i < LIMB_NUM; i++) {

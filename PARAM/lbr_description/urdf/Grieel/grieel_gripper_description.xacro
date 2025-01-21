@@ -274,21 +274,27 @@
   </joint>
 
     <!-- Gazebo plugin for contact sensor, collision name like that because of parsing errors in the urdf  -->
-    <gazebo reference="${prefix}_gripper_Link">
-      <sensor name="${prefix}_gripper_bumper_sensor" type="contact">
-        <always_on>true</always_on>
-        <update_rate>50</update_rate>
+  <!-- <gazebo reference="${prefix}_gripper_Link">
+    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact">
+          <target>ground_plane</target>
+          <time>0.001</time>
+          <enabled>true</enabled>
+          <namespace>${prefix}</namespace> 
+    </plugin>
+    <sensor name="sensor_contact" type="contact">
         <contact>
-        <collision>${prefix}_gripper_Link_collision_collision</collision>
+            <collision>${prefix}_gripper_Link_collision</collision>
         </contact>
-        <plugin name="${prefix}_gripper_bumper" filename="libgazebo_ros_bumper.so">
-          <ros>
-            <namespace>${prefix}</namespace>
-          </ros>
-          <frame_name>${prefix}_gripper_link</frame_name>
-        </plugin>
-      </sensor>
-    </gazebo>
+        <always_on>1</always_on>
+        <update_rate>1000</update_rate>
+    </sensor>
+    <plugin filename="gz-sim-touchplugin-system" name="gz::sim::systems::TouchPlugin">
+        <target>LIMBERO/link/${prefix}_gripper_Link</target>
+        <namespace>${prefix}</namespace>
+        <time>0.001</time>
+        <enabled>true</enabled>
+    </plugin>
+  </gazebo> -->
 
   </xacro:macro>
 

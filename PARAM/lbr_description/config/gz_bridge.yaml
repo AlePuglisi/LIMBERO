@@ -1,0 +1,227 @@
+- ros_topic_name: "clock"
+  gz_topic_name: "clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# gz topic published by JointState plugin LF
+- ros_topic_name: "LF/joint_states"
+  gz_topic_name: "LF/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+# gz topic published by JointState plugin LH
+- ros_topic_name: "LH/joint_states"
+  gz_topic_name: "LH/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+# gz topic published by JointState plugin RH
+- ros_topic_name: "RH/joint_states"
+  gz_topic_name: "RH/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+# gz topic published by JointState plugin RF
+- ros_topic_name: "RF/joint_states"
+  gz_topic_name: "RF/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+
+# gz topic published by JointTorque plugin LF
+- ros_topic_name: "LF_B2C/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LF_B2C/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LF_C2F/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LF_C2F/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LF_F2T/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LF_F2T/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LF_T2E/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LF_T2E/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LF_wristH/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LF_wristH/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LF_wristV/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LF_wristV/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LF_driving/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LF_driving/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+# gz topic published by JointTorque plugin LH
+- ros_topic_name: "LH_B2C/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LH_B2C/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LH_C2F/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LH_C2F/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LH_F2T/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LH_F2T/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LH_T2E/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LH_T2E/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LH_wristH/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LH_wristH/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LH_wristV/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LH_wristV/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LH_driving/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LH_driving/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+# gz topic published by JointTorque plugin RH
+- ros_topic_name: "RH_B2C/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RH_B2C/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RH_C2F/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RH_C2F/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RH_F2T/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RH_F2T/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RH_T2E/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RH_T2E/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RH_wristH/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RH_wristH/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RH_wristV/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RH_wristV/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RH_driving/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RH_driving/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+# gz topic published by JointTorque plugin RF
+- ros_topic_name: "RF_B2C/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RF_B2C/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RF_C2F/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RF_C2F/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RF_F2T/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RF_F2T/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RF_T2E/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RF_T2E/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RF_wristH/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RF_wristH/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RF_wristV/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RF_wristV/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RF_driving/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RF_driving/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+# gz topic published by Touch plugin LF
+- ros_topic_name: "LF/contact"
+  gz_topic_name: "LF/touched"
+  ros_type_name: "std_msgs/msg/Bool"
+  gz_type_name: "gz.msgs.Boolean"
+  direction: GZ_TO_ROS
+# gz topic published by Touch plugin LH
+- ros_topic_name: "LH/contact"
+  gz_topic_name: "LH/touched"
+  ros_type_name: "std_msgs/msg/Bool"
+  gz_type_name: "gz.msgs.Boolean"
+  direction: GZ_TO_ROS
+# gz topic published by Touch plugin RH
+- ros_topic_name: "RH/contact"
+  gz_topic_name: "RH/touched"
+  ros_type_name: "std_msgs/msg/Bool"
+  gz_type_name: "gz.msgs.Boolean"
+  direction: GZ_TO_ROS
+# gz topic published by Touch plugin RF
+- ros_topic_name: "RF/contact"
+  gz_topic_name: "RF/touched"
+  ros_type_name: "std_msgs/msg/Bool"
+  gz_type_name: "gz.msgs.Boolean"
+  direction: GZ_TO_ROS

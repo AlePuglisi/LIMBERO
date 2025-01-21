@@ -19,6 +19,7 @@
     ],
     "files.associations": {
         "chrono": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "iostream": "cpp"
     }
 }

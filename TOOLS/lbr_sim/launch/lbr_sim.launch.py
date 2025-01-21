@@ -67,12 +67,24 @@ def generate_launch_description():
                                                 LaunchConfiguration('model'), ' wheel_mode:=', LaunchConfiguration('wheel_mode')]),
                                        value_type=str)
 
-    world_file_name = "mars.world"
-    world_path = os.path.join(get_package_share_directory('lbr_sim'), 'worlds', world_file_name)
+    # world_file_name = "mars.world"
+    # world_path = os.path.join(get_package_share_directory('lbr_sim'), 'worlds', world_file_name)
 
     robot_description_command = ['xacro ', xacro_path, ' wheel_mode:=', LaunchConfiguration('wheel_mode')]
     # somehow if I pass the xacro_path it works, insted by using the model of the launch configuration the wheel_mode doesn't work..
 
+    default_world = os.path.join(
+        get_package_share_directory('lbr_sim'),
+        'worlds',
+        'empty.world'
+        )    
+    world = LaunchConfiguration('world')
+    world_arg = DeclareLaunchArgument(
+        'world',
+        default_value=default_world,
+        description='World to load'
+        )
+    
     lbr_sim_node = Node(
         package='lbr_sim',
         executable='lbr_sim',
@@ -108,13 +120,13 @@ def generate_launch_description():
                     ['/lbr_state_estimator/joint_state']}]
     )
 
-    robot_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("lbr_description"),
-            "config",
-            "lbr_controller_with_grieel.yaml",
-        ]
-    )
+    # robot_controllers = PathJoinSubstitution(
+    #     [
+    #         FindPackageShare("lbr_description"),
+    #         "config",
+    #         "lbr_controller_with_grieel.yaml",
+    #     ]
+    # )
 
     # Start controller manager
     # controller_manager_node = Node(
@@ -133,13 +145,13 @@ def generate_launch_description():
     #     arguments=["joint_trajectory_controller", "--param-file", robot_controllers],
     # )
 
-    robot_controller_spawner_effort = Node(
-        package='controller_manager',
-        executable='spawner',
-        # arguments=['joint_trajectory_controller', '--controller-manager',
-        #            '/controller_manager'],
-        arguments=["effort_controller", "--param-file", robot_controllers],
-    )
+    # robot_controller_spawner_effort = Node(
+    #     package='controller_manager',
+    #     executable='spawner',
+    #     # arguments=['joint_trajectory_controller', '--controller-manager',
+    #     #            '/controller_manager'],
+    #     arguments=["effort_controller", "--param-file", robot_controllers],
+    # )
 
     # effort_controller_spawner = Node(
     # package='controller_manager',
@@ -148,11 +160,11 @@ def generate_launch_description():
     #                '/controller_manager'],
     # )
 
-    joint_state_broadcaster_spawner = Node(
-        package='controller_manager',
-        executable='spawner',
-        arguments=['joint_state_broadcaster', "--param-file", robot_controllers],
-    )
+    # joint_state_broadcaster_spawner = Node(
+    #     package='controller_manager',
+    #     executable='spawner',
+    #     arguments=['joint_state_broadcaster', "--param-file", robot_controllers],
+    # )
 
     # Event handler to launch joint trajectory controller after joint state broadcaster
     # joint_controller_handler = RegisterEventHandler(
@@ -163,20 +175,20 @@ def generate_launch_description():
     # )
 
     # Event handler to launch effort controller after joint trajectory controller
-    effort_controller_handler = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner_effort]
-        )
-    )
+    # effort_controller_handler = RegisterEventHandler(
+    #     event_handler=OnProcessExit(
+    #         target_action=joint_state_broadcaster_spawner,
+    #         on_exit=[robot_controller_spawner_effort]
+    #     )
+    # )
 
     gazebo_spawner = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
+        package='ros_gz_sim',
+        executable='create',
         name='urdf_spawner',
         parameters=[{'use_sim_time': use_sim_time}],
-        arguments=['-topic', '/robot_description',
-                   '-entity', 'LIMBERO',
+        arguments=['-topic', 'robot_description',
+                   '-name', 'LIMBERO',
                    '-z', '0.5'],
                 #    '-z', '3.5',
                 #    '-x', '-3',
@@ -186,23 +198,36 @@ def generate_launch_description():
 
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
-            get_package_share_directory('gazebo_ros'), 'launch'),
-            '/gazebo.launch.py']),
-        #launch_arguments={'world': world_path, 'verbose': 'true'}.items()
+            get_package_share_directory('ros_gz_sim'), 'launch'),
+            '/gz_sim.launch.py']),
+        launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+    )
+
+    bridge_params = os.path.join(get_package_share_directory('lbr_description'),'config','gz_bridge.yaml')
+    ros_gz_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        arguments=[
+            '--ros-args',
+            '-p',
+            f'config_file:={bridge_params}',
+        ]
     )
 
     return LaunchDescription([
         model_arg,
+        world_arg,
         rviz_arg,
         wheel_mode_arg,
-        #joint_state_publisher_node,
+        joint_state_publisher_node,
         robot_state_publisher_node,
         rviz_node,
         lbr_sim_node,
-        joint_state_broadcaster_spawner,
+        #joint_state_broadcaster_spawner,
         #robot_controller_spawner_effort,
-        robot_controller_spawner_effort,
+        #robot_controller_spawner_effort,
         gazebo,
+        ros_gz_bridge,
         gazebo_spawner,
         kin_analysis_node,
     ])

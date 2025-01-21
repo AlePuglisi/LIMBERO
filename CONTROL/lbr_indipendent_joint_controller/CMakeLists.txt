@@ -11,14 +11,11 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(lbr_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(gazebo_msgs REQUIRED)
-find_package(gazebo_ros2_control REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_executable(${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp
-  gazebo_msgs
   std_msgs
   lbr_msgs
   sensor_msgs)

@@ -3,17 +3,18 @@
 
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_limb_description.xacro" />
 
-  <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_gazebo.xacro" />
+  <!-- <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_gazebo.xacro" /> -->
 
-  <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_ros2_control.xacro" />
+  <!-- <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_ros2_control.xacro" /> -->
 
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_joint_state.xacro" />
+  <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_grieel_joint_actuation.xacro" />
 
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gazebo_phisics.xacro" />
 
-  <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_grieel_transmission.xacro" />
+  <!-- <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_grieel_transmission.xacro" /> -->
 
-  <xacro:include filename="$(find lbr_description)/urdf/Grieel/lidar.xacro" />
+  <!-- <xacro:include filename="$(find lbr_description)/urdf/Grieel/lidar.xacro" /> -->
 
 
   <!-- Use macro to define base and four limbs -->
@@ -35,10 +36,10 @@
     <xacro:grieel_wheel_macro prefix="RH" parent="RH"/>
     <xacro:grieel_wheel_macro prefix="RF" parent="RF"/>
 
-    <xacro:ros2_control_macro prefix="LF" wheel_mode= "true"/>
+    <!-- <xacro:ros2_control_macro prefix="LF" wheel_mode= "true"/>
     <xacro:ros2_control_macro prefix="LH" wheel_mode= "true"/>
     <xacro:ros2_control_macro prefix="RH" wheel_mode= "true"/>
-    <xacro:ros2_control_macro prefix="RF" wheel_mode= "true"/>
+    <xacro:ros2_control_macro prefix="RF" wheel_mode= "true"/> -->
   </xacro:if>
 
   <!-- Grieel gripper mode -->
@@ -50,10 +51,10 @@
     <xacro:grieel_gripper_macro prefix="RH" parent="RH"/>
     <xacro:grieel_gripper_macro prefix="RF" parent="RF"/>
 
-    <xacro:ros2_control_macro prefix="LF" wheel_mode= "false"/>
+    <!-- <xacro:ros2_control_macro prefix="LF" wheel_mode= "false"/>
     <xacro:ros2_control_macro prefix="LH" wheel_mode= "false"/>
     <xacro:ros2_control_macro prefix="RH" wheel_mode= "false"/>
-    <xacro:ros2_control_macro prefix="RF" wheel_mode= "false"/>
+    <xacro:ros2_control_macro prefix="RF" wheel_mode= "false"/> -->
   </xacro:unless>
 
 
@@ -61,6 +62,11 @@
   <xacro:joint_state_macro prefix="LH"/>
   <xacro:joint_state_macro prefix="RH"/>
   <xacro:joint_state_macro prefix="RF"/>
+
+  <xacro:joint_actuator_macro prefix="LF"/>
+  <xacro:joint_actuator_macro prefix="LH"/>
+  <xacro:joint_actuator_macro prefix="RH"/>
+  <xacro:joint_actuator_macro prefix="RF"/>
 
   <!-- <xacro:transmission_macro prefix="LF"/>
   <xacro:transmission_macro prefix="LH"/>

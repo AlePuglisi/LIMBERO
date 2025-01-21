@@ -1,7 +1,7 @@
 #include <cstdio>
 #include "kin_analysis/kin_analysis.hpp"
 
-#define DEBUG_ENABLED true
+#define DEBUG_ENABLED false
 
 KinAnalysis::KinAnalysis()
 : Node("kin_analysis")
@@ -44,10 +44,14 @@ KinAnalysis::KinAnalysis()
 
 void KinAnalysis::currentJointStateCallback(const sensor_msgs::msg::JointState & joint_state){
   // Debug
+#if DEBUG_ENABLED 
   std::cout << "update joint state" << std::endl; 
+#endif //DEBUG_ENABLED 
   for(int j=0; j<LIMB_NUM; j++){
     // Debug
+#if DEBUG_ENABLED 
     std::cout << "update joint state for limb j: " <<  j << std::endl;
+#endif //DEBUG_ENABLED 
     for(int i=0; i<JOINT_NUM; i++){
       auto it = find(joint_state.name.begin(), joint_state.name.end(),current_joint_state.name.at(j*JOINT_NUM + i));
       int index = distance(joint_state.name.begin(), it);

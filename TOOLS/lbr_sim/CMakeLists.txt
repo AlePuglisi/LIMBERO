@@ -7,13 +7,11 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(gazebo_ros2_control REQUIRED)
 find_package(backward_ros REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(trajectory_msgs REQUIRED)
-find_package(gazebo_msgs REQUIRED)
 find_package(lbr_msgs REQUIRED)
 
 add_executable(${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
@@ -22,7 +20,6 @@ ament_target_dependencies(${PROJECT_NAME}
   sensor_msgs
   std_msgs
   trajectory_msgs
-  gazebo_msgs
   lbr_msgs)
 
 target_include_directories(${PROJECT_NAME} PUBLIC

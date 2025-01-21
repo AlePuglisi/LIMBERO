@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:arg name="wheel_mode" default="true" />
+
+    <xacro:if value="$(arg wheel_mode)">
+        <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_wheel_description.xacro" />
+    </xacro:if>
+
+    <xacro:unless value="$(arg wheel_mode)">
+        <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_description.xacro" />
+    </xacro:unless>
+
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_limb_description.xacro" />
+
+    <xacro:macro name="joint_actuator_macro" params="prefix">
+
+            <!-- Gazebo plugin for joint state publisher  -->
+        <gazebo>
+            <plugin filename="gz-sim-apply-joint-force-system"
+                        name="gz::sim::systems::ApplyJointForce">
+            <!-- <ros>
+                <namespace>${prefix}</namespace>
+                <remapping>~/out:=joint_states</remapping>
+            </ros> -->
+            <!-- <update_rate>500</update_rate> -->
+                <topic>{prefix}_B2C/joint_torque</topic>
+                <joint_name>${prefix}_B2C</joint_name>
+            </plugin>
+            <plugin filename="gz-sim-apply-joint-force-system"
+                        name="gz::sim::systems::ApplyJointForce">
+                <topic>{prefix}_C2F/joint_torque</topic>
+                <joint_name>${prefix}_C2F</joint_name>
+            </plugin>
+            <plugin filename="gz-sim-apply-joint-force-system"
+                        name="gz::sim::systems::ApplyJointForce">
+                <topic>{prefix}_F2T/joint_torque</topic>
+                <joint_name>${prefix}_F2T</joint_name>
+            </plugin>
+            <plugin filename="gz-sim-apply-joint-force-system"
+                        name="gz::sim::systems::ApplyJointForce">
+                <topic>{prefix}_T2E/joint_torque</topic>
+                <joint_name>${prefix}_T2E</joint_name>
+            </plugin>
+            <plugin filename="gz-sim-apply-joint-force-system"
+                        name="gz::sim::systems::ApplyJointForce">
+                <topic>{prefix}_wristH/joint_torque</topic>
+                <joint_name>${prefix}_wristH</joint_name>
+            </plugin>
+            <plugin filename="gz-sim-apply-joint-force-system"
+                        name="gz::sim::systems::ApplyJointForce">
+                <topic>{prefix}_wristV/joint_torque</topic>
+                <joint_name>${prefix}_wristV</joint_name>
+            </plugin>
+            <plugin filename="gz-sim-apply-joint-force-system"
+                        name="gz::sim::systems::ApplyJointForce">
+                <topic>{prefix}_driving/joint_torque</topic>
+                <joint_name>${prefix}_driving</joint_name>
+            </plugin>
+
+
+        </gazebo>
+
+    </xacro:macro>
+
+</robot>

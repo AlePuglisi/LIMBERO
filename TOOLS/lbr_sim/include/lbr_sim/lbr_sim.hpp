@@ -18,7 +18,8 @@
 #include <vector>
 #include <array>
 #include <cmath>
-#include "gazebo_msgs/msg/contacts_state.hpp"
+//#include "gazebo_msgs/msg/contacts_state.hpp"
+#include "std_msgs/msg/bool.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 #include "trajectory_msgs/msg/joint_trajectory.hpp"
@@ -75,7 +76,10 @@ public:
 private:
   void jointStateCallback(const sensor_msgs::msg::JointState & joint_state);
   void targetJointStateCallback(const sensor_msgs::msg::JointState & target_joint_state);
-  void endEffectorContactStateCallback(const gazebo_msgs::msg::ContactsState & contact_state);
+  void endEffectorContactStateCallback_LF(const std_msgs::msg::Bool & contact_state);
+  void endEffectorContactStateCallback_LH(const std_msgs::msg::Bool & contact_state);
+  void endEffectorContactStateCallback_RH(const std_msgs::msg::Bool & contact_state);
+  void endEffectorContactStateCallback_RF(const std_msgs::msg::Bool & contact_state);
   void dynamixelContactStateCallback(const lbr_msgs::msg::SingleEndEffectorContactState & contact_state);
   // void timerCallback();
   // void fakeContactStateCallback(const lbr_msgs::msg::EndEffectorContactState &whole_contact_state);
@@ -101,13 +105,13 @@ private:
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr target_joint_state_sub_RH_;
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr target_joint_state_sub_RF_;
 
-  rclcpp::Subscription<gazebo_msgs::msg::ContactsState>::SharedPtr
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
     end_effector_contact_state_sub_LF_;
-  rclcpp::Subscription<gazebo_msgs::msg::ContactsState>::SharedPtr
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
     end_effector_contact_state_sub_LH_;
-  rclcpp::Subscription<gazebo_msgs::msg::ContactsState>::SharedPtr
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
     end_effector_contact_state_sub_RH_;
-  rclcpp::Subscription<gazebo_msgs::msg::ContactsState>::SharedPtr
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
     end_effector_contact_state_sub_RF_;
 
   rclcpp::Subscription<lbr_msgs::msg::SingleEndEffectorContactState>::SharedPtr

@@ -20,7 +20,8 @@
 #include "lbr_indipendent_joint_controller/lbr_control_parameter.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 #include "std_msgs/msg/float64_multi_array.hpp"
-#include "gazebo_msgs/msg/contacts_state.hpp"
+#include "std_msgs/msg/float64.hpp"
+#include "std_msgs/msg/bool.hpp"
 #include "lbr_msgs/msg/end_effector_contact_state.hpp"
 
 
@@ -68,7 +69,7 @@ private:
    *
    * @param EE_contact_state
    */
-  void endEffectorContactStateCallback(const gazebo_msgs::msg::ContactsState & contact_state);
+  void endEffectorContactStateCallback(const std_msgs::msg::Bool& contact_state);
 
   /**
    * @brief This callback function runs when lbr_sim publish contact state of all limbs.
@@ -81,13 +82,22 @@ private:
   rclcpp::TimerBase::SharedPtr control_loop_timer_; // sets digital controller sampling time Ts
 
   //  Publisher
-  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr torque_control_pub_; // computed control output torque
+  // rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr torque_control_pub_B2C; // computed control output torque
+  // rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr torque_control_pub_C2F; // computed control output torque
+  // rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr torque_control_pub_F2T; // computed control output torque
+  // rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr torque_control_pub_T2E; // computed control output torque
+  // rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr torque_control_pub_wristH; // computed control output torque
+  // rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr torque_control_pub_wristV; // computed control output torque
+  // rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr torque_control_pub_driving; // computed control output torque
+
+  std::array<rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr, JOINT_NUM> torque_control_publishers_;
+
 
   // Subscriber
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_reference_sub_; // received LC set points
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr current_joint_state_sub_; // received joint state from Gazebo node
   rclcpp::Subscription<lbr_msgs::msg::EndEffectorContactState>::SharedPtr whole_contact_state_sub_;
-  rclcpp::Subscription<gazebo_msgs::msg::ContactsState>::SharedPtr end_effector_contact_state_sub_;
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr end_effector_contact_state_sub_;
 
   // attributes
   int LIMB_ID; // LF=0, LH=1, RH=2, RF=3, identify IJC related limb
@@ -144,6 +154,7 @@ private:
   sensor_msgs::msg::JointState current_joint_state; // store current joint state from gazebo
   sensor_msgs::msg::JointState reference_joint_state; // store current joint reference from LC
   std_msgs::msg::Float64MultiArray torque_control_output; // store torque control values
+  std_msgs::msg::Float64 torque_control_data; 
 };
 
 #endif  // LBR_INDIPENDENT_JOINT_CONTROLLER__LBR_INDIPENDENT_JOINT_CONTROLLER_HPP_

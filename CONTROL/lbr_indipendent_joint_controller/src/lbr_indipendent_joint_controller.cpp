@@ -36,7 +36,13 @@ IndipendentJointController::IndipendentJointController()
     torque_limit[i] = SATURATION[i];
   }
 
-  if(PID == 1){
+  if(PID == 1){  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
+    end_effector_contact_state_sub_LH_;
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
+    end_effector_contact_state_sub_RH_;
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
+    end_effector_contact_state_sub_RF_;
+
     for (int i=0; i < JOINT_NUM-1; i++){
       KP[i] = Kpv[i]*(Kpp[i] + 1/Tiv[i]);
       TI[i] = KP[i]*Tiv[i]/(Kpp[i]*Kpv[i]);
@@ -121,16 +127,34 @@ IndipendentJointController::IndipendentJointController()
   joint_state_reference_sub_ = this->create_subscription<sensor_msgs::msg::JointState>(
     name_space + "/lbr_limb_controller/joint_state", 1,
     std::bind(&IndipendentJointController::referenceJointStateCallback, this, std::placeholders::_1));
-  end_effector_contact_state_sub_ = this->create_subscription<gazebo_msgs::msg::ContactsState>(
-    name_space + "/bumper_states", 10,
+  end_effector_contact_state_sub_ = this->create_subscription<std_msgs::msg::Bool>(
+    name_space + "/contact", 10,
     std::bind(&IndipendentJointController::endEffectorContactStateCallback, this, std::placeholders::_1));
   whole_contact_state_sub_ =
     this->create_subscription<lbr_msgs::msg::EndEffectorContactState>(
     "/lbr_sim/contact_state", 1,
     std::bind(&IndipendentJointController::allEndEffectorContactStateCallback, this, std::placeholders::_1));
 
-  torque_control_pub_ = this-> create_publisher<std_msgs::msg::Float64MultiArray>(
-    "/effort_controller/commands", 10);
+  // torque_control_pub_B2C_ = this-> create_publisher<std_msgs::msg::Float64>(
+  //   name_space + "_B2C/joint_torques", 10);
+  // torque_control_pub_C2F_ = this-> create_publisher<std_msgs::msg::Float64>(
+  //   name_space + "_C2F/joint_torques", 10);
+  // torque_control_pub_F2T_ = this-> create_publisher<std_msgs::msg::Float64>(
+  //   name_space + "_F2T/joint_torques", 10);
+  // torque_control_pub_T2E_ = this-> create_publisher<std_msgs::msg::Float64>(
+  //   name_space + "_T2E/joint_torques", 10);
+  // torque_control_pub_wristH_ = this-> create_publisher<std_msgs::msg::Float64>(
+  //   name_space + "_wristH/joint_torques", 10);
+  // torque_control_pub_wristV_ = this-> create_publisher<std_msgs::msg::Float64>(
+  //   name_space + "_wristV/joint_torques", 10);
+  // torque_control_pub_driving_ = this-> create_publisher<std_msgs::msg::Float64>(
+  //   name_space + "_driving/joint_torques", 10);
+  
+  std::array<std::string, JOINT_NUM> joint_names = {"_B2C", "_C2F", "_F2T", "_T2E", "_wristH", "_wristV", "_driving"};
+  for(int i=0; i<JOINT_NUM; i++){
+    torque_control_publishers_[i] = this-> create_publisher<std_msgs::msg::Float64>(
+    name_space + joint_names[i] + "/joint_torques", 10);
+  }
 
   // Set up control loop rate
   if(PID == 0){
@@ -163,25 +187,24 @@ void IndipendentJointController::referenceJointStateCallback(
 }
 
 void IndipendentJointController::endEffectorContactStateCallback(
-  const gazebo_msgs::msg::ContactsState & contact_state)
+  const std_msgs::msg::Bool & contact_state)
 {
-  if (contact_state.header.frame_id.find(joint_prefix) != std::string::npos) {
-    if(contact_state.states.empty() == true){
+    if(contact_state.data == false){
       swing_counter ++;
       if(swing_counter >= 4 ){
         in_contact = false;
         swing_counter = 0;
       }
     }
-    else if (contact_state.states.empty() == false) {
+    else if (contact_state.data == true) {
       in_contact = true;
       swing_counter = 0;
       if(start_control == false){
         start_control = true;
       }
     }
-  }
 }
+
 
 void IndipendentJointController::allEndEffectorContactStateCallback(
   const lbr_msgs::msg::EndEffectorContactState & contact_state)
@@ -410,6 +433,9 @@ void IndipendentJointController::controlLoopPPI()
       previous_reference_joint_position_filtered[i] = reference_joint_position_filtered[i];
       previous_joint_position[i] = current_joint_state.position.at(i);
 
+      torque_control_data.data = torque_control_output.data.at(LIMB_ID*JOINT_NUM + i);
+      torque_control_publishers_[i]->publish(torque_control_data);
+
       if(ANTI_WINDUP_METHOD == 1){
           file_out << reference_joint_state.position.at(i) << ","
                   << reference_joint_position_filtered[i] << ","
@@ -452,7 +478,7 @@ void IndipendentJointController::controlLoopPPI()
     }
     // Publish controller Torque output
     file_out << "\n";
-    torque_control_pub_->publish(torque_control_output);
+    // torque_control_pub_->publish(torque_control_output);
   }
 }
 
@@ -540,6 +566,9 @@ void IndipendentJointController::controlLoopPID()
 
       previous_reference_joint_position_filtered[i] = reference_joint_position_filtered[i];
 
+      torque_control_data.data = torque_control_output.data.at(LIMB_ID*JOINT_NUM + i);
+      torque_control_publishers_[i]->publish(torque_control_data);
+
       if(ANTI_WINDUP_METHOD == 1){
           file_out << reference_joint_state.position.at(i) << ","
                   << reference_joint_position_filtered[i] << ","
@@ -573,7 +602,7 @@ void IndipendentJointController::controlLoopPID()
     // Publish controller Torque output
 
     file_out << "\n";
-    torque_control_pub_->publish(torque_control_output);
+    // torque_control_pub_->publish(torque_control_output);
   }
 }
 

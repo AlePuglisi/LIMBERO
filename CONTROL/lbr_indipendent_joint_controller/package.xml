@@ -15,9 +15,7 @@
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
-  <depend>gazebo_ros2_control</depend>
   <depend>lbr_msgs</depend>
-  <depend>gazebo_msgs</depend>
 
 
   <export>
