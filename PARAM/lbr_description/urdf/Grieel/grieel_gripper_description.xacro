@@ -290,7 +290,7 @@
 
 
     <!-- Gazebo plugin for contact sensor -->
-  <!-- <gazebo reference="${prefix}_gripper_Link">
+  <gazebo reference="${prefix}_gripper_Link">
     <sensor name="sensor_contact" type="contact">
         <contact>
             <collision>${prefix}_gripper_Link_collision_collision</collision>
@@ -303,10 +303,10 @@
                 name="gz::sim::systems::TouchPlugin">
         <target>ground_plane</target>
         <namespace>${prefix}</namespace>
-        <time>0.01</time>
+        <time>0.001</time>
         <enabled>true</enabled>
     </plugin>
-  </gazebo> -->
+  </gazebo>
 
 
 

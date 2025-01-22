@@ -148,6 +148,7 @@ private:
   double initial_time; // initial time data, for data saving on csv file
 
   std::string joint_prefix;
+  std::string grieel_state_;
 
 
   // messages updated by controller

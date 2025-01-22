@@ -157,7 +157,7 @@ private:
   rclcpp::Publisher<lbr_msgs::msg::GrieelModeChange>::SharedPtr grieel_mode_pub_;
   rclcpp::Publisher<std_msgs::msg::Int64>::SharedPtr grieel_driving_configuration_pub_;
 
-  // rclcpp::Publisher<lbr_msgs::msg::EndEffectorContactState>::SharedPtr fake_end_effector_contact_state_pub_;
+  rclcpp::Publisher<lbr_msgs::msg::EndEffectorContactState>::SharedPtr fake_end_effector_contact_state_pub_;
 
   // Subscriber
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr user_command_sub_;
@@ -182,7 +182,7 @@ private:
   std::string grieel_state_;
   lbr_msgs::msg::EndEffectorContactState supporting_leg_polygon;
 
-  // lbr_msgs::msg::EndEffectorContactState fake_contact;
+  lbr_msgs::msg::EndEffectorContactState fake_contact;
 };
 
 #endif  // LBR_HIGH_LEVEL_CONTROLLER__LBR_HIGH_LEVEL_CONTROLLER_HPP_

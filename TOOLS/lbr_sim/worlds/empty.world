@@ -51,12 +51,12 @@
             </plane>
           </geometry>
         </collision>
-        <sensor name='sensor_contact' type='contact'>
+        <!-- <sensor name='sensor_contact' type='contact'>
           <contact>
             <collision>collision_plane</collision>
             
           </contact>
-        </sensor> 
+        </sensor>  -->
         <visual name="visual">
           <geometry>
             <plane>
@@ -72,7 +72,7 @@
         </visual>
       </link>
 
-      <plugin filename="gz-sim-touchplugin-system"
+      <!-- <plugin filename="gz-sim-touchplugin-system"
               name="gz::sim::systems::TouchPlugin">
         <target>LIMBERO/link/LF_gripper_Link</target>
         <namespace>LF</namespace>
@@ -99,7 +99,7 @@
         <namespace>RF</namespace>
         <time>0.001</time>
         <enabled>true</enabled>
-      </plugin> 
+      </plugin>  -->
 
     </model>
   </world>

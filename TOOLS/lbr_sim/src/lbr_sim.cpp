@@ -93,8 +93,8 @@ LimberoSim::LimberoSim()
   std::cout << "topic_prefix = " << topic_prefix << std::endl;
 #endif  // DEBUG_ENABLED
 
-  // timer_ = this->create_wall_timer(
-  //   std::chrono::milliseconds(100), std::bind(&LimberoSim::timerCallback, this));
+  timer_ = this->create_wall_timer(
+    std::chrono::milliseconds(100), std::bind(&LimberoSim::timerCallback, this));
 
   // Publisher
   encoder_joint_state_pub_LF_ = this->create_publisher<sensor_msgs::msg::JointState>(
@@ -108,6 +108,7 @@ LimberoSim::LimberoSim()
 
   joint_trajectory_pub_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>(
     "/joint_trajectory_controller/joint_trajectory", 1);
+
   whole_end_effector_contact_state_pub_ =
     this->create_publisher<lbr_msgs::msg::EndEffectorContactState>(
     "/" + topic_prefix + "/contact_state", 10);
@@ -165,9 +166,9 @@ LimberoSim::LimberoSim()
     "/RF/lbr_dynamixel_controller/contact_state", 10,
     std::bind(&LimberoSim::dynamixelContactStateCallback, this, std::placeholders::_1));
 
-  // fake_contact_state_sub_ = this->create_subscription<lbr_msgs::msg::EndEffectorContactState>(
-  //   "/lbr_high_level_controller/contact_state", 10,
-  //   std::bind(&LimberoSim::fakeContactStateCallback, this, std::placeholders::_1));
+  fake_contact_state_sub_ = this->create_subscription<lbr_msgs::msg::EndEffectorContactState>(
+    "/lbr_high_level_controller/contact_state", 10,
+    std::bind(&LimberoSim::fakeContactStateCallback, this, std::placeholders::_1));
 
   encoder_joint_state.resize(LIMB_NUM);
   for (int i = 0; i < LIMB_NUM; i++) {
@@ -224,15 +225,16 @@ LimberoSim::LimberoSim()
   lbr_joint_trajectory_point.accelerations.resize(LIMB_NUM * JOINT_NUM);
 
   whole_end_effector_contact_state.is_contact.resize(LIMB_NUM);
+  first_call_contact = true;
 
-  count_contact_LF = 0; 
-  checking_contact_LF = false; 
-  count_contact_LH= 0; 
-  checking_contact_LH = false; 
-  count_contact_RH= 0; 
-  checking_contact_RH = false; 
-  count_contact_RF= 0; 
-  checking_contact_RF = false; 
+  // count_contact_LF = 0; 
+  // checking_contact_LF = false; 
+  // count_contact_LH= 0; 
+  // checking_contact_LH = false; 
+  // count_contact_RH= 0; 
+  // checking_contact_RH = false; 
+  // count_contact_RF= 0; 
+  // checking_contact_RF = false; 
 
   //double cutoff_freq = 20.0;
   //double sample_freq = 1000.0;
@@ -359,398 +361,306 @@ void LimberoSim::targetJointStateCallback(
 }
 
 // IF NOT IN SIMULATION WE NEED TO USE THE CURRENT FEEDBACK FROM LBR_DYNAMIXEL CONTROLLER
-void LimberoSim::endEffectorContactStateCallback_LF(
-  const std_msgs::msg::Bool& contact_state)
-{
-  if (contact_state.data == true){
-      count_contact_LF += 1;
-      std::cout << "Updating contact count:" << count_contact_LF << std::endl;
-      // deactivate contact sensor
-      const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      // Execute the command
-      std::system(command);
-      std::cout << "Disable Contact Sensor" << std::endl;
-      std::this_thread::sleep_for(std::chrono::milliseconds(50)); // small delay to avoid multiple request
-      const char* command2 = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
-      std::cout << "Enabled Contact Sensor" << std::endl;
-      // Execute the command
-      std::system(command2);
-  } 
-  std::this_thread::sleep_for(std::chrono::milliseconds(200));
-  if(!checking_contact_LF){
-      checking_contact_LF = true; 
-      std::thread(&LimberoSim::checkingContact_LF, this).detach();
-  }
-}
+// void LimberoSim::endEffectorContactStateCallback_LF(
+//   const std_msgs::msg::Bool& contact_state)
+// {
+//   if (contact_state.data == true){
+//       // count_contact_LF += 1;
+//       // std::cout << "LF) Updating contact count:" << count_contact_LF << std::endl;
+//       // deactivate contact sensor
+//       const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
+//       // Execute the command
+//       std::system(command);
+//       // std::cout << "LF) Disable Contact Sensor" << std::endl;
+//       std::this_thread::sleep_for(std::chrono::milliseconds(50)); // small delay to avoid multiple request
+//       const char* command2 = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
+//       // std::cout << "LF) Enabled Contact Sensor" << std::endl;
+//       // Execute the command
+//       std::system(command2);
+//       int limb_id;
+//       limb_id = 0;
+//       whole_end_effector_contact_state.header.frame_id = "LF";
+//       whole_end_effector_contact_state.is_contact.at(limb_id) = true;
+//       whole_end_effector_contact_state.header.stamp = this->now();
+//       whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+//   }
+// }
 
-void LimberoSim::checkingContact_LF(){
-  // if(!checking_contact){
-  //     checking_contact = true;
+// void LimberoSim::checkingContact_LF(){
+//       std::this_thread::sleep_for(std::chrono::milliseconds(500)); // small delay to avoid multiple request 
+//       std::cout << "LF) current contact count : " << count_contact_LF << std::endl; 
+//       bool contact_state_LF; 
+//       if(count_contact_LF >= 1){
+//           contact_state_LF = true;
+//           count_contact_LF = 0; 
+//       } else{
+//         contact_state_LF = false;
+//         count_contact_LF = 0; 
+//       }
+//       checking_contact_LF = false; 
 
-      // The command you want to execute to deactivate contact sensor
-      // const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      // Execute the command
-      // std::system(command);
-      // std::cout << "Disable Contact Sensor" << std::endl;
-
-      // if (contact_state.data == true) {
-      //   whole_end_effector_contact_state.is_contact.at(limb_id) = true;
-
-      //   // The command you want to execute to deactivate contact sensor
-      //   const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      //   // Execute the command
-      //   int result = std::system(command);
-        
-
-      // } else if (contact_state.data == false) {
-      //   whole_end_effector_contact_state.is_contact.at(limb_id) = false;
-      // }
-
-      // std::this_thread::sleep_for(std::chrono::milliseconds(200)); // small delay to avoid multiple request
-      // const char* command2 = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
-      //std::cout << "Enabled Contact Sensor" << std::endl;
-      // Execute the command
-      // std::system(command2);
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(400)); // small delay to avoid multiple request 
-      std::cout << " current contact count : " << count_contact_LF << std::endl; 
-      bool contact_state; 
-      if(count_contact_LF >= 2){
-          contact_state = true;
-          count_contact_LF = 0; 
-      } else{
-        contact_state = false;
-        count_contact_LF = 0; 
-      }
-
-    #if DEBUG_ENABLED
-      for (int i = 0; i < LIMB_NUM; i++) {
-        std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
-          whole_end_effector_contact_state.is_contact.at(i) << std::endl;
-      }
-    #endif  // DEBUG_ENABLED
-      int limb_id;
-      limb_id = 0;
-      whole_end_effector_contact_state.header.frame_id = "LF";
-      whole_end_effector_contact_state.is_contact.at(limb_id) = contact_state;
-      whole_end_effector_contact_state.header.stamp = this->now();
-      whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
-
-      checking_contact_LF = false; 
-  //} 
-}
-
-void LimberoSim::endEffectorContactStateCallback_LH(
-  const std_msgs::msg::Bool& contact_state)
-{
-  if (contact_state.data == true){
-      count_contact_LH += 1;
-      std::cout << "Updating contact count:" << count_contact_LH << std::endl;
-      // deactivate contact sensor
-      const char* command = "gz service -s /LH/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      // Execute the command
-      std::system(command);
-      std::cout << "Disable Contact Sensor" << std::endl;
-      std::this_thread::sleep_for(std::chrono::milliseconds(50)); // small delay to avoid multiple request
-      const char* command2 = "gz service -s /LH/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
-      std::cout << "Enabled Contact Sensor" << std::endl;
-      // Execute the command
-      std::system(command2);
-  } 
-  std::this_thread::sleep_for(std::chrono::milliseconds(200));
-  if(!checking_contact_LH){
-      checking_contact_LH = true; 
-      std::thread(&LimberoSim::checkingContact_LH, this).detach();
-  }
-}
-
-void LimberoSim::checkingContact_LH(){
-  // if(!checking_contact){
-  //     checking_contact = true;
-
-      // The command you want to execute to deactivate contact sensor
-      // const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      // Execute the command
-      // std::system(command);
-      // std::cout << "Disable Contact Sensor" << std::endl;
-
-      // if (contact_state.data == true) {
-      //   whole_end_effector_contact_state.is_contact.at(limb_id) = true;
-
-      //   // The command you want to execute to deactivate contact sensor
-      //   const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      //   // Execute the command
-      //   int result = std::system(command);
-        
-
-      // } else if (contact_state.data == false) {
-      //   whole_end_effector_contact_state.is_contact.at(limb_id) = false;
-      // }
-
-      // std::this_thread::sleep_for(std::chrono::milliseconds(200)); // small delay to avoid multiple request
-      // const char* command2 = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
-      //std::cout << "Enabled Contact Sensor" << std::endl;
-      // Execute the command
-      // std::system(command2);
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(400)); // small delay to avoid multiple request 
-      std::cout << " current contact count : " << count_contact_LH << std::endl; 
-      bool contact_state; 
-      if(count_contact_LH >= 2){
-          contact_state = true;
-          count_contact_LH = 0; 
-      } else{
-        contact_state = false;
-        count_contact_LH = 0; 
-      }
-
-    #if DEBUG_ENABLED
-      for (int i = 0; i < LIMB_NUM; i++) {
-        std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
-          whole_end_effector_contact_state.is_contact.at(i) << std::endl;
-      }
-    #endif  // DEBUG_ENABLED
-      int limb_id;
-      limb_id = 1;
-      whole_end_effector_contact_state.header.frame_id = "LH";
-      whole_end_effector_contact_state.is_contact.at(limb_id) = contact_state;
-      whole_end_effector_contact_state.header.stamp = this->now();
-      whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
-
-      checking_contact_LH = false; 
-  //} 
-}
-
-void LimberoSim::endEffectorContactStateCallback_RH(
-  const std_msgs::msg::Bool& contact_state)
-{
-  if (contact_state.data == true){
-      count_contact_RH += 1;
-      std::cout << "Updating contact count:" << count_contact_RH << std::endl;
-      // deactivate contact sensor
-      const char* command = "gz service -s /RH/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      // Execute the command
-      std::system(command);
-      std::cout << "Disable Contact Sensor" << std::endl;
-      std::this_thread::sleep_for(std::chrono::milliseconds(50)); // small delay to avoid multiple request
-      const char* command2 = "gz service -s /RH/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
-      std::cout << "Enabled Contact Sensor" << std::endl;
-      // Execute the command
-      std::system(command2);
-  } 
-  std::this_thread::sleep_for(std::chrono::milliseconds(200));
-  if(!checking_contact_RH){
-      checking_contact_RH = true; 
-      std::thread(&LimberoSim::checkingContact_RH, this).detach();
-  }
-}
-
-void LimberoSim::checkingContact_RH(){
-  // if(!checking_contact){
-  //     checking_contact = true;
-
-      // The command you want to execute to deactivate contact sensor
-      // const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      // Execute the command
-      // std::system(command);
-      // std::cout << "Disable Contact Sensor" << std::endl;
-
-      // if (contact_state.data == true) {
-      //   whole_end_effector_contact_state.is_contact.at(limb_id) = true;
-
-      //   // The command you want to execute to deactivate contact sensor
-      //   const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      //   // Execute the command
-      //   int result = std::system(command);
-        
-
-      // } else if (contact_state.data == false) {
-      //   whole_end_effector_contact_state.is_contact.at(limb_id) = false;
-      // }
-
-      // std::this_thread::sleep_for(std::chrono::milliseconds(200)); // small delay to avoid multiple request
-      // const char* command2 = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
-      //std::cout << "Enabled Contact Sensor" << std::endl;
-      // Execute the command
-      // std::system(command2);
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(400)); // small delay to avoid multiple request 
-      std::cout << " current contact count : " << count_contact_RH << std::endl; 
-      bool contact_state; 
-      if(count_contact_RH >= 2){
-          contact_state = true;
-          count_contact_RH = 0; 
-      } else{
-        contact_state = false;
-        count_contact_RH = 0; 
-      }
-
-    #if DEBUG_ENABLED
-      for (int i = 0; i < LIMB_NUM; i++) {
-        std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
-          whole_end_effector_contact_state.is_contact.at(i) << std::endl;
-      }
-    #endif  // DEBUG_ENABLED
-      int limb_id;
-      limb_id = 2;
-      whole_end_effector_contact_state.header.frame_id = "RH";
-      whole_end_effector_contact_state.is_contact.at(limb_id) = contact_state;
-      whole_end_effector_contact_state.header.stamp = this->now();
-      whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
-
-      checking_contact_RH = false; 
-  //} 
-}
-
-void LimberoSim::endEffectorContactStateCallback_RF(
-  const std_msgs::msg::Bool& contact_state)
-{
-  if (contact_state.data == true){
-      count_contact_RF += 1;
-      std::cout << "Updating contact count:" << count_contact_RF << std::endl;
-      // deactivate contact sensor
-      const char* command = "gz service -s /RF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      // Execute the command
-      std::system(command);
-      std::cout << "Disable Contact Sensor" << std::endl;
-      std::this_thread::sleep_for(std::chrono::milliseconds(50)); // small delay to avoid multiple request
-      const char* command2 = "gz service -s /RF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
-      std::cout << "Enabled Contact Sensor" << std::endl;
-      // Execute the command
-      std::system(command2);
-  } 
-  std::this_thread::sleep_for(std::chrono::milliseconds(200));
-  if(!checking_contact_RF){
-      checking_contact_RF = true; 
-      std::thread(&LimberoSim::checkingContact_RF, this).detach();
-  }
-}
-
-void LimberoSim::checkingContact_RF(){
-  // if(!checking_contact){
-  //     checking_contact = true;
-
-      // The command you want to execute to deactivate contact sensor
-      // const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      // Execute the command
-      // std::system(command);
-      // std::cout << "Disable Contact Sensor" << std::endl;
-
-      // if (contact_state.data == true) {
-      //   whole_end_effector_contact_state.is_contact.at(limb_id) = true;
-
-      //   // The command you want to execute to deactivate contact sensor
-      //   const char* command = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
-      //   // Execute the command
-      //   int result = std::system(command);
-        
-
-      // } else if (contact_state.data == false) {
-      //   whole_end_effector_contact_state.is_contact.at(limb_id) = false;
-      // }
-
-      // std::this_thread::sleep_for(std::chrono::milliseconds(200)); // small delay to avoid multiple request
-      // const char* command2 = "gz service -s /LF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
-      //std::cout << "Enabled Contact Sensor" << std::endl;
-      // Execute the command
-      // std::system(command2);
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(400)); // small delay to avoid multiple request 
-      std::cout << " current contact count : " << count_contact_RF << std::endl; 
-      bool contact_state; 
-      if(count_contact_RF >= 2){
-          contact_state = true;
-          count_contact_RF = 0; 
-      } else{
-        contact_state = false;
-        count_contact_RF = 0; 
-      }
-
-    #if DEBUG_ENABLED
-      for (int i = 0; i < LIMB_NUM; i++) {
-        std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
-          whole_end_effector_contact_state.is_contact.at(i) << std::endl;
-      }
-    #endif  // DEBUG_ENABLED
-      int limb_id;
-      limb_id = 3;
-      whole_end_effector_contact_state.header.frame_id = "RF";
-      whole_end_effector_contact_state.is_contact.at(limb_id) = contact_state;
-      whole_end_effector_contact_state.header.stamp = this->now();
-      whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
-
-      checking_contact_RF = false; 
-  //} 
-}
+//     #if DEBUG_ENABLED
+//       for (int i = 0; i < LIMB_NUM; i++) {
+//         std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+//           whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+//       }
+//     #endif  // DEBUG_ENABLED
+//       int limb_id;
+//       limb_id = 0;
+//       whole_end_effector_contact_state.header.frame_id = "LF";
+//       whole_end_effector_contact_state.is_contact.at(limb_id) = contact_state_LF;
+//       whole_end_effector_contact_state.header.stamp = this->now();
+//       whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+// }
 
 // void LimberoSim::endEffectorContactStateCallback_LH(
 //   const std_msgs::msg::Bool& contact_state)
 // {
-//   int limb_id;
-
-//   limb_id = 1;
-//   whole_end_effector_contact_state.header.frame_id = "LH";
-
-//   if (contact_state.data == true) {
-//     whole_end_effector_contact_state.is_contact.at(limb_id) = true;
-//   } else if (contact_state.data == false) {
-//     whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+//   //if (contact_state.data == true){
+//       count_contact_LH += 1;
+//       std::cout << "LH) Updating contact count:" << count_contact_LH << std::endl;
+//       // deactivate contact sensor
+//       const char* command = "gz service -s /LH/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
+//       // Execute the command
+//       std::system(command);
+//       std::cout << "LH) Disable Contact Sensor" << std::endl;
+//       //std::this_thread::sleep_for(std::chrono::milliseconds(50)); // small delay to avoid multiple request
+//       const char* command2 = "gz service -s /LH/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
+//       std::cout << "LH) Enabled Contact Sensor" << std::endl;
+//       // Execute the command
+//       std::system(command2);
+//   //} 
+//   //std::this_thread::sleep_for(std::chrono::milliseconds(200));
+//   if(!checking_contact_LH){
+//       std::cout << "LH) Enetering Contact Check" << std::endl;
+//       checking_contact_LH = true; 
+//       std::thread(&LimberoSim::checkingContact_LH, this).detach();
 //   }
-// #if DEBUG_ENABLED
-//   for (int i = 0; i < LIMB_NUM; i++) {
-//     std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
-//       whole_end_effector_contact_state.is_contact.at(i) << std::endl;
-//   }
-// #endif  // DEBUG_ENABLED
-//   whole_end_effector_contact_state.header.stamp = this->now();
-//   whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+// }
+
+// void LimberoSim::checkingContact_LH(){
+//       std::this_thread::sleep_for(std::chrono::milliseconds(500)); 
+//       std::cout << "LH) current contact count : " << count_contact_LH << std::endl; 
+//       bool contact_state_LH; 
+//       if(count_contact_LH >= 2){
+//           contact_state_LH = true;
+//           count_contact_LH = 0; 
+//       } else{
+//         contact_state_LH = false;
+//         count_contact_LH = 0; 
+//       }
+//       checking_contact_LH = false; 
+
+//     #if DEBUG_ENABLED
+//       for (int i = 0; i < LIMB_NUM; i++) {
+//         std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+//           whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+//       }
+//     #endif  // DEBUG_ENABLED
+//       int limb_id;
+//       limb_id = 1;
+//       whole_end_effector_contact_state.header.frame_id = "LH";
+//       whole_end_effector_contact_state.is_contact.at(limb_id) = contact_state_LH;
+//       whole_end_effector_contact_state.header.stamp = this->now();
+//       whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+//   //} 
 // }
 
 // void LimberoSim::endEffectorContactStateCallback_RH(
 //   const std_msgs::msg::Bool& contact_state)
 // {
-//   int limb_id;
-
-//   limb_id = 2;
-//   whole_end_effector_contact_state.header.frame_id = "RH";
-
-//   if (contact_state.data == true) {
-//     whole_end_effector_contact_state.is_contact.at(limb_id) = true;
-//   } else if (contact_state.data == false) {
-//     whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+//   //if (contact_state.data == true){
+//       count_contact_RH += 1;
+//       std::cout << "RH) Updating contact count:" << count_contact_RH << std::endl;
+//       // deactivate contact sensor
+//       const char* command = "gz service -s /RH/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
+//       // Execute the command
+//       std::system(command);
+//       std::cout << "RH) Disable Contact Sensor" << std::endl;
+//       //std::this_thread::sleep_for(std::chrono::milliseconds(50)); // small delay to avoid multiple request
+//       const char* command2 = "gz service -s /RH/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
+//       std::cout << "RH) Enabled Contact Sensor" << std::endl;
+//       // Execute the command
+//       std::system(command2);
+//   //} 
+//   //std::this_thread::sleep_for(std::chrono::milliseconds(200));
+//   if(!checking_contact_RH){
+//       std::cout << "RH) Enetering Contact Check" << std::endl;
+//       checking_contact_RH = true; 
+//       std::thread(&LimberoSim::checkingContact_RH, this).detach();
 //   }
-// #if DEBUG_ENABLED
-//   for (int i = 0; i < LIMB_NUM; i++) {
-//     std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
-//       whole_end_effector_contact_state.is_contact.at(i) << std::endl;
-//   }
-// #endif  // DEBUG_ENABLED
-//   whole_end_effector_contact_state.header.stamp = this->now();
-//   whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+// }
+
+// void LimberoSim::checkingContact_RH(){
+//       std::this_thread::sleep_for(std::chrono::milliseconds(500)); // small delay to avoid multiple request 
+//       std::cout << "RH) current contact count : " << count_contact_RH << std::endl; 
+//       bool contact_state_RH; 
+//       if(count_contact_RH >= 2){
+//           contact_state_RH = true;
+//           count_contact_RH = 0; 
+//       } else{
+//         contact_state_RH = false;
+//         count_contact_RH = 0; 
+//       }
+//       checking_contact_RH = false; 
+
+//     #if DEBUG_ENABLED
+//       for (int i = 0; i < LIMB_NUM; i++) {
+//         std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+//           whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+//       }
+//     #endif  // DEBUG_ENABLED
+//       int limb_id;
+//       limb_id = 2;
+//       whole_end_effector_contact_state.header.frame_id = "RH";
+//       whole_end_effector_contact_state.is_contact.at(limb_id) = contact_state_RH;
+//       whole_end_effector_contact_state.header.stamp = this->now();
+//       whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
 // }
 
 // void LimberoSim::endEffectorContactStateCallback_RF(
 //   const std_msgs::msg::Bool& contact_state)
 // {
-//   int limb_id;
-
-//   limb_id = 3;
-//   whole_end_effector_contact_state.header.frame_id = "RF";
-
-//   if (contact_state.data == true) {
-//     whole_end_effector_contact_state.is_contact.at(limb_id) = true;
-//   } else if (contact_state.data == false) {
-//     whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+//   //if (contact_state.data == true){
+//       count_contact_RF += 1;
+//       std::cout << "RF) Updating contact count:" << count_contact_RF << std::endl;
+//       // deactivate contact sensor
+//       const char* command = "gz service -s /RF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: false'";
+//       // Execute the command
+//       std::system(command);
+//       std::cout << "RF) Disable Contact Sensor" << std::endl;
+//       //std::this_thread::sleep_for(std::chrono::milliseconds(50)); // small delay to avoid multiple request
+//       const char* command2 = "gz service -s /RF/enable --reqtype gz.msgs.Boolean --reptype gz.msgs.Empty --req 'data: true'";
+//       std::cout << "RF) Enabled Contact Sensor" << std::endl;
+//       // Execute the command
+//       std::system(command2);
+//   //} 
+//   //std::this_thread::sleep_for(std::chrono::milliseconds(200));
+//   if(!checking_contact_RF){
+//       std::cout << "RF) Enetering Contact Check" << std::endl;
+//       checking_contact_RF = true; 
+//       std::thread(&LimberoSim::checkingContact_RF, this).detach();
 //   }
-// #if DEBUG_ENABLED
-//   for (int i = 0; i < LIMB_NUM; i++) {
-//     std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
-//       whole_end_effector_contact_state.is_contact.at(i) << std::endl;
-//   }
-// #endif  // DEBUG_ENABLED
-//   whole_end_effector_contact_state.header.stamp = this->now();
-//   whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
 // }
+
+// void LimberoSim::checkingContact_RF(){
+//       std::this_thread::sleep_for(std::chrono::milliseconds(500)); // small delay to avoid multiple request 
+//       std::cout << "RF) current contact count : " << count_contact_RF << std::endl; 
+//       bool contact_state_RF; 
+//       if(count_contact_RF >= 2){
+//           contact_state_RF = true;
+//           count_contact_RF = 0; 
+//       } else{
+//         contact_state_RF = false;
+//         count_contact_RF = 0; 
+//       }
+//       checking_contact_RF = false; 
+
+//     #if DEBUG_ENABLED
+//       for (int i = 0; i < LIMB_NUM; i++) {
+//         std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+//           whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+//       }
+//     #endif  // DEBUG_ENABLED
+//       int limb_id;
+//       limb_id = 3;
+//       whole_end_effector_contact_state.header.frame_id = "RF";
+//       whole_end_effector_contact_state.is_contact.at(limb_id) = contact_state_RF;
+//       whole_end_effector_contact_state.header.stamp = this->now();
+//       whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+// }
+
+void LimberoSim::endEffectorContactStateCallback_LF(
+  const std_msgs::msg::Bool& contact_state)
+{
+  int limb_id;
+
+  limb_id = 0;
+  whole_end_effector_contact_state.header.frame_id = "LF";
+
+  if (contact_state.data == true) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = true;
+  } else if (contact_state.data == false) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+  }
+#if DEBUG_ENABLED
+  for (int i = 0; i < LIMB_NUM; i++) {
+    std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+      whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+  }
+#endif  // DEBUG_ENABLED
+  whole_end_effector_contact_state.header.stamp = this->now();
+  whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+}
+
+void LimberoSim::endEffectorContactStateCallback_LH(
+  const std_msgs::msg::Bool& contact_state)
+{
+  int limb_id;
+
+  limb_id = 1;
+  whole_end_effector_contact_state.header.frame_id = "LH";
+
+  if (contact_state.data == true) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = true;
+  } else if (contact_state.data == false) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+  }
+#if DEBUG_ENABLED
+  for (int i = 0; i < LIMB_NUM; i++) {
+    std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+      whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+  }
+#endif  // DEBUG_ENABLED
+  whole_end_effector_contact_state.header.stamp = this->now();
+  whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+}
+
+void LimberoSim::endEffectorContactStateCallback_RH(
+  const std_msgs::msg::Bool& contact_state)
+{
+  int limb_id;
+
+  limb_id = 2;
+  whole_end_effector_contact_state.header.frame_id = "RH";
+
+  if (contact_state.data == true) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = true;
+  } else if (contact_state.data == false) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+  }
+#if DEBUG_ENABLED
+  for (int i = 0; i < LIMB_NUM; i++) {
+    std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+      whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+  }
+#endif  // DEBUG_ENABLED
+  whole_end_effector_contact_state.header.stamp = this->now();
+  whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+}
+
+void LimberoSim::endEffectorContactStateCallback_RF(
+  const std_msgs::msg::Bool& contact_state)
+{
+  int limb_id;
+
+  limb_id = 3;
+  whole_end_effector_contact_state.header.frame_id = "RF";
+
+  if (contact_state.data == true) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = true;
+  } else if (contact_state.data == false) {
+    whole_end_effector_contact_state.is_contact.at(limb_id) = false;
+  }
+#if DEBUG_ENABLED
+  for (int i = 0; i < LIMB_NUM; i++) {
+    std::cout << "whole_end_effector_contact_state.is_contact.at(" << i << ") = " <<
+      whole_end_effector_contact_state.is_contact.at(i) << std::endl;
+  }
+#endif  // DEBUG_ENABLED
+  whole_end_effector_contact_state.header.stamp = this->now();
+  whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+}
 
 void LimberoSim::dynamixelContactStateCallback(
   const lbr_msgs::msg::SingleEndEffectorContactState & contact_state)
@@ -785,20 +695,23 @@ void LimberoSim::dynamixelContactStateCallback(
   whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
 }
 
-// void LimberoSim::fakeContactStateCallback(const lbr_msgs::msg::EndEffectorContactState &whole_contact_state){
-//   whole_end_effector_contact_state = whole_contact_state;
-// }
+void LimberoSim::fakeContactStateCallback(const lbr_msgs::msg::EndEffectorContactState &whole_contact_state){
+  whole_end_effector_contact_state = whole_contact_state;
+}
 
-// void LimberoSim::timerCallback(){
-//   if(whole_end_effector_contact_state.is_contact.size() == 0){
-//     whole_end_effector_contact_state.is_contact.at(0) = true;
-//     whole_end_effector_contact_state.is_contact.at(1) = true;
-//     whole_end_effector_contact_state.is_contact.at(2) = true;
-//     whole_end_effector_contact_state.is_contact.at(3) = true;
-//   }
-//   whole_end_effector_contact_state.header.stamp = this->now();
-//   whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
-// }
+void LimberoSim::timerCallback(){
+  if(first_call_contact == true){
+    first_call_contact = false; 
+    //std::cout << "Called contact timer callback first time" << std::endl;
+    whole_end_effector_contact_state.is_contact.at(0) = true;
+    whole_end_effector_contact_state.is_contact.at(1) = true;
+    whole_end_effector_contact_state.is_contact.at(2) = true;
+    whole_end_effector_contact_state.is_contact.at(3) = true;
+  }
+  //std::cout << "Called contact timer callback again" << std::endl;
+  whole_end_effector_contact_state.header.stamp = this->now();
+  whole_end_effector_contact_state_pub_->publish(whole_end_effector_contact_state);
+}
 
 int main(int argc, char ** argv)
 {

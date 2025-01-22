@@ -49,9 +49,9 @@ HighLevelController::HighLevelController()
   msg_pub_ = this->create_publisher<std_msgs::msg::String>(
     "/user_command", 1);
 
-  // fake_end_effector_contact_state_pub_ =
-  //   this->create_publisher<lbr_msgs::msg::EndEffectorContactState>(
-  //   topic_prefix + "/contact_state", 10);
+  fake_end_effector_contact_state_pub_ =
+    this->create_publisher<lbr_msgs::msg::EndEffectorContactState>(
+    topic_prefix + "/contact_state", 10);
 
   // Subscriber
   user_command_sub_ = this->create_subscription<std_msgs::msg::String>(
@@ -100,7 +100,7 @@ HighLevelController::HighLevelController()
     grieel_state_ = "gripper";
   }
 
-  // fake_contact.is_contact.resize(LIMB_NUM);
+  fake_contact.is_contact.resize(LIMB_NUM);
 }
 
 void HighLevelController::userCommandCallback(const std_msgs::msg::String & msg)
@@ -224,14 +224,14 @@ void HighLevelController::userCommandCallback(const std_msgs::msg::String & msg)
 void HighLevelController::interfaceCommandCallback(const std_msgs::msg::String & msg)
 {
   if(msg.data == "grieel_mode_transform"){
-    // uncomment during experiments until contact sensors available.
-    // fake_contact.is_contact.at(0) = true;
-    // fake_contact.is_contact.at(1) = true;
-    // fake_contact.is_contact.at(2) = true;
-    // fake_contact.is_contact.at(3) = true;
-    // fake_contact.header.stamp = this->now();
-    // fake_end_effector_contact_state_pub_->publish(fake_contact);
-    // std::cout << "pub fake contact" << std::endl;
+    //uncomment during experiments until contact sensors available.
+    fake_contact.is_contact.at(0) = true;
+    fake_contact.is_contact.at(1) = true;
+    fake_contact.is_contact.at(2) = true;
+    fake_contact.is_contact.at(3) = true;
+    fake_contact.header.stamp = this->now();
+    fake_end_effector_contact_state_pub_->publish(fake_contact);
+    std::cout << "pub fake contact" << std::endl;
 
     if((supporting_leg_polygon.end_effector_position.size() > 3)&&!(grieel_transformation_)){
       grieel_transformation_ = true;
@@ -343,16 +343,16 @@ void::HighLevelController::grieelTransformation()
     if((motion_package_end || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
 #endif //SIMULATION
 #if !SIMULATION
-    //if((single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
+    if((single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
 #endif //NOT IN SIMULATION
-      // for(int j=0; (j<LIMB_NUM) ; j++ ){
-      //   if(j==i){fake_contact.is_contact.at(i) = false;}
-      //   else{
-      //     fake_contact.is_contact.at(j) = true;
-      //   }
-      // }
-      // fake_contact.header.stamp = this->now();
-      // fake_end_effector_contact_state_pub_->publish(fake_contact);
+      for(int j=0; (j<LIMB_NUM) ; j++ ){
+        if(j==i){fake_contact.is_contact.at(i) = false;}
+        else{
+          fake_contact.is_contact.at(j) = true;
+        }
+      }
+      fake_contact.header.stamp = this->now();
+      fake_end_effector_contact_state_pub_->publish(fake_contact);
 
       motion_package_end = false;
       single_transform_end_ = false;
@@ -548,6 +548,12 @@ void HighLevelController::singleLegGrieelTransformation(
     }}});
   wait_thread.detach();
 #endif //NOT IN SIMULATION
+    fake_contact.is_contact.at(0) = true;
+    fake_contact.is_contact.at(1) = true;
+    fake_contact.is_contact.at(2) = true;
+    fake_contact.is_contact.at(3) = true;
+    fake_contact.header.stamp = this->now();
+    fake_end_effector_contact_state_pub_->publish(fake_contact);
 }
 
 void HighLevelController::grieelFinishCallback(const std_msgs::msg::String &grieel_finish_string){
@@ -586,12 +592,12 @@ void HighLevelController::grieelFinishCallback(const std_msgs::msg::String &grie
     limb_motion_pub_->publish(limb_motion_task);
 
 
-    // fake_contact.is_contact.at(0) = true;
-    // fake_contact.is_contact.at(1) = true;
-    // fake_contact.is_contact.at(2) = true;
-    // fake_contact.is_contact.at(3) = true;
-    // fake_contact.header.stamp = this->now();
-    // fake_end_effector_contact_state_pub_->publish(fake_contact);
+    fake_contact.is_contact.at(0) = true;
+    fake_contact.is_contact.at(1) = true;
+    fake_contact.is_contact.at(2) = true;
+    fake_contact.is_contact.at(3) = true;
+    fake_contact.header.stamp = this->now();
+    fake_end_effector_contact_state_pub_->publish(fake_contact);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3500));
     single_transform_end_ = true;

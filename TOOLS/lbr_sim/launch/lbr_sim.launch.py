@@ -56,6 +56,7 @@ def generate_launch_description():
 
     rviz_arg = DeclareLaunchArgument(name='rviz_config',
                                      default_value=str(rviz_config_path))
+    
     model_arg = DeclareLaunchArgument(name='model',
                                       default_value=str(model_path))
 
@@ -200,7 +201,8 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('ros_gz_sim'), 'launch'),
             '/gz_sim.launch.py']),
-        launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+        #launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+            launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
     )
 
     bridge_params = os.path.join(get_package_share_directory('lbr_description'),'config','gz_bridge.yaml')
@@ -229,5 +231,5 @@ def generate_launch_description():
         gazebo,
         ros_gz_bridge,
         gazebo_spawner,
-        kin_analysis_node,
+        #kin_analysis_node,
     ])

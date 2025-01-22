@@ -28,6 +28,17 @@ IndipendentJointController::IndipendentJointController()
   // Initialize controller gains and
   gravity_compensation = GRAVITY_COMPENSATION;
 
+  this->declare_parameter("wheel_mode", true);
+
+  bool wheel_mode;
+  this->get_parameter("wheel_mode", wheel_mode);
+
+  if(wheel_mode == true){
+    grieel_state_ = "wheel";
+  } else if(wheel_mode == false){
+    grieel_state_ = "gripper";
+  }
+
   for (int i=0; i < JOINT_NUM; i++){
     Kpp[i] = KPP[i];
     Kpv[i] = KPV[i];
@@ -58,6 +69,12 @@ IndipendentJointController::IndipendentJointController()
     if(i==2){
       reference_joint_state.position.at(i) = M_PI_2;
       reference_joint_state.velocity.at(i) = 0.0;
+    } else if(grieel_state_ == "wheel" && i==4){
+      reference_joint_state.position.at(i) = M_PI;
+      reference_joint_state.velocity.at(i) = 0.0;
+    } else if(grieel_state_ == "wheel" && i==5){
+      reference_joint_state.position.at(i) = M_PI_2;
+      reference_joint_state.velocity.at(i) = 0.0;  
     }
     else{
       reference_joint_state.position.at(i) = 0.0;
@@ -214,6 +231,9 @@ void IndipendentJointController::allEndEffectorContactStateCallback(
     if (contact_state.is_contact.at(limb_id) == true) {
       limb_in_contact++;
     }
+  }
+  if(limb_in_contact == 4){
+    start_control = true;
   }
 }
 

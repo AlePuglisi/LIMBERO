@@ -101,7 +101,7 @@
     <collision>
       <origin
         xyz="-0.014255 0 0"
-        rpy="0 0 0" />
+        rpy="-3.14159265358 0 0" />
       <geometry>
         <mesh
           filename="file://$(find lbr_description)/meshes/Grieel_wheel_mode/wristV_Link.STL" />
@@ -163,8 +163,8 @@
     </visual>
     <collision>
       <origin
-        xyz="-0.03325 0 0.024002"
-        rpy="0 0 0" />
+        xyz="0.024002  0 -0.03325 "
+        rpy="3.14159265358 -1.5708 0" />
       <geometry>
         <mesh
           filename="file://$(find lbr_description)/meshes/Grieel_wheel_mode/driving_Link.STL" />
@@ -226,8 +226,8 @@
     </visual>
     <collision name="${prefix}_wheel_Link_collision">
       <origin
-        xyz="-0.079017 0 0.010898"
-        rpy="0 0 0" />
+        xyz="0.010898 0 -0.079017"
+        rpy="0 -1.5708 3.14159265358" />
       <geometry>
         <mesh
           filename="file://$(find lbr_description)/meshes/Grieel_wheel_mode/wheel_Link.STL" />
@@ -261,19 +261,21 @@
 
     <!-- Gazebo plugin for contact sensor, collision name like that because of parsing errors in the urdf  -->
   <gazebo reference="${prefix}_wheel_Link">
-    <sensor name="${prefix}_gripper_bumper_sensor" type="contact">
-      <always_on>true</always_on>
-      <update_rate>100</update_rate>
-      <contact>
-        <collision>${prefix}_wheel_Link_collision_collision</collision>
-      </contact>
-      <plugin name="${prefix}_gripper_bumper" filename="libgazebo_ros_bumper.so">
-        <ros>
-          <namespace>${prefix}</namespace>
-        </ros>
-        <frame_name>${prefix}_wheel_link</frame_name>
-      </plugin>
+    <sensor name="sensor_contact" type="contact">
+        <contact>
+            <collision>${prefix}_wheel_Link_collision_collision</collision>
+        </contact>
     </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin filename="gz-sim-touchplugin-system" 
+                name="gz::sim::systems::TouchPlugin">
+        <target>ground_plane</target>
+        <namespace>${prefix}</namespace>
+        <time>0.001</time>
+        <enabled>true</enabled>
+    </plugin>
   </gazebo>
 
   </xacro:macro>

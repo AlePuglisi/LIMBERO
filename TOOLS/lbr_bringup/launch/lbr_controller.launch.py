@@ -54,7 +54,7 @@ def generate_launch_description():
             get_package_share_directory('lbr_indipendent_joint_controller'), 'launch'),
             '/lbr_indipendent_joint_controller.launch.py']
         ),
-        #launch_arguments= {'wheel_mode' : LaunchConfiguration('wheel_mode')}.items(),
+        launch_arguments= {'wheel_mode' : LaunchConfiguration('wheel_mode')}.items(),
     )
 
     lbr_state_estimator_node = Node(

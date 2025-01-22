@@ -83,12 +83,12 @@ private:
   void endEffectorContactStateCallback_RH(const std_msgs::msg::Bool & contact_state);
   void endEffectorContactStateCallback_RF(const std_msgs::msg::Bool & contact_state);
   void dynamixelContactStateCallback(const lbr_msgs::msg::SingleEndEffectorContactState & contact_state);
-  void checkingContact_LF();
-  void checkingContact_LH();
-  void checkingContact_RH();
-  void checkingContact_RF();
-  // void timerCallback();
-  // void fakeContactStateCallback(const lbr_msgs::msg::EndEffectorContactState &whole_contact_state);
+  // void checkingContact_LF();
+  // void checkingContact_LH();
+  // void checkingContact_RH();
+  // void checkingContact_RF();
+  void timerCallback();
+  void fakeContactStateCallback(const lbr_msgs::msg::EndEffectorContactState &whole_contact_state);
 
   // Publisher
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr encoder_joint_state_pub_LF_;
@@ -129,8 +129,8 @@ private:
   rclcpp::Subscription<lbr_msgs::msg::SingleEndEffectorContactState>::SharedPtr
     dynamixel_contact_state_sub_RF_;
 
-  // rclcpp::Subscription<lbr_msgs::msg::EndEffectorContactState>::SharedPtr
-  //   fake_contact_state_sub_;
+  rclcpp::Subscription<lbr_msgs::msg::EndEffectorContactState>::SharedPtr
+    fake_contact_state_sub_;
 
   // Variable
   std::vector<sensor_msgs::msg::JointState> encoder_joint_state;
@@ -141,16 +141,17 @@ private:
   //std::array<std::array<LowPassFilter, JOINT_NUM>, LIMB_NUM> joint_filters_;
   //std::array<std::array<SlewRateLimiter, JOINT_NUM>, LIMB_NUM> joint_limiters_;
   //double dt; // signal interval
-  // rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::TimerBase::SharedPtr timer_;
+  bool first_call_contact; 
 
-  bool checking_contact_LF; 
-  int count_contact_LF; 
-  bool checking_contact_LH; 
-  int count_contact_LH; 
-  bool checking_contact_RH; 
-  int count_contact_RH; 
-  bool checking_contact_RF; 
-  int count_contact_RF; 
+  // bool checking_contact_LF; 
+  // int count_contact_LF; 
+  // bool checking_contact_LH; 
+  // int count_contact_LH; 
+  // bool checking_contact_RH; 
+  // int count_contact_RH; 
+  // bool checking_contact_RF; 
+  // int count_contact_RF; 
 
 };
 
