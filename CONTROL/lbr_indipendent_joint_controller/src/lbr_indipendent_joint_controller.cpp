@@ -46,6 +46,10 @@ IndipendentJointController::IndipendentJointController()
     N[i] = GEARBOX_RATIO[i];
     torque_limit[i] = SATURATION[i];
   }
+  if(grieel_state_ == "wheel"){
+    Kpv[6] = 20.0;
+    Tiv[6] = 0.1;
+  }
 
   if(PID == 1){  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
     end_effector_contact_state_sub_LH_;
@@ -394,7 +398,11 @@ void IndipendentJointController::controlLoopPPI()
       }
 
       estimated_joint_velocity[i] = (1-(1/Tdf)*Ts*1e-3)*estimated_joint_velocity[i] + (1/Tdf)*(current_joint_state.position.at(i) - previous_joint_position[i]);
-
+     
+     if(grieel_state_ == "wheel"){
+        joint_velocity_reference[6] = reference_joint_state.velocity.at(6);
+        //estimated_joint_velocity[6] = current_joint_state.velocity.at(6);
+      }
 
       // tau(t) = kpv*(dq_d(t) - dq(t)) + Ts*(dq_d(t) - dq(t))*kpv/Tiv, Propodtional Integral controller + gravity compensation (to estimate)
       

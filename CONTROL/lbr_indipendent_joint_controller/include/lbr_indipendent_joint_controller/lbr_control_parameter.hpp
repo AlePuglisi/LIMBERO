@@ -16,7 +16,7 @@ constexpr float TIV[JOINT_NUM] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};           
 // constexpr float SATURATION[JOINT_NUM] = {15.0, 15.0, 15.0, 10.0, 8.0, 10.0, 6.0};
 
 constexpr float SATURATION[JOINT_NUM] = {16.0, 16.0, 10.0, 8.0, 5.0, 5.0, 5.0};
-constexpr float velocity_limit[JOINT_NUM] = {3.0, 5.0, 5.0, 4.0, 4.0, 4.0, 0.0};
+constexpr float velocity_limit[JOINT_NUM] = {3.0, 5.0, 5.0, 4.0, 4.0, 4.0, 4.0};
 
 // additional control paramater
 constexpr float WCP_F = 2.0; // [Hz] cut off frequency of reference position LP filter
