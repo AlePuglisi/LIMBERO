@@ -834,13 +834,13 @@ void LowLevelController::grieelDrivingConfigurationCallback(const std_msgs::msg:
 {
   std_msgs::msg::Int64 new_driving_configuration;
   int new_config = driving_configuration.data;
-  if (new_config == 0 || new_config == 1 || new_config == 2 || new_config == 3){
+  if (new_config == 0 || new_config == 1 || new_config == 2 || new_config == 3 || new_config == 4){
     new_driving_configuration.data = 0;
-  } else if (new_config == 10 || new_config == 11 || new_config == 12 || new_config == 13){
+  } else if (new_config == 10 || new_config == 11 || new_config == 12 || new_config == 13 || new_config == 14){
     new_driving_configuration.data = 1;
   }
 
-  if ((driving_configuration.data == 100) || (driving_configuration.data == -1)){
+  if ((driving_configuration.data == 100) || (driving_configuration.data == -1) || (driving_configuration.data == -100)){
     new_driving_configuration.data = driving_configuration.data;
     grieel_driving_mode_pub_LF_->publish(new_driving_configuration);
     grieel_driving_mode_pub_LH_->publish(new_driving_configuration);
@@ -853,6 +853,11 @@ void LowLevelController::grieelDrivingConfigurationCallback(const std_msgs::msg:
   } else if ((driving_configuration.data == 2) || (driving_configuration.data == 12)){
     grieel_driving_mode_pub_RH_->publish(new_driving_configuration);
   } else if ((driving_configuration.data == 3) || (driving_configuration.data == 13)){
+    grieel_driving_mode_pub_RF_->publish(new_driving_configuration);
+  } else if((driving_configuration.data == 4) || (driving_configuration.data == 14)){
+    grieel_driving_mode_pub_LF_->publish(new_driving_configuration);
+    grieel_driving_mode_pub_LH_->publish(new_driving_configuration);
+    grieel_driving_mode_pub_RH_->publish(new_driving_configuration);
     grieel_driving_mode_pub_RF_->publish(new_driving_configuration);
   }
 }

@@ -32,6 +32,7 @@ LimbController::LimbController()
   std::string name_space = std::string(this->get_namespace());
   driving = false;
   stop = true;
+  direction = 0; 
 
   this->declare_parameter("wheel_mode", true);
 
@@ -43,6 +44,8 @@ LimbController::LimbController()
   } else if(wheel_state == false){
     grieel_mode = "gripper";
   }
+
+  std::cout << name_space << " (LC) : wheel_mode:= " << wheel_state << std::endl; 
 
   // Publisher
   joint_state_pub_ = this->create_publisher<sensor_msgs::msg::JointState>(
@@ -265,6 +268,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
   double wristH;
   // define joint configuration for desired new Grieel mode
   if((driving_mode.data == 0)&&(grieel_mode == "wheel")){
+    std::cout << "Going to DRIVING MODE: " << stop << std::endl;   
     driving = true;
     if ((LIMB_ID == 0) || (LIMB_ID == 2)){
       wristH = 3*M_PI_4;
@@ -291,6 +295,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
     }
   }
   if((driving_mode.data == 1) && (grieel_mode == "wheel")){
+    std::cout << "Going to STANDARD MODE: " << stop << std::endl;   
     driving = false;
     if ((LIMB_ID == 0) || (LIMB_ID == 2)){
       wristH =  M_PI;
@@ -320,6 +325,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
   if (driving_mode.data == 100){
     stop = false;
     double driving_speed;
+    direction = 1; 
     if ((LIMB_ID == 0) || (LIMB_ID == 1)){
       driving_speed = 1;
     }
@@ -338,6 +344,37 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
           current_joint_state.header.stamp = this->now();
           joint_state_pub_->publish(current_joint_state);
           std::this_thread::sleep_for(std::chrono::milliseconds(15));
+          std::cout << "Current STOP state: " << stop << std::endl; 
+        }
+      });
+
+    drive_thread.detach();
+
+  //std::this_thread::sleep_for(std::chrono::seconds(3));
+  //PUBLISH A FEEDBACK
+  }
+  if (driving_mode.data == -100){
+    stop = false;
+    double driving_speed;
+    direction = -1; 
+    if ((LIMB_ID == 0) || (LIMB_ID == 1)){
+      driving_speed = 1;
+    }
+    if ((LIMB_ID == 2) || (LIMB_ID == 3)){
+      driving_speed = -1;
+    }
+    std::thread drive_thread([this, driving_speed](){
+        // sensor_msgs::msg::JointState temp_joint_state;
+        // temp_joint_state.position.resize(JOINT_NUM);
+        // temp_joint_state.velocity.resize(JOINT_NUM);
+        // temp_joint_state.position = current_joint_state.position;
+        // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
+        while(!stop){
+          current_joint_state.velocity.at(6) = direction*3.125*driving_speed;
+          // keep other joints position in the current state
+          current_joint_state.header.stamp = this->now();
+          joint_state_pub_->publish(current_joint_state);
+          std::this_thread::sleep_for(std::chrono::milliseconds(15));
         }
       });
 
@@ -348,7 +385,10 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
   }
   if(driving_mode.data == -1){
     stop = true;
+    std::cout << "Current STOP state: " << stop << std::endl; 
     current_joint_state.velocity.at(6) = 0.0;
+    current_joint_state.header.stamp = this->now();
+    joint_state_pub_->publish(current_joint_state);
   }
 }
 
@@ -510,18 +550,20 @@ sensor_msgs::msg::JointState LimbController::inverseKinematics(
   }
   if((driving) && (grieel_mode == "wheel")){
     if(!stop){
+      std::cout << "Sending IK DRIVING condition" << std::endl;
       if ((LIMB_ID == 0) || (LIMB_ID == 2)){
         joint_state.position.at(4) = 3*M_PI_4;
         joint_state.position.at(5) =  M_PI_2;
-        joint_state.velocity.at(6) = 3.125;
+        joint_state.velocity.at(6) = direction * 3.125;
       }
       if ((LIMB_ID == 1) || (LIMB_ID == 3)){
         joint_state.position.at(4) = - 3*M_PI_4;
         joint_state.position.at(5) =  M_PI_2;
-        joint_state.velocity.at(6) = -3.125;
+        joint_state.velocity.at(6) = direction * -3.125;
       }
     }
     if(stop){
+      std::cout << "Sending IK STOP condition" << std::endl;
       if ((LIMB_ID == 0) || (LIMB_ID == 2)){
         joint_state.position.at(4) =  3*M_PI_4;
         joint_state.position.at(5) =  M_PI_2;

@@ -251,7 +251,10 @@ void CommandInterface::execInputCommand(const std::string command)
   }  else if (command == "driving_forward_config_RF") {
     command_to_HLC_pub_->publish(msg);
     std::cout << "\033[32m INPUT ACCEPTED \033[m" << std::endl;
-  }  else if (command == "standard_config_LF") {
+  }  else if (command == "driving_forward_config_ALL") {
+    command_to_HLC_pub_->publish(msg);
+    std::cout << "\033[32m INPUT ACCEPTED \033[m" << std::endl;
+  }    else if (command == "standard_config_LF") {
     command_to_HLC_pub_->publish(msg);
     std::cout << "\033[32m INPUT ACCEPTED \033[m" << std::endl;
   }  else if (command == "standard_config_LH") {
@@ -263,10 +266,16 @@ void CommandInterface::execInputCommand(const std::string command)
   }  else if (command == "standard_config_RF") {
     command_to_HLC_pub_->publish(msg);
     std::cout << "\033[32m INPUT ACCEPTED \033[m" << std::endl;
+  }  else if (command == "standard_config_ALL") {
+    command_to_HLC_pub_->publish(msg);
+    std::cout << "\033[32m INPUT ACCEPTED \033[m" << std::endl;
   }    else if (command == "driving_forward") {
     command_to_HLC_pub_->publish(msg);
     std::cout << "\033[32m INPUT ACCEPTED \033[m" << std::endl;
-  } else if (command == "stop_driving_forward") {
+  }  else if (command == "driving_backward") {
+    command_to_HLC_pub_->publish(msg);
+    std::cout << "\033[32m INPUT ACCEPTED \033[m" << std::endl;
+  } else if (command == "stop_driving") {
     command_to_HLC_pub_->publish(msg);
     std::cout << "\033[32m INPUT ACCEPTED \033[m" << std::endl;
   } else if (command == "") {

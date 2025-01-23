@@ -33,7 +33,7 @@ IndipendentJointController::IndipendentJointController()
   bool wheel_mode;
   this->get_parameter("wheel_mode", wheel_mode);
 
-  std::cout << "IJC: wheel_mode:= " << wheel_mode << std::endl; 
+  std::cout << name_space << " (IJC) : wheel_mode:= " << wheel_mode << std::endl; 
   
   if(wheel_mode == true){
     grieel_state_ = "wheel";
@@ -401,8 +401,8 @@ void IndipendentJointController::controlLoopPPI()
 
       estimated_joint_velocity[i] = (1-(1/Tdf)*Ts*1e-3)*estimated_joint_velocity[i] + (1/Tdf)*(current_joint_state.position.at(i) - previous_joint_position[i]);
      
-     if(grieel_state_ == "wheel"){
-        joint_velocity_reference[6] = reference_joint_state.velocity.at(6);
+     if((i == 6) && (grieel_state_ == "wheel")){
+        joint_velocity_reference[i] = reference_joint_state.velocity.at(i);
         //estimated_joint_velocity[6] = current_joint_state.velocity.at(6);
       }
 

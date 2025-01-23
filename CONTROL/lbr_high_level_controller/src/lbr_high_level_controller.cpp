@@ -292,6 +292,12 @@ void HighLevelController::interfaceCommandCallback(const std_msgs::msg::String &
     driving_configuration.data = 3;
     grieel_driving_configuration_pub_->publish(driving_configuration);
   }
+  if(msg.data == "driving_forward_config_ALL"){
+    std_msgs::msg::Int64 driving_configuration;
+    driving_configuration.data = 4;
+    grieel_driving_configuration_pub_->publish(driving_configuration);
+  }
+
 
   if(msg.data == "standard_config_LF"){
     std_msgs::msg::Int64 driving_configuration;
@@ -313,15 +319,25 @@ void HighLevelController::interfaceCommandCallback(const std_msgs::msg::String &
     driving_configuration.data = 13;
     grieel_driving_configuration_pub_->publish(driving_configuration);
   }
+  if(msg.data == "standard_config_ALL"){
+    std_msgs::msg::Int64 driving_configuration;
+    driving_configuration.data = 14;
+    grieel_driving_configuration_pub_->publish(driving_configuration);
+  }
 
   if(msg.data == "driving_forward"){
     std_msgs::msg::Int64 driving_configuration;
     driving_configuration.data = 100;
     grieel_driving_configuration_pub_->publish(driving_configuration);
   }
-  if(msg.data == "stop_driving_forward"){
+  if(msg.data == "stop_driving"){
     std_msgs::msg::Int64 driving_configuration;
     driving_configuration.data = -1;
+    grieel_driving_configuration_pub_->publish(driving_configuration);
+  }
+  if(msg.data == "driving_backward"){
+    std_msgs::msg::Int64 driving_configuration;
+    driving_configuration.data = -100;
     grieel_driving_configuration_pub_->publish(driving_configuration);
   }
 }

@@ -145,6 +145,7 @@ private:
   std::string grieel_mode; // store current grieel mode (needed in inv kin to keep correct Grieel joints)
   bool driving;
   bool stop;
+  int direction; 
   bool enable_rviz_debug;
 
 
