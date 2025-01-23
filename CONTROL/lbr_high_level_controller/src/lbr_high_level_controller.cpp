@@ -94,6 +94,7 @@ HighLevelController::HighLevelController()
   bool wheel_mode;
   this->get_parameter("wheel_mode", wheel_mode);
 
+  std::cout << "HLC: wheel_mode:= " << wheel_mode << std::endl; 
   if(wheel_mode == true){
     grieel_state_ = "wheel";
   } else if(wheel_mode == false){

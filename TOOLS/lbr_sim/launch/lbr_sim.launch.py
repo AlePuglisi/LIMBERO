@@ -68,7 +68,7 @@ def generate_launch_description():
                                                 LaunchConfiguration('model'), ' wheel_mode:=', LaunchConfiguration('wheel_mode')]),
                                        value_type=str)
 
-    # world_file_name = "mars.world"
+    # world_file_name = "mars.sdf"
     # world_path = os.path.join(get_package_share_directory('lbr_sim'), 'worlds', world_file_name)
 
     robot_description_command = ['xacro ', xacro_path, ' wheel_mode:=', LaunchConfiguration('wheel_mode')]
@@ -77,7 +77,7 @@ def generate_launch_description():
     default_world = os.path.join(
         get_package_share_directory('lbr_sim'),
         'worlds',
-        'empty.world'
+        'empty.sdf'
         )    
     world = LaunchConfiguration('world')
     world_arg = DeclareLaunchArgument(
@@ -221,7 +221,7 @@ def generate_launch_description():
         world_arg,
         rviz_arg,
         wheel_mode_arg,
-        joint_state_publisher_node,
+        #joint_state_publisher_node,
         robot_state_publisher_node,
         rviz_node,
         lbr_sim_node,
