@@ -268,8 +268,8 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
   double wristH;
   // define joint configuration for desired new Grieel mode
   if((driving_mode.data == 0)&&(grieel_mode == "wheel")){
-    std::cout << "Going to DRIVING MODE: " << stop << std::endl;   
     driving = true;
+    std::cout << "Going to DRIVING MODE: " << driving << "with stop = " << stop << std::endl;   
     if ((LIMB_ID == 0) || (LIMB_ID == 2)){
       wristH = 3*M_PI_4;
     }
@@ -344,7 +344,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
           current_joint_state.header.stamp = this->now();
           joint_state_pub_->publish(current_joint_state);
           std::this_thread::sleep_for(std::chrono::milliseconds(15));
-          std::cout << "Current STOP state: " << stop << std::endl; 
+          //std::cout << "Current STOP state: " << stop << std::endl; 
         }
       });
 
@@ -385,7 +385,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
   }
   if(driving_mode.data == -1){
     stop = true;
-    std::cout << "Current STOP state: " << stop << std::endl; 
+    //std::cout << "Current STOP state: " << stop << std::endl; 
     current_joint_state.velocity.at(6) = 0.0;
     current_joint_state.header.stamp = this->now();
     joint_state_pub_->publish(current_joint_state);
