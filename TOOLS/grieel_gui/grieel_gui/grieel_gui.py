@@ -13,13 +13,25 @@ class ROS2Node(Node):
 
     def __init__(self):
         super().__init__("gui_publisher_node")
-        self.publisher = self.create_publisher(String, "button_click_topic", 10)
+        self.publisher_LF_grieel_command = self.create_publisher(String, "/LF/lbr_low_level_controller/grieel_command", 10)
+        self.publisher_LH_grieel_command = self.create_publisher(String, "/LH/lbr_low_level_controller/grieel_command", 10)
+        self.publisher_RH_grieel_command = self.create_publisher(String, "/RH/lbr_low_level_controller/grieel_command", 10)
+        self.publisher_RF_grieel_command = self.create_publisher(String, "/RF/lbr_low_level_controller/grieel_command", 10)
 
     def publish_message(self, message):
         """Publish a message to the topic."""
+        msg_parts = message.split()
         msg = String()
-        msg.data = message
-        self.publisher.publish(msg)
+        msg.data = msg_parts[1]
+        if msg_parts[0] == 'LF':
+            self.publisher_LF_grieel_command.publish(msg)
+        if msg_parts[0] == 'LH':
+            self.publisher_LH_grieel_command.publish(msg)
+        if msg_parts[0] == 'RH':
+            self.publisher_RH_grieel_command.publish(msg)
+        if msg_parts[0] == 'RF':
+            self.publisher_RF_grieel_command.publish(msg)
+
         self.get_logger().info(f"Published message: {message}")
 
 
@@ -53,14 +65,14 @@ class GUIApp:
         
         # Add image buttons
         self.buttons_data = [
-            {"image_path": os.path.join(package_path, "WheelLF.png"), "message": "Wheel LF Pressed", "x": 90, "y": 230},
-            {"image_path": os.path.join(package_path, "GripperLF.png"), "message": "Gripper LF Pressed", "x": 260, "y": 60},
-            {"image_path": os.path.join(package_path, "WheelLH.png"), "message": "Wheel LH  Pressed", "x":90 , "y":900 },
-            {"image_path": os.path.join(package_path, "GripperLH.png"), "message": "Gripper LH Pressed", "x": 260, "y": 1070},
-            {"image_path": os.path.join(package_path, "WheelRH.png"), "message": "Wheel RH Pressed", "x":1040 , "y": 900 },
-            {"image_path": os.path.join(package_path, "GripperRH.png"), "message": "Gripper RH Pressed", "x": 870, "y": 1070},
-            {"image_path": os.path.join(package_path, "WheelRF.png"), "message": "Wheel RF Pressed", "x": 1040, "y": 230},
-            {"image_path": os.path.join(package_path, "GripperRF.png"), "message": "Gripper RF Pressed", "x": 870, "y": 60},
+            {"image_path": os.path.join(package_path, "WheelLF.png"), "message": "LF wheel", "x": 90, "y": 230},
+            {"image_path": os.path.join(package_path, "GripperLF.png"), "message": "LF gripper", "x": 260, "y": 60},
+            {"image_path": os.path.join(package_path, "WheelLH.png"), "message": "LH wheel", "x":90 , "y":900 },
+            {"image_path": os.path.join(package_path, "GripperLH.png"), "message": "LH gripper", "x": 260, "y": 1070},
+            {"image_path": os.path.join(package_path, "WheelRH.png"), "message": "RH wheel", "x":1040 , "y": 900 },
+            {"image_path": os.path.join(package_path, "GripperRH.png"), "message": "RH gripper", "x": 870, "y": 1070},
+            {"image_path": os.path.join(package_path, "WheelRF.png"), "message": "RF wheel", "x": 1040, "y": 230},
+            {"image_path": os.path.join(package_path, "GripperRF.png"), "message": "RF gripper", "x": 870, "y": 60},
         ]
         self.buttons = []  # To store buttons
 
