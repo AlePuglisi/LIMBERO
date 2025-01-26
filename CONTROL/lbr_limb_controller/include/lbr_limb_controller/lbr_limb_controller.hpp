@@ -108,6 +108,7 @@ private:
   bool checkJointLimit(const sensor_msgs::msg::JointState & joint_state);
   void publishGripperCommand(const std_msgs::msg::Bool execute_grasping);
   void publishEndEffectorTrajectory();
+  std::array<float, 6> computeFifthOrderTraj(float q0, float Dq, float T);
 
   rclcpp::TimerBase::SharedPtr timer_;
 

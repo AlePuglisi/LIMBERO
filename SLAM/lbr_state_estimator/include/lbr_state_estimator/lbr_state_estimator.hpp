@@ -40,6 +40,11 @@
 #include <lbr_parameter.hpp>
 #include "lbr_msgs/msg/end_effector_contact_state.hpp"
 
+// #include "tf2_ros/transform_broadcaster.h"
+// #include "geometry_msgs/msg/transform_stamped.hpp"
+// #include "nav_msgs/msg/odometry.hpp"
+
+
 class StateEstimator : public rclcpp::Node
 {
 public:
@@ -85,6 +90,7 @@ private:
    */
   void calculateSupportingLegPolygon();
   void markerInitialization();
+  // void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
 
   // Publisher
   rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr imu_accel_pub_;  // Publish to RViz
@@ -134,6 +140,8 @@ private:
   rclcpp::Subscription<lbr_msgs::msg::EndEffectorContactState>::SharedPtr
     end_effector_contact_state_sub_;
 
+  // rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr  odom_subscription_;
+
   std::vector<sensor_msgs::msg::JointState> lbr_joint_state;
   std::vector<lbr_msgs::msg::EndEffectorPoseFourDof> lbr_EE_pose;
   std::vector<geometry_msgs::msg::WrenchStamped> gripper_force_torque;
@@ -152,6 +160,7 @@ private:
 
   std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
+  // std::shared_ptr<tf2_ros::TransformBroadcaster>tf_broadcaster_;
 
   bool close_option;
   bool open_state;
@@ -162,6 +171,8 @@ private:
   const int max_count_num;
   int option;
   int offset_condition;
+
+  // bool base_link_found; 
 
   std::vector<Eigen::Vector3d,
   Eigen::aligned_allocator<Eigen::Vector3d>> force;

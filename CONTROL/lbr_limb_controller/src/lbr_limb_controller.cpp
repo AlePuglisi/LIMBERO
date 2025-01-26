@@ -78,6 +78,7 @@ LimbController::LimbController()
   driving_mode_sub_ = this->create_subscription<std_msgs::msg::Int64>(
     std::string(this->get_namespace()) + "/lbr_low_level_controller/grieel_driving_command", 1,
     std::bind(&LimbController::drivingModeCallback, this, std::placeholders::_1));
+
   // TODO(KT): Change encoder FB part for smooth motion
   encoder_joint_state_sub_ = this->create_subscription<sensor_msgs::msg::JointState>(
     std::string(this->get_namespace()) + "/lbr_dynamixel_controller/encoder_joint_state", 1,
@@ -126,14 +127,27 @@ LimbController::LimbController()
   current_joint_state.position.resize(JOINT_NUM);
   current_joint_state.velocity.resize(JOINT_NUM);
   current_joint_state.name.resize(JOINT_NUM);
-  current_joint_state.name.at(0) = joint_prefix + "_Joint1";
-  current_joint_state.name.at(1) = joint_prefix + "_Joint2";
-  current_joint_state.name.at(2) = joint_prefix + "_Joint3";
-  current_joint_state.name.at(3) = joint_prefix + "_Joint4";
-  current_joint_state.name.at(4) = joint_prefix + "_Joint5";
-  current_joint_state.name.at(5) = joint_prefix + "_Joint6";
-  current_joint_state.name.at(6) = joint_prefix + "_Joint7";
+  current_joint_state.name.at(0) = joint_prefix + "_B2C";
+  current_joint_state.name.at(1) = joint_prefix + "_C2F";
+  current_joint_state.name.at(2) = joint_prefix + "_F2T";
+  current_joint_state.name.at(3) = joint_prefix + "_T2E";
+  current_joint_state.name.at(4) = joint_prefix + "_wristH";
+  current_joint_state.name.at(5) = joint_prefix + "_wristV";
+  current_joint_state.name.at(6) = joint_prefix + "_driving";
   current_joint_state.header.frame_id = this->get_namespace();
+
+  current_joint_state.position.at(0) = 0.0;
+  current_joint_state.position.at(1) = 0.0;
+  current_joint_state.position.at(2) = 0.0;
+  current_joint_state.position.at(3) = 0.0;
+  if(grieel_mode == "gripper"){
+    current_joint_state.position.at(4) = 0.0;
+    current_joint_state.position.at(5) = 0.0;
+  } else if(grieel_mode == "wheel"){
+    current_joint_state.position.at(4) = M_PI;
+    current_joint_state.position.at(5) = M_PI_2;   
+  }
+  current_joint_state.position.at(6) = 0.0;
 
   // TODO(KT): Separate visualization to different class for clarity.
   target_EE_position.header.frame_id = joint_prefix + "_limb_root";
@@ -219,6 +233,20 @@ void LimbController::gripperCommandCallback(const std_msgs::msg::Bool & execute_
   gripper_state_text_pub_->publish(gripper_state_text);
 }
 
+std::array<float, 6> LimbController::computeFifthOrderTraj(float q0, float Dq, float T)
+{
+  std::array<float, 6>  coefficients;
+  coefficients[0] = q0;
+  coefficients[1] = 0.0; 
+  coefficients[2] = 0.0; 
+  coefficients[3] = 20 * Dq / (2 * std::pow(T,3));
+  coefficients[4] = -30 * Dq / (2 * std::pow(T,4));
+  coefficients[5] = 12 * Dq / (2 * std::pow(T,5));
+
+  return coefficients;
+}
+
+
 void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grieel_mode)
 {
   grieel_mode = new_grieel_mode.data;
@@ -238,25 +266,40 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
     wristH = 0;
     wristV = 0;
   }
+  
+  std::string name_space = std::string(this->get_namespace());
+  std::cout << name_space << " Transforming into " << new_grieel_mode.data << " mode" << std::endl;
 
   sensor_msgs::msg::JointState temp_joint_state;
   temp_joint_state.position.resize(JOINT_NUM);
   temp_joint_state.velocity.resize(JOINT_NUM);
   temp_joint_state.position = current_joint_state.position;
+
   double delta_wristH = wristH - temp_joint_state.position.at(4);
   double delta_wristV = wristV - temp_joint_state.position.at(5);
+  double delta_T_wristH = abs(delta_wristH / MAX_WRIST_VEL);  
+  double delta_T_wristV = abs(delta_wristV / MAX_WRIST_VEL);  
+  double initial_time = this->now().seconds();
+  double current_time = this->now().seconds();
+  std::array<float, 6>  a_wristH = computeFifthOrderTraj(temp_joint_state.position.at(4),delta_wristH, delta_T_wristH);
+  std::array<float, 6>  a_wristV = computeFifthOrderTraj(temp_joint_state.position.at(5),delta_wristV, delta_T_wristV);
+  double dt = 0.0; 
+
+  std::cout << name_space << " Going from WristH: " << temp_joint_state.position.at(4) << "to final wristH:" << wristH << "in" << delta_T_wristH << std::endl;
+  std::cout << name_space << " Going from WristV: " << temp_joint_state.position.at(5) << "to final wristV:" << wristV << "in" << delta_T_wristV << std::endl;
   // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
-  for(float i = 0.01; i<=1; i+=0.01){
-    current_joint_state.position.at(4) = temp_joint_state.position.at(4) + delta_wristH*i;
-    current_joint_state.position.at(5) = temp_joint_state.position.at(5) + delta_wristV*i;
+  while(!(current_time > initial_time + delta_T_wristH) || !(current_time > initial_time + delta_T_wristV)){
+    current_time = this->now().seconds();
+    dt = current_time - initial_time;
+    current_joint_state.position.at(4) = a_wristH[0] + a_wristH[1]*dt + a_wristH[2]*std::pow(dt,2) + a_wristH[3]*std::pow(dt,3) + a_wristH[4]*std::pow(dt,4) + a_wristH[5]*std::pow(dt,5);
+    current_joint_state.position.at(5) = a_wristV[0] + a_wristV[1]*dt + a_wristV[2]*std::pow(dt,2)+ a_wristV[3]*std::pow(dt,3) + a_wristV[4]*std::pow(dt,4) + a_wristV[5]*std::pow(dt,5);
     current_joint_state.velocity.at(6) = 0.0;
     // keep other joints position in the current state
     current_joint_state.header.stamp = this->now();
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(25)); // small sleep to avoid step like trajectory signal
-
     joint_state_pub_->publish(current_joint_state);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10)); // small sleep to avoid step like trajectory signal
   }
+  std::cout << name_space << " Finish" << new_grieel_mode.data << " mode Transformation" << std::endl;
   //std::this_thread::sleep_for(std::chrono::seconds(3));
   std_msgs::msg::String grieel_joint_finish;
   grieel_joint_finish.data = grieel_mode;
@@ -274,24 +317,29 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
       wristH = 3*M_PI_4;
     }
     if ((LIMB_ID == 1) || (LIMB_ID == 3)){
-      wristH = -3*M_PI_4;
+      wristH = M_PI_4;
     }
     sensor_msgs::msg::JointState temp_joint_state;
     temp_joint_state.position.resize(JOINT_NUM);
     temp_joint_state.velocity.resize(JOINT_NUM);
     temp_joint_state.position = current_joint_state.position;
     double delta_wristH = wristH - temp_joint_state.position.at(4);
+    double delta_T_wristH = abs(delta_wristH / MAX_WRIST_VEL);  
+    double initial_time = this->now().seconds();
+    double current_time = this->now().seconds();
+    std::array<float, 6>  a_wristH = computeFifthOrderTraj(temp_joint_state.position.at(4), delta_wristH, delta_T_wristH);
+    double dt = 0.0; 
     // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
-    for(float i = 0.01; i<=1; i+=0.01){
-      current_joint_state.position.at(4) = temp_joint_state.position.at(4) + delta_wristH*i;
+    while(!(current_time > initial_time + delta_T_wristH)){
+      current_time = this->now().seconds();
+      dt = current_time - initial_time;
+      current_joint_state.position.at(4) = a_wristH[0] + a_wristH[1]*dt + a_wristH[2]*std::pow(dt,2) + a_wristH[3]*std::pow(dt,3) + a_wristH[4]*std::pow(dt,4) + a_wristH[5]*std::pow(dt,5);
       current_joint_state.position.at(5) = M_PI_2;
       current_joint_state.velocity.at(6) = 0.0;
       // keep other joints position in the current state
       current_joint_state.header.stamp = this->now();
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(25)); // small sleep to avoid step like trajectory signal
-
       joint_state_pub_->publish(current_joint_state);
+      std::this_thread::sleep_for(std::chrono::milliseconds(10)); // small sleep to avoid step like trajectory signal
     }
   }
   if((driving_mode.data == 1) && (grieel_mode == "wheel")){
@@ -309,16 +357,22 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
     temp_joint_state.position = current_joint_state.position;
     double delta_wristH = wristH - temp_joint_state.position.at(4);
     // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
-    for(float i = 0.01; i<=1; i+=0.01){
-      current_joint_state.position.at(4) = temp_joint_state.position.at(4) + delta_wristH*i;
+    double delta_T_wristH = abs(delta_wristH / MAX_WRIST_VEL);  
+    double initial_time = this->now().seconds();
+    double current_time = this->now().seconds();
+    std::array<float, 6>  a_wristH = computeFifthOrderTraj(temp_joint_state.position.at(4), delta_wristH, delta_T_wristH);
+    double dt = 0.0; 
+    // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
+    while(!(current_time > initial_time + delta_T_wristH)){
+      current_time = this->now().seconds();
+      dt = current_time - initial_time;
+      current_joint_state.position.at(4) = a_wristH[0] + a_wristH[1]*dt + a_wristH[2]*std::pow(dt,2) + a_wristH[3]*std::pow(dt,3) + a_wristH[4]*std::pow(dt,4) + a_wristH[5]*std::pow(dt,5);
       current_joint_state.position.at(5) = M_PI_2;
       current_joint_state.velocity.at(6) = 0.0;
       // keep other joints position in the current state
       current_joint_state.header.stamp = this->now();
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(25)); // small sleep to avoid step like trajectory signal
-
       joint_state_pub_->publish(current_joint_state);
+      std::this_thread::sleep_for(std::chrono::milliseconds(10)); // small sleep to avoid step like trajectory signal
     }
   }
 
@@ -415,7 +469,7 @@ void LimbController::encoderJointStateCallback(
 
 bool LimbController::updateJointState(const sensor_msgs::msg::JointState & next_joint_state)
 {
-  const double angle_threshold = 0.01;  // [rad]
+  const double angle_threshold = 0.005;  // [rad]
   bool update_joint_state = false;
 
   for (int i = 0; i < JOINT_NUM; i++) {

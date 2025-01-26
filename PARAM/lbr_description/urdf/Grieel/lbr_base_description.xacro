@@ -58,14 +58,14 @@
         </material>
       </visual>
     </gazebo>
-
+<!-- 
     <link name="base_frame"/>
 
     <joint name="base_frame_joint" type="fixed">
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <parent link="base_link" />
         <child link="base_frame" /> 
-    </joint>
+    </joint> -->
 
   </xacro:macro>
 </robot>

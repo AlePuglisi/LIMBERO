@@ -45,6 +45,8 @@ constexpr double JOINT6_LOWER = -0.25*M_PI;
 constexpr double JOINT7_UPPER = INFINITY;
 constexpr double JOINT7_LOWER = -INFINITY;
 
+constexpr double MAX_WRIST_VEL = M_PI; //[rad/s]
+
 
 // dynamic model parameter and DH parameter, all based on URDF2DH
 constexpr double BODY_MASS = 3.1152;

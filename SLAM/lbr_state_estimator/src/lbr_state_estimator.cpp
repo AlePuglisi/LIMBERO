@@ -135,6 +135,11 @@ StateEstimator::StateEstimator()
     "/lbr_sim/contact_state", 1,
     std::bind(&StateEstimator::endEffectorContactStateCallback, this, std::placeholders::_1));
 
+  // Create a subscriber to the odometry topic
+  // odom_subscription_ = this->create_subscription<nav_msgs::msg::Odometry>(
+  //       "limbero/odometry", 10,
+  //       std::bind(&StateEstimator::odomCallback, this, std::placeholders::_1));
+
   lbr_joint_state.resize(LIMB_NUM);
   for (int i = 0; i < LIMB_NUM; i++) {
     lbr_joint_state.at(i).position.resize(JOINT_NUM);
@@ -178,8 +183,11 @@ StateEstimator::StateEstimator()
 
   lbr_end_effector_contact_state.is_contact.resize(LIMB_NUM);
 
+  // base_link_found = false; 
+
   tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+  // tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(*this);
 
   markerInitialization();
 
@@ -586,9 +594,40 @@ void StateEstimator::calculateSupportingLegPolygon()
     for (int i = 0; i < supporting_limb_numbers.size(); i++) {
       contact_EE_pose_in_limb_coordinate = lbr_EE_pose.at(supporting_limb_numbers(i, 0));
       std::string source_frame = supporting_limb_names.at(i) + "_limb_root";
+      
       geometry_msgs::msg::TransformStamped tf_msg_base_to_limb_root;
-      tf_msg_base_to_limb_root = tf_buffer_->lookupTransform(
-        target_frame, source_frame, tf2::TimePointZero);
+
+      // tf_msg_base_to_limb_root = tf_buffer_->lookupTransform(
+      //   target_frame, source_frame, tf2::TimePointZero);
+      bool transform_found = false;
+      // base_link_found = false; 
+      const std::chrono::duration<int64_t, std::milli> wait_duration(100);  // Wait 100 ms between retries
+      const std::chrono::duration<int64_t, std::milli> total_timeout(5000); // Total timeout of 5 seconds
+      auto start_time = std::chrono::steady_clock::now();
+
+      while (!transform_found) {
+          // Check if the transform is available
+          if (tf_buffer_->canTransform(target_frame, source_frame, tf2::TimePointZero)) {
+            try {
+              tf_msg_base_to_limb_root = tf_buffer_->lookupTransform(
+                target_frame, source_frame, tf2::TimePointZero);
+              transform_found = true; // Transform successfully found
+              // base_link_found = true; 
+            } catch (tf2::TransformException &ex) {
+              RCLCPP_WARN(rclcpp::get_logger("TransformLookup"),
+                          "TransformException: %s. Retrying...", ex.what());
+            }
+          } else {
+            auto elapsed_time = std::chrono::steady_clock::now() - start_time;
+            if (elapsed_time > total_timeout) {
+              RCLCPP_ERROR(rclcpp::get_logger("TransformLookup"),
+                          "Timeout while waiting for transform from %s to %s",
+                          source_frame.c_str(), target_frame.c_str());
+              throw std::runtime_error("Transform lookup timeout");
+            }
+            std::this_thread::sleep_for(wait_duration);
+        }
+      }
 
       tf2::Transform tf_base_to_limb_root;
       tf2::convert(tf_msg_base_to_limb_root.transform, tf_base_to_limb_root);
@@ -699,6 +738,36 @@ void StateEstimator::calculateSupportingLegPolygon()
   supporting_leg_triangle_pub_->publish(supporting_leg_triangle);
   supporting_leg_triangle_points_pub_->publish(supporting_leg_triangle_points);
 }
+
+// void StateEstimator::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
+// {
+//         // Create a TransformStamped message
+//         geometry_msgs::msg::TransformStamped transform_stamped;
+//         if(base_link_found == true){
+//           // Fill in the transform
+//           transform_stamped.header.stamp = msg->header.stamp;
+//           transform_stamped.header.frame_id = msg->header.frame_id; // "odom"
+//           transform_stamped.child_frame_id = msg->child_frame_id;   // "base_link"
+
+//           // Copy the position
+//           transform_stamped.transform.translation.x = msg->pose.pose.position.x;
+//           transform_stamped.transform.translation.y = msg->pose.pose.position.y;
+//           transform_stamped.transform.translation.z = msg->pose.pose.position.z;
+
+//           // Copy the orientation
+//           transform_stamped.transform.rotation = msg->pose.pose.orientation;
+
+//             // Broadcast the transform
+            
+//           tf_broadcaster_->sendTransform(transform_stamped);
+//         }
+
+// #if DEBUG_ENABLED
+//         RCLCPP_INFO(this->get_logger(), "Broadcasting transform: %s -> %s",
+//                     transform_stamped.header.frame_id.c_str(),
+//                     transform_stamped.child_frame_id.c_str());
+// #endif
+// }
 
 int main(int argc, char ** argv)
 {

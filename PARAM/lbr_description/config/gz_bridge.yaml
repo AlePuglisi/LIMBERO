@@ -4,6 +4,13 @@
   gz_type_name: "gz.msgs.Clock"
   direction: GZ_TO_ROS
 
+# map from gz to ros topic for odometry
+# - ros_topic_name: "limbero/odometry"
+#   gz_topic_name: "/model/LIMBERO/odometry"
+#   ros_type_name: "nav_msgs/msg/Odometry"
+#   gz_type_name: "gz.msgs.Odometry"
+#   direction: GZ_TO_ROS
+
 # gz topic published by JointState plugin 
 - ros_topic_name: "/joint_states"
   gz_topic_name: "/joint_states"

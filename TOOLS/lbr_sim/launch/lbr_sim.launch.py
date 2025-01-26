@@ -106,6 +106,23 @@ def generate_launch_description():
         executable='robot_state_publisher',
         parameters=[{'robot_description': Command(robot_description_command)}]
     )
+    
+    # static_base_tf = Node(
+    #         package='tf2_ros', 
+    #         executable='static_transform_publisher', 
+    #         name='static_transform_publisher',
+    #         output='screen',
+    #         arguments=[
+    #             '1.0',   # x translation
+    #             '0.0',   # y translation
+    #             '0.0',   # z translation
+    #             '0.0',   # roll rotation
+    #             '0.0',   # pitch rotation
+    #             '0.0',   # yaw rotation
+    #             'LF_limb_root',  # parent frame
+    #             'base_link'       # child frame
+    #         ]
+    #     ),
 
     kin_analysis_node = Node(
         package='kin_analysis',

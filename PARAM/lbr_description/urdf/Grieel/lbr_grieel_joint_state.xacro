@@ -18,7 +18,6 @@
 
             <!-- <update_rate>500</update_rate> -->
             <topic>/joint_states</topic>
-            <!-- <joint_name>world_base</joint_name> -->
 
             <joint_name>LF_B2C</joint_name>
             <joint_name>LF_C2F</joint_name>
