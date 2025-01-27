@@ -263,8 +263,8 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
     }
     wristV = M_PI_2;
   } else if(new_grieel_mode.data == "gripper"){
-    wristH = 0;
-    wristV = 0;
+    wristH = 0.0;
+    wristV = 0.0;
   }
   
   std::string name_space = std::string(this->get_namespace());
@@ -291,8 +291,12 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
   while(!(current_time > initial_time + delta_T_wristH) || !(current_time > initial_time + delta_T_wristV)){
     current_time = this->now().seconds();
     dt = current_time - initial_time;
-    current_joint_state.position.at(4) = a_wristH[0] + a_wristH[1]*dt + a_wristH[2]*std::pow(dt,2) + a_wristH[3]*std::pow(dt,3) + a_wristH[4]*std::pow(dt,4) + a_wristH[5]*std::pow(dt,5);
-    current_joint_state.position.at(5) = a_wristV[0] + a_wristV[1]*dt + a_wristV[2]*std::pow(dt,2)+ a_wristV[3]*std::pow(dt,3) + a_wristV[4]*std::pow(dt,4) + a_wristV[5]*std::pow(dt,5);
+    if(current_time < initial_time + delta_T_wristH){
+      current_joint_state.position.at(4) = a_wristH[0] + a_wristH[1]*dt + a_wristH[2]*std::pow(dt,2) + a_wristH[3]*std::pow(dt,3) + a_wristH[4]*std::pow(dt,4) + a_wristH[5]*std::pow(dt,5);
+    }
+    if(current_time < initial_time + delta_T_wristV){
+        current_joint_state.position.at(5) = a_wristV[0] + a_wristV[1]*dt + a_wristV[2]*std::pow(dt,2)+ a_wristV[3]*std::pow(dt,3) + a_wristV[4]*std::pow(dt,4) + a_wristV[5]*std::pow(dt,5);
+    }
     current_joint_state.velocity.at(6) = 0.0;
     // keep other joints position in the current state
     current_joint_state.header.stamp = this->now();
@@ -317,7 +321,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
       wristH = 3*M_PI_4;
     }
     if ((LIMB_ID == 1) || (LIMB_ID == 3)){
-      wristH = M_PI_4;
+      wristH = -3*M_PI_4;
     }
     sensor_msgs::msg::JointState temp_joint_state;
     temp_joint_state.position.resize(JOINT_NUM);

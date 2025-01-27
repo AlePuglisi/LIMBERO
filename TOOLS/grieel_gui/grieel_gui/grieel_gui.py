@@ -17,8 +17,11 @@ class ROS2Node(Node):
         self.publisher_LH_grieel_command = self.create_publisher(String, "/LH/lbr_low_level_controller/grieel_command", 10)
         self.publisher_RH_grieel_command = self.create_publisher(String, "/RH/lbr_low_level_controller/grieel_command", 10)
         self.publisher_RF_grieel_command = self.create_publisher(String, "/RF/lbr_low_level_controller/grieel_command", 10)
+    
+        self.publisher_driving_command = self.create_publisher(String, "/string", 10)
 
-    def publish_message(self, message):
+
+    def publish_transform_message(self, message):
         """Publish a message to the topic."""
         msg_parts = message.split()
         msg = String()
@@ -33,6 +36,29 @@ class ROS2Node(Node):
             self.publisher_RF_grieel_command.publish(msg)
 
         self.get_logger().info(f"Published message: {message}")
+
+    def publish_driving_message(self, message):
+        """Publish a message to the topic."""
+        msg = String()
+        if message == 'driving':
+            msg.data = "driving_forward_config_ALL"
+            self.publisher_driving_command.publish(msg)
+        if message == 'standard':
+            msg.data = "standard_config_ALL"
+            self.publisher_driving_command.publish(msg)
+        if message == 'forward':
+            msg.data = "driving_forward"
+            self.publisher_driving_command.publish(msg)
+        if message == 'backward':
+            msg.data = "driving_backward"
+            self.publisher_driving_command.publish(msg)
+        if message == 'stop':
+            msg.data = "stop_driving"
+            self.publisher_driving_command.publish(msg)
+
+
+        self.get_logger().info(f"Published message: {message}")
+        
 
 
 class GUIApp:
@@ -64,7 +90,7 @@ class GUIApp:
         self.load_background_image(self.image_paths[self.current_image_index])
         
         # Add image buttons
-        self.buttons_data = [
+        self.buttons_transform_data = [
             {"image_path": os.path.join(package_path, "WheelLF.png"), "message": "LF wheel", "x": 90, "y": 230},
             {"image_path": os.path.join(package_path, "GripperLF.png"), "message": "LF gripper", "x": 260, "y": 60},
             {"image_path": os.path.join(package_path, "WheelLH.png"), "message": "LH wheel", "x":90 , "y":900 },
@@ -74,24 +100,51 @@ class GUIApp:
             {"image_path": os.path.join(package_path, "WheelRF.png"), "message": "RF wheel", "x": 1040, "y": 230},
             {"image_path": os.path.join(package_path, "GripperRF.png"), "message": "RF gripper", "x": 870, "y": 60},
         ]
-        self.buttons = []  # To store buttons
+        self.buttons_transform = []  # To store buttons
 
-        for btn_data in self.buttons_data:
+        for btn_data in self.buttons_transform_data:
             button_image = Image.open(btn_data["image_path"])
             button_image = button_image.resize((150, 150), Image.Resampling.LANCZOS)  # Resize as needed
             button_image_tk = ImageTk.PhotoImage(button_image)
 
-            button = tk.Button(
+            button_transform = tk.Button(
                 self.canvas,
                 image=button_image_tk,
-                command=lambda msg=btn_data["message"]: self.on_button_click(msg),
+                command=lambda msg=btn_data["message"]: self.on_button_transform_click(msg),
                 bd=0,  # Borderless button
             )
-            button.image = button_image_tk  # Keep a reference to avoid garbage collection
+            button_transform.image = button_image_tk  # Keep a reference to avoid garbage collection
       
-            self.buttons.append(button)
+            self.buttons_transform.append(button_transform)
             # Place the button on the canvas
-            self.canvas.create_window(btn_data["x"], btn_data["y"], anchor="nw", window=button)
+            self.canvas.create_window(btn_data["x"], btn_data["y"], anchor="nw", window=button_transform)
+        
+        # Add image buttons
+        self.buttons_driving_data = [
+            {"image_path": os.path.join(package_path, "Driving.png"), "message": "driving", "x": 1300, "y": 100},
+            {"image_path": os.path.join(package_path, "Standard.png"), "message": "standard", "x":1300 , "y":300 },
+            {"image_path": os.path.join(package_path, "WheelCCW.png"), "message": "forward", "x": 1300, "y": 500},
+            {"image_path": os.path.join(package_path, "WheelCW.png"), "message": "backward", "x":1300 , "y":700 },
+            {"image_path": os.path.join(package_path, "WheelSTOP.png"), "message": "stop", "x":1300 , "y":900 },
+        ]
+        self.buttons_driving = []  # To store buttons
+
+        for btn_data in self.buttons_driving_data:
+            button_image = Image.open(btn_data["image_path"])
+            button_image = button_image.resize((150, 150), Image.Resampling.LANCZOS)  # Resize as needed
+            button_image_tk = ImageTk.PhotoImage(button_image)
+
+            button_drive = tk.Button(
+                self.canvas,
+                image=button_image_tk,
+                command=lambda msg=btn_data["message"]: self.on_button_drive_click(msg),
+                bd=0,  # Borderless button
+            )
+            button_drive.image = button_image_tk  # Keep a reference to avoid garbage collection
+      
+            self.buttons_driving.append(button_drive)
+            # Place the button on the canvas
+            self.canvas.create_window(btn_data["x"], btn_data["y"], anchor="nw", window=button_drive)
         
         # Right frame placeholder for information display
         self.info_label = tk.Label(self.right_frame, text="Information", bg="white", font=("Arial", 14))
@@ -104,12 +157,19 @@ class GUIApp:
         self.background_image_tk = ImageTk.PhotoImage(self.background_image)
         self.canvas.create_image(0, 0, anchor="nw", image=self.background_image_tk)
 
-    def on_button_click(self, message):
+    def on_button_transform_click(self, message):
         """Handle button click events."""
         # Update information label
         self.info_label.config(text=f"Published: {message}")
         # Publish the message using ROS 2
-        self.ros_node.publish_message(message)
+        self.ros_node.publish_transform_message(message)
+
+    def on_button_drive_click(self, message):
+        """Handle button click events."""
+        # Update information label
+        self.info_label.config(text=f"Published: {message}")
+        # Publish the message using ROS 2
+        self.ros_node.publish_driving_message(message)
 
 
 def main():

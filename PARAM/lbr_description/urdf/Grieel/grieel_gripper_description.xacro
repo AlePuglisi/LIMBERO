@@ -214,8 +214,10 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
+        <!-- <mesh
+          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link.STL" /> -->
         <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link.STL" />
+          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_NOSPIKES.stl" />
       </geometry>
       <material
         name="">
@@ -231,8 +233,10 @@
         xyz="0.05 0 0"
         rpy="0 ${pi/2} 0" /> -->
       <geometry>
+        <!-- <mesh
+          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link.STL" /> -->
         <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link.STL" />
+          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_NOSPIKES.stl" />
           <!-- <cylinder radius="0.112" length="0.060"/> -->
       </geometry>
     </collision>
