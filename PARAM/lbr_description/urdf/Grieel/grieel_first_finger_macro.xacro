@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com)
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="assembled_gripper_mode" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:arg name="not_first_finger" default="false" />
+
+  <xacro:macro name="grieel_gripper_first_finger_macro" params="prefix name *origin">
+    <joint
+        name="${prefix}_${name}_H2P1"
+        type="revolute">
+        <xacro:insert_block name="origin"/>
+        <parent
+        link="${prefix}_hand_Link" />
+        <child
+        link="${prefix}_${name}_phalanx1" />
+        <axis
+        xyz="0 1 0" />
+        <limit
+        lower="0.0"
+        upper="${pi/3}"
+        effort="0.0"
+        velocity="0.0" />
+        <dynamics damping="0.1" friction="0.4"/>
+    </joint>
+
+    <link
+        name="${prefix}_${name}_phalanx1">
+        <!-- <inertial>
+        <origin
+            xyz="0.011821 8.7424E-07 4.3619E-14"
+            rpy="0 0 0" />
+        <mass
+            value="0.00824" />
+        <inertia
+            ixx="1.7943E-06"
+            ixy="-3.8552E-19"
+            ixz="7.4101E-19"
+            iyy="2.9379E-06"
+            iyz="-2.3646E-09"
+            izz="1.6633E-06" />
+        </inertial> -->
+        <visual>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger1.stl" />
+        </geometry>
+        <material
+            name="">
+            <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+        </visual>
+        <collision>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger1.stl" />
+        </geometry>
+        </collision>
+    </link>
+
+    <joint
+        name="${prefix}_${name}_P12P2"
+        type="revolute">
+        <mimic joint="${prefix}_F1_H2P1" multiplier="1" offset="0"/>
+        <origin
+        xyz="0 0 0.030654"
+        rpy="0 0 0" />
+        <parent
+        link="${prefix}_${name}_phalanx1" />
+        <child
+        link="${prefix}_${name}_phalanx2" />
+        <axis
+        xyz="0 1 0" />
+        <limit
+        lower="${-pi/3}"
+        upper="${pi*3/2}"
+        effort="0.0"
+        velocity="0.0" />
+        <dynamics damping="0.1" friction="0.4"/>
+    </joint>
+
+    <link
+        name="${prefix}_${name}_phalanx2">
+        <!-- <inertial>
+        <origin
+            xyz="0.011821 8.7424E-07 4.3619E-14"
+            rpy="0 0 0" />
+        <mass
+            value="0.00824" />
+        <inertia
+            ixx="1.7943E-06"
+            ixy="-3.8552E-19"
+            ixz="7.4101E-19"
+            iyy="2.9379E-06"
+            iyz="-2.3646E-09"
+            izz="1.6633E-06" />
+        </inertial> -->
+        <visual>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger2.stl" />
+        </geometry>
+        <material
+            name="">
+            <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+        </visual>
+        <collision>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger2.stl" />
+        </geometry>
+        </collision>
+    </link>
+
+   <joint
+        name="${prefix}_${name}_P22P3"
+        type="revolute">
+        <mimic joint="${prefix}_F1_H2P1" multiplier="1" offset="0"/>
+        <origin
+        xyz="0 0 0.028999"
+        rpy="0 0 0" />
+        <parent
+        link="${prefix}_${name}_phalanx2" />
+        <child
+        link="${prefix}_${name}_phalanx3" />
+        <axis
+        xyz="0 1 0" />
+        <limit
+        lower="${-pi/3}"
+        upper="${pi*3/2}"
+        effort="0.0"
+        velocity="0.0" />
+        <dynamics damping="0.1" friction="0.4"/>
+    </joint>
+
+    <link
+        name="${prefix}_${name}_phalanx3">
+        <!-- <inertial>
+        <origin
+            xyz="0.011821 8.7424E-07 4.3619E-14"
+            rpy="0 0 0" />
+        <mass
+            value="0.00824" />
+        <inertia
+            ixx="1.7943E-06"
+            ixy="-3.8552E-19"
+            ixz="7.4101E-19"
+            iyy="2.9379E-06"
+            iyz="-2.3646E-09"
+            izz="1.6633E-06" />
+        </inertial> -->
+        <visual>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger3.stl" />
+        </geometry>
+        <material
+            name="">
+            <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+        </visual>
+        <collision>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger3.stl" />
+        </geometry>
+        </collision>
+    </link>
+
+  </xacro:macro>
+
+</robot>

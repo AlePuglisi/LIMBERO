@@ -30,7 +30,7 @@ target_compile_features(${PROJECT_NAME} PUBLIC c_std_99 cxx_std_17)  # Require C
 install(TARGETS ${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 
-install(DIRECTORY launch config worlds
+install(DIRECTORY launch config worlds models
   DESTINATION share/${PROJECT_NAME})
 
 include_directories(../../PARAM)  # include param header file

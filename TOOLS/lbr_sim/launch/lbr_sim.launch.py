@@ -17,13 +17,13 @@ from ament_index_python.packages import (
     get_package_share_directory, get_package_share_path)
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, SetEnvironmentVariable
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
-from launch_ros.substitutions import FindPackageShare
+from launch_ros.substitutions import FindPackageShare 
 from launch.event_handlers import OnProcessExit
 import xacro
 
@@ -73,12 +73,17 @@ def generate_launch_description():
 
     robot_description_command = ['xacro ', xacro_path, ' wheel_mode:=', LaunchConfiguration('wheel_mode')]
     # somehow if I pass the xacro_path it works, insted by using the model of the launch configuration the wheel_mode doesn't work..
-
+    
+    models_env = SetEnvironmentVariable(
+            'GZ_SIM_RESOURCE_PATH',
+            PathJoinSubstitution([FindPackageShare('lbr_sim'), 'models']))
+    
     default_world = os.path.join(
         get_package_share_directory('lbr_sim'),
         'worlds',
-        'empty.sdf'
-        )    
+        'moon.sdf'
+        )  
+      
     world = LaunchConfiguration('world')
     world_arg = DeclareLaunchArgument(
         'world',
@@ -238,6 +243,7 @@ def generate_launch_description():
         world_arg,
         rviz_arg,
         wheel_mode_arg,
+        models_env,
         #joint_state_publisher_node,
         robot_state_publisher_node,
         rviz_node,

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com)
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="assembled_gripper_mode" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="grieel_hand_macro" params="prefix">
+  <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_finger_macro.xacro" />
+  <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_first_finger_macro.xacro" />
+
+    <joint
+        name="${prefix}_driving"
+        type="continuous">
+        <origin
+        xyz="0.0131 0 0.04576"
+        rpy="0 0 0" />
+        <parent
+        link="${prefix}_driving_Link" />
+        <child
+        link="${prefix}_hand_Link" />
+        <axis
+        xyz="1 0 0" />
+        <limit
+        effort="0.0"
+        velocity="0.0" />
+        <dynamics damping="0.1" friction="0.4"/>
+    </joint>
+
+    <link
+        name="${prefix}_hand_Link">
+        <!-- <inertial>
+        <origin
+            xyz="0.011821 8.7424E-07 4.3619E-14"
+            rpy="0 0 0" />
+        <mass
+            value="0.00824" />
+        <inertia
+            ixx="1.7943E-06"
+            ixy="-3.8552E-19"
+            ixz="7.4101E-19"
+            iyy="2.9379E-06"
+            iyz="-2.3646E-09"
+            izz="1.6633E-06" />
+        </inertial> -->
+        <visual>
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_Hand.stl" />
+        </geometry>
+        <material
+            name="">
+            <color
+            rgba="0.2 0.2 0.2 1" />
+        </material>
+        </visual>
+        <collision name="${prefix}_gripper_Link_collision">
+        <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+        <geometry>
+            <mesh
+            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_Hand.stl" />
+        </geometry>
+        </collision>
+    </link>
+
+    <xacro:grieel_gripper_first_finger_macro prefix="${prefix}" name="F1">
+                 <origin xyz="0.0865 -0.01622015929155386781 0.02316478816127224439" rpy="${35*pi/180} 0 0"/>
+    </xacro:grieel_gripper_first_finger_macro>
+    <xacro:grieel_gripper_finger_macro prefix="${prefix}" name="F2">
+                 <origin xyz="0.0865 0.00491059416660173296 0.02784936342056918600" rpy="${-10*pi/180} 0 0"/>
+    </xacro:grieel_gripper_finger_macro>
+    <xacro:grieel_gripper_finger_macro prefix="${prefix}" name="F3">
+                 <origin xyz="0.0865 0.02316478816127224439 0.01622015929155386781" rpy="${-55*pi/180} 0 0"/>
+    </xacro:grieel_gripper_finger_macro>
+    <xacro:grieel_gripper_finger_macro prefix="${prefix}" name="F4">
+                 <origin xyz="0.0865 0.02784936342056918600 -0.00491059416660173296" rpy="${-100*pi/180} 0 0"/>
+    </xacro:grieel_gripper_finger_macro>
+    <xacro:grieel_gripper_finger_macro prefix="${prefix}" name="F5">
+                 <origin xyz="0.0865 0.01622015929155386781 -0.02316478816127224439" rpy="${-145*pi/180} 0 0"/>
+    </xacro:grieel_gripper_finger_macro>
+    <xacro:grieel_gripper_finger_macro prefix="${prefix}" name="F6">
+                 <origin xyz="0.0865 -0.00491059416660173296 -0.02784936342056918600" rpy="${-190*pi/180} 0 0"/>
+    </xacro:grieel_gripper_finger_macro>
+    <xacro:grieel_gripper_finger_macro prefix="${prefix}" name="F7">
+                 <origin xyz="0.0865 -0.02316478816127224439 -0.01622015929155386781" rpy="${-235*pi/180} 0 0"/>
+    </xacro:grieel_gripper_finger_macro>
+    <xacro:grieel_gripper_finger_macro prefix="${prefix}" name="F8">
+                 <origin xyz="0.0865 -0.02784936342056918600 0.00491059416660173296" rpy="${80*pi/180} 0 0"/>
+    </xacro:grieel_gripper_finger_macro>
+
+
+
+
+
+    <!-- Gazebo plugin for contact sensor -->
+    <gazebo reference="${prefix}_hand_Link">
+        <sensor name="sensor_contact" type="contact">
+            <contact>
+                <collision>${prefix}_gripper_Link_collision_collision</collision>
+            </contact>
+        </sensor>
+    </gazebo>
+
+    <gazebo>
+        <plugin filename="gz-sim-touchplugin-system" 
+                    name="gz::sim::systems::TouchPlugin">
+            <target>ground_plane</target>
+            <namespace>${prefix}</namespace>
+            <time>0.001</time>
+            <enabled>true</enabled>
+        </plugin>
+    </gazebo>
+
+
+
+  </xacro:macro>
+
+</robot>

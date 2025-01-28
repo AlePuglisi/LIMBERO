@@ -6,6 +6,7 @@
   name="assembled_gripper_mode" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:macro name="grieel_gripper_macro" params="prefix parent">
+  <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_splitted.xacro" />
 
     <joint
       name="${prefix}_E2grieel"
@@ -193,7 +194,7 @@
     <dynamics damping="0.1" friction="0.4"/>
   </joint>
 
-  <link
+  <!-- <link
     name="${prefix}_gripper_Link">
     <inertial>
       <origin
@@ -214,8 +215,6 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <!-- <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link.STL" /> -->
         <mesh
           filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_NOSPIKES.stl" />
       </geometry>
@@ -229,21 +228,16 @@
       <origin
       xyz="0 0 0"
       rpy="0 0 0" />
-      <!-- <origin
-        xyz="0.05 0 0"
-        rpy="0 ${pi/2} 0" /> -->
       <geometry>
-        <!-- <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link.STL" /> -->
         <mesh
           filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_NOSPIKES.stl" />
-          <!-- <cylinder radius="0.112" length="0.060"/> -->
       </geometry>
     </collision>
-  </link>
+  </link> -->
 
+  <xacro:grieel_hand_macro prefix="${prefix}"/>
 
-  <joint
+  <!-- <joint
     name="${prefix}_driving"
     type="revolute">
     <origin
@@ -290,11 +284,11 @@
       link="${prefix}_gripper_Link" />
     <child
       link="${prefix}_gripper_end" />
-  </joint>
+  </joint> -->
 
 
     <!-- Gazebo plugin for contact sensor -->
-  <gazebo reference="${prefix}_gripper_Link">
+  <!-- <gazebo reference="${prefix}_gripper_Link">
     <sensor name="sensor_contact" type="contact">
         <contact>
             <collision>${prefix}_gripper_Link_collision_collision</collision>
@@ -310,7 +304,7 @@
         <time>0.001</time>
         <enabled>true</enabled>
     </plugin>
-  </gazebo>
+  </gazebo> -->
 
 
 
