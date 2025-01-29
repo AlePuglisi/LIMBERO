@@ -91,7 +91,7 @@ private:
   // rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr torque_control_pub_driving; // computed control output torque
 
   std::array<rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr, JOINT_NUM> torque_control_publishers_;
-
+  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr grieel_torque_publisher_;
 
   // Subscriber
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_reference_sub_; // received LC set points
@@ -107,6 +107,9 @@ private:
   float Kpv[JOINT_NUM]; // velocity controller P gain
   float Tiv[JOINT_NUM]; // velocity controller D gain
   float torque_limit[JOINT_NUM]; // Saturation limit of joint motors
+
+  float Kp_GRIEEL; 
+  float reference_grieel_state;
 
   float KP[JOINT_NUM];
   float TI[JOINT_NUM];
@@ -144,6 +147,7 @@ private:
   // gravity compensation related variable
   std::array<float, JOINT_NUM> gravitational_torque;
   int gravity_compensation;
+  bool control_grieel; 
 
   double initial_time; // initial time data, for data saving on csv file
 

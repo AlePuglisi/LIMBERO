@@ -30,6 +30,7 @@
             <joint_name>${prefix}_wristH</joint_name>
             <joint_name>${prefix}_wristV</joint_name>
             <joint_name>${prefix}_driving</joint_name>
+            <joint_name>${prefix}_F1_H2P1</joint_name>
             </plugin>
         </gazebo>
 

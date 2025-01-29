@@ -56,6 +56,11 @@
                 <topic>{prefix}_driving/joint_torque</topic>
                 <joint_name>${prefix}_driving</joint_name>
             </plugin>
+            <plugin filename="gz-sim-apply-joint-force-system"
+                        name="gz::sim::systems::ApplyJointForce">
+                <topic>{prefix}_F1_H2P1/joint_torque</topic>
+                <joint_name>${prefix}_F1_H2P1</joint_name>
+            </plugin>
 
 
         </gazebo>

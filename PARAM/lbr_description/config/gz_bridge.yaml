@@ -86,6 +86,12 @@
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
 
+- ros_topic_name: "LF_F1_H2P1/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LF_F1_H2P1/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
 # gz topic published by JointTorque plugin LH
 - ros_topic_name: "LH_B2C/joint_torques"
   gz_topic_name: "model/LIMBERO/joint/LH_B2C/cmd_force"
@@ -125,6 +131,12 @@
 
 - ros_topic_name: "LH_driving/joint_torques"
   gz_topic_name: "model/LIMBERO/joint/LH_driving/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "LH_F1_H2P1/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/LH_F1_H2P1/cmd_force"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
@@ -172,6 +184,12 @@
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
 
+- ros_topic_name: "RH_F1_H2P1/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RH_F1_H2P1/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
 # gz topic published by JointTorque plugin RF
 - ros_topic_name: "RF_B2C/joint_torques"
   gz_topic_name: "model/LIMBERO/joint/RF_B2C/cmd_force"
@@ -211,6 +229,12 @@
 
 - ros_topic_name: "RF_driving/joint_torques"
   gz_topic_name: "model/LIMBERO/joint/RF_driving/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "RF_F1_H2P1/joint_torques"
+  gz_topic_name: "model/LIMBERO/joint/RF_F1_H2P1/cmd_force"
   ros_type_name: "std_msgs/msg/Float64"
   gz_type_name: "gz.msgs.Double"
   direction: ROS_TO_GZ
