@@ -20,7 +20,7 @@
         xyz="0 1 0" />
         <limit
         lower="0.0"
-        upper="${pi/3}"
+        upper="${pi/6}"
         effort="0.0"
         velocity="0.0" />
         <dynamics damping="0.1" friction="0.4"/>
@@ -28,20 +28,20 @@
 
     <link
         name="${prefix}_${name}_phalanx1">
-        <!-- <inertial>
-        <origin
-            xyz="0.011821 8.7424E-07 4.3619E-14"
-            rpy="0 0 0" />
-        <mass
-            value="0.00824" />
-        <inertia
-            ixx="1.7943E-06"
-            ixy="-3.8552E-19"
-            ixz="7.4101E-19"
-            iyy="2.9379E-06"
-            iyz="-2.3646E-09"
-            izz="1.6633E-06" />
-        </inertial> -->
+        <inertial>
+            <origin
+                xyz="0.00162585 0.00031929 0.01672194"
+                rpy="0 0 0" />
+            <mass
+                value="0.003797793442763989" />
+            <inertia
+                ixx="3.31093803e-07"
+                ixy="3.15649096e-09"
+                ixz="-1.22740945e-09"
+                iyy="3.44910628e-07"
+                iyz="-4.29494199e-09"
+                izz="8.86398503e-08" />
+        </inertial>
         <visual>
         <origin
             xyz="0 0 0"
@@ -66,11 +66,26 @@
         </geometry>
         </collision>
     </link>
+    <gazebo reference="${prefix}_${name}_phalanx1">
+        <material>Gazebo/Black</material>
+        <visual>
+            <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+            </material>
+        </visual>
+        <mu1>1.0</mu1>
+        <mu2>1.0</mu2>
+        <kp>1000000</kp>
+        <kd>1.0</kd>
+    </gazebo>
 
     <joint
         name="${prefix}_${name}_P12P2"
         type="revolute">
-        <mimic joint="${prefix}_F1_H2P1" multiplier="1" offset="0"/>
+        <mimic joint="${prefix}_F1_H2P1" multiplier="2" offset="0"/>
         <origin
         xyz="0 0 0.030654"
         rpy="0 0 0" />
@@ -90,20 +105,20 @@
 
     <link
         name="${prefix}_${name}_phalanx2">
-        <!-- <inertial>
-        <origin
-            xyz="0.011821 8.7424E-07 4.3619E-14"
-            rpy="0 0 0" />
-        <mass
-            value="0.00824" />
-        <inertia
-            ixx="1.7943E-06"
-            ixy="-3.8552E-19"
-            ixz="7.4101E-19"
-            iyy="2.9379E-06"
-            iyz="-2.3646E-09"
-            izz="1.6633E-06" />
-        </inertial> -->
+        <inertial>
+            <origin
+                xyz="-0.00673704 0.00047222 0.01186178"
+                rpy="0 0 0" />
+            <mass
+                value="0.013082859723205855" />
+            <inertia
+                ixx="3.00003952e-06"
+                ixy="-6.39755832e-09"
+                ixz="-9.83815289e-08"
+                iyy="1.39153928e-06"
+                iyz="7.23067218e-09"
+                izz="2.30350901e-06" />
+        </inertial>
         <visual>
         <origin
             xyz="0 0 0"
@@ -129,10 +144,26 @@
         </collision>
     </link>
 
+    <gazebo reference="${prefix}_${name}_phalanx2">
+        <material>Gazebo/Black</material>
+        <visual>
+            <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+            </material>
+        </visual>
+        <mu1>1.0</mu1>
+        <mu2>1.0</mu2>
+        <kp>1000000</kp>
+        <kd>1.0</kd>
+    </gazebo>
+
    <joint
         name="${prefix}_${name}_P22P3"
         type="revolute">
-        <mimic joint="${prefix}_F1_H2P1" multiplier="1" offset="0"/>
+        <mimic joint="${prefix}_F1_H2P1" multiplier="3" offset="0"/>
         <origin
         xyz="0 0 0.028999"
         rpy="0 0 0" />
@@ -152,20 +183,20 @@
 
     <link
         name="${prefix}_${name}_phalanx3">
-        <!-- <inertial>
-        <origin
-            xyz="0.011821 8.7424E-07 4.3619E-14"
-            rpy="0 0 0" />
-        <mass
-            value="0.00824" />
-        <inertia
-            ixx="1.7943E-06"
-            ixy="-3.8552E-19"
-            ixz="7.4101E-19"
-            iyy="2.9379E-06"
-            iyz="-2.3646E-09"
-            izz="1.6633E-06" />
-        </inertial> -->
+        <inertial>
+            <origin
+                xyz="-0.00232913 0.00061377 0.01268651"
+                rpy="0 0 0" />
+            <mass
+                value="0.0024217622661742476" />
+            <inertia
+                ixx="1.24811429e-07"
+                ixy="5.11516670e-10"
+                ixz="1.67264903e-08"
+                iyy="1.28312272e-07"
+                iyz="1.69572891e-09"
+                izz="4.48441736e-08" />
+        </inertial>
         <visual>
         <origin
             xyz="0 0 0"
@@ -190,6 +221,22 @@
         </geometry>
         </collision>
     </link>
+
+    <gazebo reference="${prefix}_${name}_phalanx3">
+        <material>Gazebo/Black</material>
+        <visual>
+            <material>
+                <ambient>0.2 0.2 0.2 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.01 0.01 0.01 1</specular>
+                <emissive>0.01 0.01 0.01 1</emissive>
+            </material>
+        </visual>
+        <mu1>1.0</mu1>
+        <mu2>1.0</mu2>
+        <kp>1000000</kp>
+        <kd>1.0</kd>
+    </gazebo>
 
   </xacro:macro>
 

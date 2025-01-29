@@ -26,6 +26,31 @@
             <joint_name>LF_wristH</joint_name>
             <joint_name>LF_wristV</joint_name>
             <joint_name>LF_driving</joint_name>
+            <joint_name>LF_F1_H2P1</joint_name>
+            <joint_name>LF_F1_P12P2</joint_name>
+            <joint_name>LF_F1_P22P3</joint_name>
+            <joint_name>LF_F2_H2P1</joint_name>
+            <joint_name>LF_F2_P12P2</joint_name>
+            <joint_name>LF_F2_P22P3</joint_name>
+            <joint_name>LF_F3_H2P1</joint_name>
+            <joint_name>LF_F3_P12P2</joint_name>
+            <joint_name>LF_F3_P22P3</joint_name>
+            <joint_name>LF_F4_H2P1</joint_name>
+            <joint_name>LF_F4_P12P2</joint_name>
+            <joint_name>LF_F4_P22P3</joint_name>
+            <joint_name>LF_F5_H2P1</joint_name>
+            <joint_name>LF_F5_P12P2</joint_name>
+            <joint_name>LF_F5_P22P3</joint_name>
+            <joint_name>LF_F6_H2P1</joint_name>
+            <joint_name>LF_F6_P12P2</joint_name>
+            <joint_name>LF_F6_P22P3</joint_name>
+            <joint_name>LF_F7_H2P1</joint_name>
+            <joint_name>LF_F7_P12P2</joint_name>
+            <joint_name>LF_F7_P22P3</joint_name>
+            <joint_name>LF_F8_H2P1</joint_name>
+            <joint_name>LF_F8_P12P2</joint_name>
+            <joint_name>LF_F8_P22P3</joint_name>
+
 
             <joint_name>LH_B2C</joint_name>
             <joint_name>LH_C2F</joint_name>
@@ -34,6 +59,30 @@
             <joint_name>LH_wristH</joint_name>
             <joint_name>LH_wristV</joint_name>
             <joint_name>LH_driving</joint_name>
+            <joint_name>LH_F1_H2P1</joint_name>
+            <joint_name>LH_F1_P12P2</joint_name>
+            <joint_name>LH_F1_P22P3</joint_name>
+            <joint_name>LH_F2_H2P1</joint_name>
+            <joint_name>LH_F2_P12P2</joint_name>
+            <joint_name>LH_F2_P22P3</joint_name>
+            <joint_name>LH_F3_H2P1</joint_name>
+            <joint_name>LH_F3_P12P2</joint_name>
+            <joint_name>LH_F3_P22P3</joint_name>
+            <joint_name>LH_F4_H2P1</joint_name>
+            <joint_name>LH_F4_P12P2</joint_name>
+            <joint_name>LH_F4_P22P3</joint_name>
+            <joint_name>LH_F5_H2P1</joint_name>
+            <joint_name>LH_F5_P12P2</joint_name>
+            <joint_name>LH_F5_P22P3</joint_name>
+            <joint_name>LH_F6_H2P1</joint_name>
+            <joint_name>LH_F6_P12P2</joint_name>
+            <joint_name>LH_F6_P22P3</joint_name>
+            <joint_name>LH_F7_H2P1</joint_name>
+            <joint_name>LH_F7_P12P2</joint_name>
+            <joint_name>LH_F7_P22P3</joint_name>
+            <joint_name>LH_F8_H2P1</joint_name>
+            <joint_name>LH_F8_P12P2</joint_name>
+            <joint_name>LH_F8_P22P3</joint_name>
 
             <joint_name>RH_B2C</joint_name>
             <joint_name>RH_C2F</joint_name>
@@ -42,6 +91,30 @@
             <joint_name>RH_wristH</joint_name>
             <joint_name>RH_wristV</joint_name>
             <joint_name>RH_driving</joint_name>
+            <joint_name>RH_F1_H2P1</joint_name>
+            <joint_name>RH_F1_P12P2</joint_name>
+            <joint_name>RH_F1_P22P3</joint_name>
+            <joint_name>RH_F2_H2P1</joint_name>
+            <joint_name>RH_F2_P12P2</joint_name>
+            <joint_name>RH_F2_P22P3</joint_name>
+            <joint_name>RH_F3_H2P1</joint_name>
+            <joint_name>RH_F3_P12P2</joint_name>
+            <joint_name>RH_F3_P22P3</joint_name>
+            <joint_name>RH_F4_H2P1</joint_name>
+            <joint_name>RH_F4_P12P2</joint_name>
+            <joint_name>RH_F4_P22P3</joint_name>
+            <joint_name>RH_F5_H2P1</joint_name>
+            <joint_name>RH_F5_P12P2</joint_name>
+            <joint_name>RH_F5_P22P3</joint_name>
+            <joint_name>RH_F6_H2P1</joint_name>
+            <joint_name>RH_F6_P12P2</joint_name>
+            <joint_name>RH_F6_P22P3</joint_name>
+            <joint_name>RH_F7_H2P1</joint_name>
+            <joint_name>RH_F7_P12P2</joint_name>
+            <joint_name>RH_F7_P22P3</joint_name>
+            <joint_name>RH_F8_H2P1</joint_name>
+            <joint_name>RH_F8_P12P2</joint_name>
+            <joint_name>RH_F8_P22P3</joint_name>
 
             <joint_name>RF_B2C</joint_name>
             <joint_name>RF_C2F</joint_name>
@@ -50,6 +123,30 @@
             <joint_name>RF_wristH</joint_name>
             <joint_name>RF_wristV</joint_name>
             <joint_name>RF_driving</joint_name>
+            <joint_name>RF_F1_H2P1</joint_name>
+            <joint_name>RF_F1_P12P2</joint_name>
+            <joint_name>RF_F1_P22P3</joint_name>
+            <joint_name>RF_F2_H2P1</joint_name>
+            <joint_name>RF_F2_P12P2</joint_name>
+            <joint_name>RF_F2_P22P3</joint_name>
+            <joint_name>RF_F3_H2P1</joint_name>
+            <joint_name>RF_F3_P12P2</joint_name>
+            <joint_name>RF_F3_P22P3</joint_name>
+            <joint_name>RF_F4_H2P1</joint_name>
+            <joint_name>RF_F4_P12P2</joint_name>
+            <joint_name>RF_F4_P22P3</joint_name>
+            <joint_name>RF_F5_H2P1</joint_name>
+            <joint_name>RF_F5_P12P2</joint_name>
+            <joint_name>RF_F5_P22P3</joint_name>
+            <joint_name>RF_F6_H2P1</joint_name>
+            <joint_name>RF_F6_P12P2</joint_name>
+            <joint_name>RF_F6_P22P3</joint_name>
+            <joint_name>RF_F7_H2P1</joint_name>
+            <joint_name>RF_F7_P12P2</joint_name>
+            <joint_name>RF_F7_P22P3</joint_name>
+            <joint_name>RF_F8_H2P1</joint_name>
+            <joint_name>RF_F8_P12P2</joint_name>
+            <joint_name>RF_F8_P22P3</joint_name>
         </plugin>
     </gazebo>
 </robot>

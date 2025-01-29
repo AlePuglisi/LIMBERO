@@ -10,7 +10,7 @@
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_joint_state.xacro" />
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_grieel_joint_actuation.xacro" />
 
-  <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gazebo_phisics.xacro" />
+  <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gazebo_colors.xacro" />
   <!-- <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_grieel_plugins.xacro" /> -->
   
   <!-- <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_grieel_transmission.xacro" /> -->
@@ -76,9 +76,9 @@
   <xacro:transmission_macro prefix="RH"/>
   <xacro:transmission_macro prefix="RF"/> -->
 
-  <xacro:gazebo_phisics_macro prefix="LF"/>
-  <xacro:gazebo_phisics_macro prefix="LH"/>
-  <xacro:gazebo_phisics_macro prefix="RH"/>
-  <xacro:gazebo_phisics_macro prefix="RF"/>
+  <xacro:gazebo_colors_macro prefix="LF"/>
+  <xacro:gazebo_colors_macro prefix="LH"/>
+  <xacro:gazebo_colors_macro prefix="RH"/>
+  <xacro:gazebo_colors_macro prefix="RF"/>
 
 </robot>
