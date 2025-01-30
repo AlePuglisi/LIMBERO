@@ -518,7 +518,7 @@ void IndipendentJointController::controlLoopPPI()
     if(control_grieel){
       float grieel_torque; 
       float grieel_error = reference_grieel_state - current_joint_state.position.at(JOINT_NUM);
-      if(grieel_error > 0.1){
+      if(abs(grieel_error) > 0.1){
         grieel_torque = (grieel_error)*Kp_GRIEEL;
         std_msgs::msg::Float64 grieel_msg;
         grieel_msg.data = grieel_torque;
