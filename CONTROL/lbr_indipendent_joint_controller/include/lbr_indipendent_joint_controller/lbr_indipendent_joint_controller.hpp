@@ -118,6 +118,7 @@ private:
   float N[JOINT_NUM]; // reduction ratio
 
   float joint_velocity_feed_forward[JOINT_NUM]; // feed forward velocity, to speed up control
+  float joint_velocity_filtered[JOINT_NUM]; // feed forward velocity, to speed up control
   float previous_reference_joint_position[JOINT_NUM]; // store previous reference for numerical derivation
   float previous_reference_joint_position_filtered[JOINT_NUM]; // previous filtered set point
   float previous_velocity_error[JOINT_NUM]; // previous error in velocity tracking
@@ -128,6 +129,7 @@ private:
 
   float estimated_joint_velocity[JOINT_NUM];
   float previous_joint_position[JOINT_NUM];
+  float previous_joint_velocity[JOINT_NUM];
 
   float previous_position_error[JOINT_NUM];
   float derivative_torque[JOINT_NUM];

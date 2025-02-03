@@ -16,6 +16,8 @@ from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
 
+    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+
     wheel_mode_arg = DeclareLaunchArgument('wheel_mode',
                                       default_value='true',
                                       description='grieel in wheel mode if true')
@@ -23,7 +25,7 @@ def generate_launch_description():
         package='joy_linux',
         executable='joy_linux_node',
         name='joy_node',
-        output='screen'
+        output='screen',
     )
 
     lbr_high_level_controller_node = Node(
@@ -31,14 +33,15 @@ def generate_launch_description():
         executable='lbr_high_level_controller',
         name='lbr_high_level_controller',
         output='screen',
-        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}]
+        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}, {'use_sim_time': use_sim_time}],
     )
 
     lbr_low_level_controller_node = Node(
         package='lbr_low_level_controller',
         executable='lbr_low_level_controller',
         name='lbr_low_level_controller',
-        output='screen'
+        output='screen', 
+        parameters=[{'use_sim_time': use_sim_time}],
     )
 
     lbr_limb_controller_node_group = IncludeLaunchDescription(
@@ -61,7 +64,8 @@ def generate_launch_description():
         package='lbr_state_estimator',
         executable='lbr_state_estimator',
         name='lbr_state_estimator',
-        output='screen'
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
     )
 
     return LaunchDescription([

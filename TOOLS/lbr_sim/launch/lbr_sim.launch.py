@@ -96,7 +96,8 @@ def generate_launch_description():
         package='lbr_sim',
         executable='lbr_sim',
         name='lbr_sim',
-        output='screen'
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
     )
 
     rviz_node = Node(
@@ -110,7 +111,7 @@ def generate_launch_description():
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        parameters=[{'robot_description': Command(robot_description_command)}]
+        parameters=[{'robot_description': Command(robot_description_command)}, {'use_sim_time': use_sim_time}],
     )
     
     # static_base_tf = Node(
@@ -233,6 +234,7 @@ def generate_launch_description():
     ros_gz_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
+        parameters=[{'use_sim_time': use_sim_time}],
         arguments=[
             '--ros-args',
             '-p',

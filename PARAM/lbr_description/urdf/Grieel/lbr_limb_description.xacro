@@ -118,7 +118,7 @@
         upper="2.10"
         effort="16.0"
         velocity="3.0" />
-      <dynamics damping="0.1" friction="0.4"/>
+      <dynamics damping="0.01" friction="0.1"/>
     </joint>
 
     <!-- <transmission name="${prefix}_B2C_transmission">
@@ -190,7 +190,7 @@
         upper="1.3"
         effort="16.0"
         velocity="5.0" />
-      <dynamics damping="0.1" friction="0.4"/>
+      <dynamics damping="0.01" friction="0.1"/>
     </joint>
 
     <!-- <transmission name="${prefix}_C2F_transmission">
@@ -262,7 +262,7 @@
         upper="2.95"
         effort="10.0"
         velocity="5.0" />
-      <dynamics damping="0.1" friction="0.4"/>
+      <dynamics damping="0.01" friction="0.1"/>
       <initial_position value="${pi/2}"/>
     </joint>
 
@@ -335,7 +335,7 @@
         upper="1.57"
         effort="8.0"
         velocity="4.0" />
-      <dynamics damping="0.1" friction="0.4"/>
+      <dynamics damping="0.01" friction="0.1"/>
     </joint>
 
     <!-- <transmission name="${prefix}_T2E_transmission">
