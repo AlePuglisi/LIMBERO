@@ -100,6 +100,7 @@ IndipendentJointController::IndipendentJointController()
     anti_wind_up[i] = 0.0; // anti wind-up action
     previous_reference_joint_position[i] = 0.0;
     reference_joint_position_filtered[i] = 0.0;
+    joint_velocity_filtered[i] = 0.0; 
     previous_reference_joint_position_filtered[i] = 0.0;
     previous_velocity_error[i] = 0.0;
     previous_saturated_torque[i] = 0.0;
@@ -109,6 +110,7 @@ IndipendentJointController::IndipendentJointController()
     gravitational_torque[i] = 0.0;
 
     previous_joint_position[i] = 0.0; 
+    previous_joint_velocity[i] = 0.0; 
     estimated_joint_velocity[i] = 0.0; 
 
     if(PID == 1){
@@ -418,8 +420,10 @@ void IndipendentJointController::controlLoopPPI()
 
       // tau(t) = kpv*(dq_d(t) - dq(t)) + Ts*(dq_d(t) - dq(t))*kpv/Tiv, Propodtional Integral controller + gravity compensation (to estimate)
       
-      //joint_velocity_error[i] = joint_velocity_reference[i] - current_joint_state.velocity.at(i);
-      joint_velocity_error[i] = joint_velocity_reference[i] - estimated_joint_velocity[i];
+      // joint_velocity_error[i] = joint_velocity_reference[i] - current_joint_state.velocity.at(i);
+      //joint_velocity_error[i] = joint_velocity_reference[i] - estimated_joint_velocity[i];
+      joint_velocity_filtered[i] = joint_velocity_filtered[i]*(Tf-(Ts*1e-3))/Tf + (Ts*1e-3)/Tf * previous_joint_velocity[i];
+      joint_velocity_error[i] = joint_velocity_reference[i] - joint_velocity_filtered[i];
 
       if(ANTI_WINDUP_METHOD == 1){ // back-calculation
         integral[i] += (Ts*1e-3)*(Kpv[i]/Tiv[i]*joint_velocity_error[i] + anti_wind_up[i]);
@@ -472,6 +476,7 @@ void IndipendentJointController::controlLoopPPI()
       previous_reference_joint_position[i] = reference_joint_state.position.at(i); // store reference joint state for next iteration
       previous_reference_joint_position_filtered[i] = reference_joint_position_filtered[i];
       previous_joint_position[i] = current_joint_state.position.at(i);
+      previous_joint_velocity[i] = current_joint_state.velocity.at(i);
 
       torque_control_data.data = torque_control_output.data.at(LIMB_ID*JOINT_NUM + i);
       torque_control_publishers_[i]->publish(torque_control_data);
@@ -482,7 +487,8 @@ void IndipendentJointController::controlLoopPPI()
                   << joint_position_error[i]              << ","
                   << joint_velocity_reference[i]          << ","
                   //<< current_joint_state.velocity.at(i)   << ","
-                  << estimated_joint_velocity[i]          << ","
+                  //<< estimated_joint_velocity[i]          << ","
+                  << joint_velocity_filtered[i]          << ","
                   << joint_velocity_feed_forward[i]       << ","
                   << joint_velocity_error[i]              << ","
                   << integral[i]                          << ","

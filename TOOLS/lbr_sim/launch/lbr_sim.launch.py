@@ -240,6 +240,32 @@ def generate_launch_description():
         ]
     )
 
+    mimic_joint_controller_LF = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["mimic_joint_controller_LF"],
+    )
+    mimic_joint_controller_LH = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["mimic_joint_controller_LH"],
+    )
+    mimic_joint_controller_RH = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["mimic_joint_controller_RH"],
+    )
+    mimic_joint_controller_RF = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["mimic_joint_controller_RF"],
+    )
+
+    joint_broad_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster"],
+    )
     return LaunchDescription([
         model_arg,
         world_arg,
@@ -256,5 +282,10 @@ def generate_launch_description():
         gazebo,
         ros_gz_bridge,
         gazebo_spawner,
+        joint_broad_spawner,
+        mimic_joint_controller_LF,
+        mimic_joint_controller_LH,
+        mimic_joint_controller_RH,
+        mimic_joint_controller_RF,
         #kin_analysis_node,
     ])

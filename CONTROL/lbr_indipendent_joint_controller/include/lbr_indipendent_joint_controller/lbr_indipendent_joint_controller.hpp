@@ -128,6 +128,8 @@ private:
 
   float estimated_joint_velocity[JOINT_NUM];
   float previous_joint_position[JOINT_NUM];
+  float joint_velocity_filtered[JOINT_NUM];
+  float previous_joint_velocity[JOINT_NUM];
 
   float previous_position_error[JOINT_NUM];
   float derivative_torque[JOINT_NUM];

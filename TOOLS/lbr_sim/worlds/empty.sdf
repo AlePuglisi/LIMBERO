@@ -49,11 +49,11 @@
       <direction>-0.5 0.1 -0.9</direction>
     </light>
 
-    <include>
+    <!-- <include>
       <uri> mars_surface </uri>
-    </include>
+    </include> -->
 
-    <!-- <model name="ground_plane">
+    <model name="ground_plane">
       <static>true</static>
       <link name="link">
         <collision name="collision_plane">
@@ -77,7 +77,7 @@
             <specular>0.906 0.490 0.067 1</specular>
           </material>
         </visual>
-      </link> -->
+      </link> 
 
 
 
@@ -108,8 +108,8 @@
         <namespace>RF</namespace>
         <time>0.001</time>
         <enabled>true</enabled>
-      </plugin>  
+      </plugin>   -->
 
-    </model> -->
+    </model>
   </world>
 </sdf>
