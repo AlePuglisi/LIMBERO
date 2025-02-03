@@ -2,6 +2,7 @@
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_base_description.xacro" />
 
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_limb_description.xacro" />
+  <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gazebo_ros2_control.xacro" />
 
   <!-- <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_gazebo.xacro" /> -->
 
@@ -82,11 +83,8 @@
   <xacro:gazebo_colors_macro prefix="RH"/>
   <xacro:gazebo_colors_macro prefix="RF"/>
 
-  <gazebo>
-      <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin" filename="libgz_ros2_control-system.so">
-            <parameters>$(find lbr_description)/config/grieel_controller.yaml</parameters>
-      </plugin>
-  </gazebo>
+  <xacro:load_gazebo_sim_ros2_control_plugin/>
+
   <xacro:grieel_ros2_control_macro prefix="LF"/>
   <xacro:grieel_ros2_control_macro prefix="LH"/>
   <xacro:grieel_ros2_control_macro prefix="RH"/>

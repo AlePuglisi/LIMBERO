@@ -206,6 +206,15 @@ def generate_launch_description():
     #     )
     # )
 
+    load_controllers = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            os.path.join(get_package_share_directory('lbr_sim'),'launch', 'load_controllers.launch.py')
+        ]),
+        launch_arguments={
+            'use_sim_time': use_sim_time
+        }.items()
+    )
+
     gazebo_spawner = Node(
         package='ros_gz_sim',
         executable='create',
@@ -219,6 +228,7 @@ def generate_launch_description():
                 #    '-y', '8'],
         output='screen'
     )
+
 
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
@@ -240,32 +250,6 @@ def generate_launch_description():
         ]
     )
 
-    mimic_joint_controller_LF = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["mimic_joint_controller_LF"],
-    )
-    mimic_joint_controller_LH = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["mimic_joint_controller_LH"],
-    )
-    mimic_joint_controller_RH = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["mimic_joint_controller_RH"],
-    )
-    mimic_joint_controller_RF = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["mimic_joint_controller_RF"],
-    )
-
-    joint_broad_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["joint_state_broadcaster"],
-    )
     return LaunchDescription([
         model_arg,
         world_arg,
@@ -280,12 +264,8 @@ def generate_launch_description():
         #robot_controller_spawner_effort,
         #robot_controller_spawner_effort,
         gazebo,
+        load_controllers,
         ros_gz_bridge,
         gazebo_spawner,
-        joint_broad_spawner,
-        mimic_joint_controller_LF,
-        mimic_joint_controller_LH,
-        mimic_joint_controller_RH,
-        mimic_joint_controller_RF,
         #kin_analysis_node,
     ])
