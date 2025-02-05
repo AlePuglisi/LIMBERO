@@ -118,6 +118,84 @@
         </state_interface>
       </joint>
 
+      <!-- TRANSMISSION -->
+      <!-- <transmission name="${prefix}_B2C_transmission">
+        <plugin>transmission_interface/SimpleTransmission</plugin>
+          <joint name="${prefix}_B2C" role="${prefix}_B2C">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="${prefix}_Dynamixel_B2C" role="${prefix}_B2C">
+            <mechanicalReduction>272.5</mechanicalReduction>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </actuator>
+      </transmission>
+
+      <transmission name="${prefix}_C2F_transmission">
+        <plugin>transmission_interface/SimpleTransmission</plugin>
+          <joint name="${prefix}_C2F" role="${prefix}_C2F">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="${prefix}_Dynamixel_C2F" role="${prefix}_B2C">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>272.5</mechanicalReduction>
+          </actuator>
+      </transmission>
+
+      <transmission name="${prefix}_F2T_transmission">
+        <plugin>transmission_interface/SimpleTransmission</plugin>
+          <joint name="${prefix}_F2T" role="${prefix}_F2T">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="${prefix}_Dynamixel_F2T" role="${prefix}_F2T">
+            <mechanicalReduction>353.5</mechanicalReduction>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </actuator>
+      </transmission>
+
+      <transmission name="${prefix}_T2E_transmission">
+        <plugin>transmission_interface/SimpleTransmission</plugin>
+          <joint name="${prefix}_T2E" role="${prefix}_T2E" >
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="${prefix}_Dynamixel_T2E" role="${prefix}_T2E">
+            <mechanicalReduction>353.5</mechanicalReduction>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </actuator>
+      </transmission>
+
+      <transmission name="${prefix}_wristH_transmission">
+        <plugin>transmission_interface/SimpleTransmission</plugin>
+          <joint name="${prefix}_wristH" role="${prefix}_wristH">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="${prefix}_Dynamixel_wristH" role="${prefix}_wristH">
+            <mechanicalReduction>257.4</mechanicalReduction>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </actuator>
+      </transmission>
+
+      <transmission name="${prefix}_wristV_transmission">
+        <plugin>transmission_interface/SimpleTransmission</plugin>
+          <joint name="${prefix}_wristV" role="${prefix}_wristV">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="${prefix}_Dynamixel_wristV" role="${prefix}_wristV">
+            <mechanicalReduction>257.4</mechanicalReduction>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </actuator>
+      </transmission>
+
+      <transmission name="${prefix}_driving_transmission">
+        <plugin>transmission_interface/SimpleTransmission</plugin>
+          <joint name="${prefix}_driving" role="${prefix}_driving">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="${prefix}_Dynamixel_driving" role="${prefix}_driving">
+            <mechanicalReduction>353.4</mechanicalReduction>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+          </actuator>
+      </transmission> -->
+
       <!-- GRIPPER JOINTS (FINGERS) -->
       <joint name="${prefix}_F1_H2P1">
         <command_interface name="position">

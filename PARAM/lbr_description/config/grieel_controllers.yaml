@@ -1,7 +1,7 @@
 controller_manager:
   ros__parameters:
     update_rate: 1000
-    #use_sim_time: true
+    use_sim_time: true
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -24,7 +24,7 @@ controller_manager:
       
 limb_controller:
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joints:
       - LF_B2C
       - LF_C2F
@@ -81,153 +81,153 @@ limb_controller:
     gains:
       LF_B2C:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LF_C2F:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LF_F2T:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LF_T2E:
         p: 1000.0
-        i: 0.0      
-        d: 0.0
+        i: 3.0      
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LF_wristH:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LF_wristV:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
 
       LH_B2C:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LH_C2F:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LH_F2T:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LH_T2E:
         p: 1000.0
-        i: 0.0      
-        d: 0.0
+        i: 3.0      
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LH_wristH:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LH_wristV:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RH_B2C:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RH_C2F:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RH_F2T:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RH_T2E:
         p: 1000.0
-        i: 0.0      
-        d: 0.0
+        i: 3.0      
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RH_wristH:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RH_wristV:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RF_B2C:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RF_C2F:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RF_F2T:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RF_T2E:
         p: 1000.0
-        i: 0.0      
-        d: 0.0
+        i: 3.0      
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RF_wristH:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RF_wristV:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
 
 drive_controller: 
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joints:
       - LF_driving 
       - LH_driving
@@ -264,32 +264,32 @@ drive_controller:
     gains:
       LF_driving:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       LH_driving:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RH_driving:
         p: 1000.0
-        i: 0.0
-        d: 0.0
+        i: 3.0
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
       RF_driving:
         p: 1000.0
-        i: 0.0      
-        d: 0.0
+        i: 3.0      
+        d: 0.1
         #i_clamp: 1.0
-        ff_velocity_scale: 0.0
+        ff_velocity_scale: 0.8
 
 grieel_action_controller_LF:
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joint: LF_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
@@ -300,7 +300,7 @@ grieel_action_controller_LF:
 
 grieel_action_controller_LH:
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joint: LH_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
@@ -311,7 +311,7 @@ grieel_action_controller_LH:
 
 grieel_action_controller_RH:
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joint: RH_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
@@ -321,7 +321,7 @@ grieel_action_controller_RH:
     stall_timeout: 1.0
 grieel_action_controller_RF:
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joint: RF_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
