@@ -20,6 +20,10 @@ from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
+    
+    use_sim_time_arg = DeclareLaunchArgument('use_sim_time',
+                                      default_value='true')
+                                 
     wheel_mode_arg = DeclareLaunchArgument('wheel_mode',
                                       default_value='true',
                                       description='grieel in wheel mode if true')
@@ -30,7 +34,8 @@ def generate_launch_description():
         namespace='LF',
         name='lbr_limb_controller',
         output='screen',
-        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}]
+        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}, {'use_sim_time': LaunchConfiguration('use_sim_time')}]
+                
     )
 
     lbr_limb_controller_node_LH = Node(
@@ -39,7 +44,7 @@ def generate_launch_description():
         namespace='LH',
         name='lbr_limb_controller',
         output='screen',
-        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}]
+        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}, {'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
     lbr_limb_controller_node_RH = Node(
@@ -48,7 +53,7 @@ def generate_launch_description():
         namespace='RH',
         name='lbr_limb_controller',
         output='screen',
-        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}]
+        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}, {'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
     lbr_limb_controller_node_RF = Node(
@@ -57,11 +62,12 @@ def generate_launch_description():
         namespace='RF',
         name='lbr_limb_controller',
         output='screen',
-        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}]
+        parameters=[{'wheel_mode': LaunchConfiguration('wheel_mode')}, {'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
     return LaunchDescription([
         wheel_mode_arg,
+        use_sim_time_arg,
         lbr_limb_controller_node_LF,
         RegisterEventHandler(
             OnProcessStart(

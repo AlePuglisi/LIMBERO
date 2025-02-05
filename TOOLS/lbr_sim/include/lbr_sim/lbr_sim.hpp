@@ -97,6 +97,7 @@ private:
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr encoder_joint_state_pub_RF_;
 
   rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr joint_trajectory_pub_;
+  rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr drive_trajectory_pub_;
   rclcpp::Publisher<lbr_msgs::msg::EndEffectorContactState>::SharedPtr
     whole_end_effector_contact_state_pub_;
 
@@ -135,7 +136,11 @@ private:
   // Variable
   std::vector<sensor_msgs::msg::JointState> encoder_joint_state;
   trajectory_msgs::msg::JointTrajectory lbr_joint_trajectory;
+  trajectory_msgs::msg::JointTrajectory lbr_drive_trajectory;
+
   trajectory_msgs::msg::JointTrajectoryPoint lbr_joint_trajectory_point;
+  trajectory_msgs::msg::JointTrajectoryPoint lbr_drive_trajectory_point;
+  
   lbr_msgs::msg::EndEffectorContactState whole_end_effector_contact_state;
   lbr_msgs::msg::SingleEndEffectorContactState end_effector_contact_state;
   //std::array<std::array<LowPassFilter, JOINT_NUM>, LIMB_NUM> joint_filters_;

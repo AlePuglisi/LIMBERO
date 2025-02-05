@@ -15,12 +15,15 @@ def generate_launch_description():
 
     wheel_mode_arg = DeclareLaunchArgument('wheel_mode',
                                       default_value = default_wheel_mode)
+    use_sim_time_arg = DeclareLaunchArgument('use_sim_time', 
+                                             default_value = 'true')
     
     lbr_controller = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            launch_dir_path + '/lbr_controller.launch.py']
+        PythonLaunchDescriptionSource([os.path.join(
+            get_package_share_directory('lbr_bringup'), 'launch'),
+            '/lbr_controller.launch.py']
         ),
-        launch_arguments= {'wheel_mode' : LaunchConfiguration('wheel_mode')}.items(),
+        launch_arguments= {'wheel_mode' : LaunchConfiguration('wheel_mode'), 'use_sim_time': LaunchConfiguration('use_sim_time')}.items()
     )
 
     simulation_nodes = IncludeLaunchDescription(
@@ -28,11 +31,12 @@ def generate_launch_description():
             get_package_share_directory('lbr_sim'), 'launch'),
             '/lbr_sim.launch.py']
         ),
-        launch_arguments = {'wheel_mode': LaunchConfiguration('wheel_mode')}.items(),
+        launch_arguments = {'wheel_mode': LaunchConfiguration('wheel_mode'), 'use_sim_time': LaunchConfiguration('use_sim_time')}.items()
     )
 
     return LaunchDescription([
         wheel_mode_arg,
+        use_sim_time_arg,
 
         lbr_controller,
         simulation_nodes

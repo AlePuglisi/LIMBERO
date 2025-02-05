@@ -1,9 +1,16 @@
 controller_manager:
   ros__parameters:
     update_rate: 1000
+    #use_sim_time: true
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
+
+    limb_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    drive_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
 
     # Controls the gripper
     grieel_action_controller_LF:
@@ -14,9 +21,275 @@ controller_manager:
       type: position_controllers/GripperActionController
     grieel_action_controller_RF:
       type: position_controllers/GripperActionController
-    
+      
+limb_controller:
+  ros__parameters:
+    #use_sim_time: true
+    joints:
+      - LF_B2C
+      - LF_C2F
+      - LF_F2T
+      - LF_T2E
+      - LF_wristH
+      - LF_wristV
+      - LH_B2C
+      - LH_C2F
+      - LH_F2T
+      - LH_T2E
+      - LH_wristH
+      - LH_wristV
+      - RH_B2C
+      - RH_C2F
+      - RH_F2T
+      - RH_T2E
+      - RH_wristH
+      - RH_wristV
+      - RF_B2C
+      - RF_C2F
+      - RF_F2T
+      - RF_T2E
+      - RF_wristH
+      - RF_wristV
+
+
+    # The controller will expect position commands as input for each of these joints.
+    command_interfaces:
+      - effort
+
+    # Tells the controller that it should expect to receive position data as the state
+    # feedback from the hardware interface.
+    state_interfaces:
+      - position
+      - velocity
+
+    # If true, When set to true, the controller will not use any feedback from the system
+    # (e.g., joint positions, velocities, efforts) to compute the control commands.
+    open_loop_control: false
+
+    # When set to true, it allows the controller to integrate the trajectory goals it receives.
+    # This means that if the goal trajectory only specifies positions, the controller will
+    # numerically integrate the positions to compute the velocities and accelerations required
+    # to follow the trajectory.
+    allow_integration_in_goal_trajectories: true
+
+    # Allow non-zero velocity at the end of the trajectory
+    allow_nonzero_velocity_at_trajectory_end: true
+    constraints:
+      goal_time: 0.0
+      stopped_velocity_tolerance: 0.01
+      
+    gains:
+      LF_B2C:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LF_C2F:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LF_F2T:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LF_T2E:
+        p: 1000.0
+        i: 0.0      
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LF_wristH:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LF_wristV:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+
+      LH_B2C:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LH_C2F:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LH_F2T:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LH_T2E:
+        p: 1000.0
+        i: 0.0      
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LH_wristH:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LH_wristV:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RH_B2C:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RH_C2F:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RH_F2T:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RH_T2E:
+        p: 1000.0
+        i: 0.0      
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RH_wristH:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RH_wristV:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RF_B2C:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RF_C2F:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RF_F2T:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RF_T2E:
+        p: 1000.0
+        i: 0.0      
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RF_wristH:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RF_wristV:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+
+drive_controller: 
+  ros__parameters:
+    #use_sim_time: true
+    joints:
+      - LF_driving 
+      - LH_driving
+      - RH_driving
+      - RF_driving
+
+
+    # The controller will expect position commands as input for each of these joints.
+    command_interfaces:
+      - effort
+
+    # Tells the controller that it should expect to receive position data as the state
+    # feedback from the hardware interface.
+    state_interfaces:
+      - velocity
+      - position
+
+    # If true, When set to true, the controller will not use any feedback from the system
+    # (e.g., joint positions, velocities, efforts) to compute the control commands.
+    open_loop_control: false
+
+    # When set to true, it allows the controller to integrate the trajectory goals it receives.
+    # This means that if the goal trajectory only specifies positions, the controller will
+    # numerically integrate the positions to compute the velocities and accelerations required
+    # to follow the trajectory.
+    allow_integration_in_goal_trajectories: true
+
+    constraints:
+      goal_time: 0.0
+      stopped_velocity_tolerance: 0.01
+
+    # Allow non-zero velocity at the end of the trajectory
+    allow_nonzero_velocity_at_trajectory_end: true
+    gains:
+      LF_driving:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      LH_driving:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RH_driving:
+        p: 1000.0
+        i: 0.0
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      RF_driving:
+        p: 1000.0
+        i: 0.0      
+        d: 0.0
+        #i_clamp: 1.0
+        ff_velocity_scale: 0.0
+
 grieel_action_controller_LF:
   ros__parameters:
+    #use_sim_time: true
     joint: LF_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
@@ -27,6 +300,7 @@ grieel_action_controller_LF:
 
 grieel_action_controller_LH:
   ros__parameters:
+    #use_sim_time: true
     joint: LH_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
@@ -37,6 +311,7 @@ grieel_action_controller_LH:
 
 grieel_action_controller_RH:
   ros__parameters:
+    #use_sim_time: true
     joint: RH_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
@@ -46,6 +321,7 @@ grieel_action_controller_RH:
     stall_timeout: 1.0
 grieel_action_controller_RF:
   ros__parameters:
+    #use_sim_time: true
     joint: RF_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01

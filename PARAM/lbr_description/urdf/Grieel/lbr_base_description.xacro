@@ -6,6 +6,11 @@
   name="LIMBERO_v1_8_Base" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="base_macro">
 
+  <xacro:property name="ambient" value="0.2 0.2 0.2 1"/>
+  <xacro:property name="diffuse" value="0.2 0.2 0.2 1"/>
+  <xacro:property name="specular" value="0.01 0.01 0.01 1"/>
+  <xacro:property name="emissive" value="0.01 0.01 0.01 1"/>
+
     <link
       name="base_link">
       <inertial>
@@ -51,12 +56,16 @@
       <material>Gazebo/Black</material>
       <visual>
         <material>
-          <ambient>0.2 0.2 0.2 1</ambient>
-          <diffuse>0.2 0.2 0.2 1</diffuse>
-          <specular>0.01 0.01 0.01 1</specular>
-          <emissive>0.01 0.01 0.01 1</emissive>
+            <ambient>${ambient}</ambient>
+            <diffuse>${diffuse}</diffuse>
+            <specular>${specular}</specular>
+            <emissive>${emissive}</emissive>
         </material>
       </visual>
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+      <kp>1000000</kp>
+      <kd>1.0</kd>
     </gazebo>
 <!-- 
     <link name="base_frame"/>

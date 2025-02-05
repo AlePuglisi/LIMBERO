@@ -22,7 +22,9 @@ Launch Sequence:
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess, RegisterEventHandler, TimerAction
 from launch.event_handlers import OnProcessExit
-
+from launch_ros.actions import Node
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
     """Generate a launch description for sequentially starting robot controllers.
@@ -37,6 +39,9 @@ def generate_launch_description():
     #     output='screen')
 
     # Start gripper action controller
+    use_sim_time_arg = DeclareLaunchArgument('use_sim_time',
+                                      default_value='true')
+
     start_grieel_action_controller_LF_cmd = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
              'grieel_action_controller_LF'],
@@ -53,6 +58,17 @@ def generate_launch_description():
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
              'grieel_action_controller_RF'],
         output='screen')
+    
+    # Start arm controller
+    start_drive_controller_cmd = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'drive_controller'],
+        output='screen')
+    
+    start_limb_controller_cmd = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'limb_controller'],
+        output='screen')
 
     # Launch joint state broadcaster
     start_joint_state_broadcaster_cmd = ExecuteProcess(
@@ -66,12 +82,29 @@ def generate_launch_description():
         actions=[start_joint_state_broadcaster_cmd]
     )
 
+    lbr_state_estimator_node = Node(
+        package='lbr_state_estimator',
+        executable='lbr_state_estimator',
+        name='lbr_state_estimator',
+        output='screen', 
+        parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]  
+    )
+    run_lbr_state_estimator_cmd = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=start_joint_state_broadcaster_cmd,
+            on_exit=[lbr_state_estimator_node]))
+
+
     # Register event handlers for sequencing
     # Launch the joint state broadcaster after spawning the robot
-    # load_joint_state_broadcaster_cmd = RegisterEventHandler(
-    #     event_handler=OnProcessExit(
-    #         target_action=start_joint_state_broadcaster_cmd,
-    #         on_exit=[start_arm_controller_cmd]))
+    load_limb_controller_cmd = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=start_joint_state_broadcaster_cmd,
+            on_exit=[start_limb_controller_cmd]))
+    load_drive_controller_cmd = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=start_limb_controller_cmd,
+            on_exit=[start_drive_controller_cmd]))
 
     # Launch the arm controller after launching the joint state broadcaster
     load_grieel_controller_LF_cmd = RegisterEventHandler(
@@ -95,8 +128,12 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     # Add the actions to the launch description in sequence
+    ld.add_action(use_sim_time_arg)
     ld.add_action(delayed_start)
     #ld.add_action(load_joint_state_broadcaster_cmd)
+    ld.add_action(run_lbr_state_estimator_cmd)
+    ld.add_action(load_limb_controller_cmd)
+    ld.add_action(load_drive_controller_cmd)
     ld.add_action(load_grieel_controller_LF_cmd)
     ld.add_action(load_grieel_controller_LH_cmd)
     ld.add_action(load_grieel_controller_RH_cmd)

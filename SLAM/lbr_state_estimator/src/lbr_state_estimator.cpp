@@ -593,7 +593,7 @@ void StateEstimator::calculateSupportingLegPolygon()
     std::string target_frame = "base_link";
     for (int i = 0; i < supporting_limb_numbers.size(); i++) {
       contact_EE_pose_in_limb_coordinate = lbr_EE_pose.at(supporting_limb_numbers(i, 0));
-      std::string source_frame = supporting_limb_names.at(i) + "_limb_root";
+      std::string source_frame = supporting_limb_names.at(i) + "_hand_Link";
       
       geometry_msgs::msg::TransformStamped tf_msg_base_to_limb_root;
 

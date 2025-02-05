@@ -2,16 +2,17 @@
 <!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com)
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
-<robot
-  name="assembled_gripper_mode" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="assembled_gripper_mode" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:macro name="grieel_hand_macro" params="prefix">
+
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_finger_macro.xacro" />
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_first_finger_macro.xacro" />
+  <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_description.xacro" />
 
     <joint
         name="${prefix}_driving"
-        type="continuous">
+        type="revolute">
         <origin
         xyz="0.0131 0 0.04576"
         rpy="0 0 0" />
@@ -22,8 +23,10 @@
         <axis
         xyz="1 0 0" />
         <limit
-        effort="0.0"
-        velocity="0.0" />
+        lower="1E14"
+        upper="-1E14"
+        effort="10.0"
+        velocity="10.0" />
         <dynamics damping="0.1" friction="0.4"/>
     </joint>
 

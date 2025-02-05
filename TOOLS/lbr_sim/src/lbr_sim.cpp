@@ -107,7 +107,9 @@ LimberoSim::LimberoSim()
     "/" + topic_prefix + "/RF/encoder_joint_state", 10);
 
   joint_trajectory_pub_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>(
-    "/joint_trajectory_controller/joint_trajectory", 1);
+    "/limb_controller/joint_trajectory", 1);
+  drive_trajectory_pub_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>(
+    "/drive_controller/joint_trajectory", 1);
 
   whole_end_effector_contact_state_pub_ =
     this->create_publisher<lbr_msgs::msg::EndEffectorContactState>(
@@ -215,14 +217,23 @@ LimberoSim::LimberoSim()
 
   lbr_joint_trajectory.points.resize(1);
   lbr_joint_trajectory.joint_names = {
-    "LF_B2C", "LF_C2F", "LF_F2T", "LF_T2E", "LF_wristH", "LF_wristV", "LF_driving",
-    "LH_B2C", "LH_C2F", "LH_F2T", "LH_T2E", "LH_wristH", "LH_wristV", "LH_driving",
-    "RH_B2C", "RH_C2F", "RH_F2T", "RH_T2E", "RH_wristH", "RH_wristV", "RH_driving",
-    "RF_B2C", "RF_C2F", "RF_F2T", "RF_T2E", "RF_wristH", "RF_wristV", "RF_driving"};
+    "LF_B2C", "LF_C2F", "LF_F2T", "LF_T2E", "LF_wristH", "LF_wristV",
+    "LH_B2C", "LH_C2F", "LH_F2T", "LH_T2E", "LH_wristH", "LH_wristV",
+    "RH_B2C", "RH_C2F", "RH_F2T", "RH_T2E", "RH_wristH", "RH_wristV",
+    "RF_B2C", "RF_C2F", "RF_F2T", "RF_T2E", "RF_wristH", "RF_wristV"};
 
-  lbr_joint_trajectory_point.positions.resize(LIMB_NUM * JOINT_NUM);
-  lbr_joint_trajectory_point.velocities.resize(LIMB_NUM * JOINT_NUM);
-  lbr_joint_trajectory_point.accelerations.resize(LIMB_NUM * JOINT_NUM);
+  lbr_joint_trajectory_point.positions.resize(LIMB_NUM * (JOINT_NUM-1));
+  lbr_joint_trajectory_point.velocities.resize(LIMB_NUM * (JOINT_NUM-1));
+  lbr_joint_trajectory_point.accelerations.resize(LIMB_NUM * (JOINT_NUM-1));
+
+
+  lbr_drive_trajectory.points.resize(1);
+  lbr_drive_trajectory.joint_names = {
+    "LF_driving","LH_driving","RH_driving","RF_driving"};
+
+  lbr_drive_trajectory_point.positions.resize(LIMB_NUM);
+  lbr_drive_trajectory_point.velocities.resize(LIMB_NUM);
+  lbr_drive_trajectory_point.accelerations.resize(LIMB_NUM);
 
   whole_end_effector_contact_state.is_contact.resize(LIMB_NUM);
   first_call_contact = true;
@@ -294,37 +305,45 @@ void LimberoSim::targetJointStateCallback(
     limb_id = 3;
   }
 
-  lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM) = target_joint_state.position.at(0);
-  lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 1) = target_joint_state.position.at(1);
-  lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 2) = target_joint_state.position.at(2);
-  lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 3) = target_joint_state.position.at(3);
-  lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 4) = target_joint_state.position.at(4);
-  lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 5) = target_joint_state.position.at(5);
-  lbr_joint_trajectory_point.positions.at(limb_id * JOINT_NUM + 6) = 0.0;
+  lbr_joint_trajectory_point.positions.at(limb_id * (JOINT_NUM-1)) = target_joint_state.position.at(0);
+  lbr_joint_trajectory_point.positions.at(limb_id * (JOINT_NUM-1) + 1) = target_joint_state.position.at(1);
+  lbr_joint_trajectory_point.positions.at(limb_id * (JOINT_NUM-1) + 2) = target_joint_state.position.at(2);
+  lbr_joint_trajectory_point.positions.at(limb_id * (JOINT_NUM-1) + 3) = target_joint_state.position.at(3);
+  lbr_joint_trajectory_point.positions.at(limb_id * (JOINT_NUM-1) + 4) = target_joint_state.position.at(4);
+  lbr_joint_trajectory_point.positions.at(limb_id * (JOINT_NUM-1) + 5) = target_joint_state.position.at(5);
 
-  lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM) = 0.0;
-  lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 1) = 0.0;
-  lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 2) = 0.0;
-  lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 3) = 0.0;
-  lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 4) = 0.0;
-  lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 5) = 0.0;
-  lbr_joint_trajectory_point.velocities.at(limb_id * JOINT_NUM + 6) = target_joint_state.velocity.at(6);
+  lbr_joint_trajectory_point.velocities.at(limb_id * (JOINT_NUM-1)) = 0.0;
+  lbr_joint_trajectory_point.velocities.at(limb_id * (JOINT_NUM-1) + 1) = 0.0;
+  lbr_joint_trajectory_point.velocities.at(limb_id * (JOINT_NUM-1) + 2) = 0.0;
+  lbr_joint_trajectory_point.velocities.at(limb_id * (JOINT_NUM-1) + 3) = 0.0;
+  lbr_joint_trajectory_point.velocities.at(limb_id * (JOINT_NUM-1) + 4) = 0.0;
+  lbr_joint_trajectory_point.velocities.at(limb_id * (JOINT_NUM-1) + 5) = 0.0;
 
-  lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM) = 0.0;
-  lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM + 1) = 0.0;
-  lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM + 2) = 0.0;
-  lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM + 3) = 0.0;
-  lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM + 4) = 0.0;
-  lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM + 5) = 0.0;
-  lbr_joint_trajectory_point.accelerations.at(limb_id * JOINT_NUM + 6) = 0.0;
+
+  lbr_joint_trajectory_point.accelerations.at(limb_id * (JOINT_NUM-1)) = 0.0;
+  lbr_joint_trajectory_point.accelerations.at(limb_id * (JOINT_NUM-1) + 1) = 0.0;
+  lbr_joint_trajectory_point.accelerations.at(limb_id * (JOINT_NUM-1) + 2) = 0.0;
+  lbr_joint_trajectory_point.accelerations.at(limb_id * (JOINT_NUM-1) + 3) = 0.0;
+  lbr_joint_trajectory_point.accelerations.at(limb_id * (JOINT_NUM-1) + 4) = 0.0;
+  lbr_joint_trajectory_point.accelerations.at(limb_id * (JOINT_NUM-1) + 5) = 0.0;
 
   lbr_joint_trajectory_point.time_from_start.sec = 0;
-  lbr_joint_trajectory_point.time_from_start.nanosec = 1000000;  // 0.001 s
+  lbr_joint_trajectory_point.time_from_start.nanosec = 10000000;  // 0.001 s
 
   lbr_joint_trajectory.points.at(0) = lbr_joint_trajectory_point;
 
-  lbr_joint_trajectory.header.stamp.sec = 0;
-  lbr_joint_trajectory.header.stamp.nanosec = 0;
+  lbr_joint_trajectory.header.stamp.sec = this->now().seconds();
+  lbr_joint_trajectory.header.stamp.nanosec = this->now().nanoseconds();
+
+  lbr_drive_trajectory_point.positions.at(limb_id) = 0.0;
+  lbr_drive_trajectory_point.velocities.at(limb_id) = target_joint_state.velocity.at(6);
+  lbr_drive_trajectory_point.accelerations.at(limb_id) = 0.0;
+  lbr_drive_trajectory_point.time_from_start.sec = 0;
+  lbr_drive_trajectory_point.time_from_start.nanosec = 10000000;  // 0.001 s
+  lbr_drive_trajectory.points.at(0) = lbr_drive_trajectory_point;
+
+  lbr_drive_trajectory.header.stamp.sec = this->now().seconds();
+  lbr_drive_trajectory.header.stamp.nanosec = this->now().nanoseconds();
 
   // low pass filtering
   // for (int i=0; i < JOINT_NUM; i++) {
@@ -341,6 +360,7 @@ void LimberoSim::targetJointStateCallback(
   // lbr_joint_trajectory.points.at(0) = lbr_joint_trajectory_point;
 
   joint_trajectory_pub_->publish(lbr_joint_trajectory);
+  drive_trajectory_pub_->publish(lbr_drive_trajectory);
 
 #if USE_TARGET_JOINT_STATE_IN_RVIZ
   for (int i = 0; i < JOINT_NUM; i++) {

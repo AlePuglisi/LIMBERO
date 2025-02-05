@@ -7,6 +7,11 @@
 
   <xacro:arg name="not_first_finger" default="false" />
 
+  <xacro:property name="ambient" value="0.2 0.2 0.2 1"/>
+  <xacro:property name="diffuse" value="0.2 0.2 0.2 1"/>
+  <xacro:property name="specular" value="0.01 0.01 0.01 1"/>
+  <xacro:property name="emissive" value="0.01 0.01 0.01 1"/>
+
   <xacro:macro name="grieel_gripper_finger_macro" params="prefix name *origin">
     <joint
         name="${prefix}_${name}_H2P1"
@@ -72,10 +77,10 @@
         <material>Gazebo/Black</material>
         <visual>
             <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
             </material>
         </visual>
 
@@ -151,10 +156,10 @@
         <material>Gazebo/Black</material>
         <visual>
             <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
             </material>
         </visual>
         <mu1>1.0</mu1>
@@ -230,10 +235,10 @@
         <material>Gazebo/Black</material>
         <visual>
             <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
             </material>
         </visual>
         <mu1>1.0</mu1>

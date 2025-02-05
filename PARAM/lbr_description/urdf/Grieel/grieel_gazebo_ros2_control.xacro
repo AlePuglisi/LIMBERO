@@ -5,6 +5,7 @@
             <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
                 <parameters>$(find lbr_description)/config/grieel_controllers.yaml</parameters>
                 <ros>
+                    <parameter name="use_sim_time" type="bool">true</parameter>
                     <remapping>/controller_manager/robot_description:=/robot_description</remapping>
                 </ros>
             </plugin>

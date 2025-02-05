@@ -114,10 +114,14 @@ LowLevelController::LowLevelController()
 
   // Set EE pose as initial limb position.
   for (int i = 0; i < LIMB_NUM; i++) {
+    current_EE_pose.at(i).end_effector_position.x = 0.20;
+    current_EE_pose.at(i).end_effector_position.y = 0.0;
+    current_EE_pose.at(i).end_effector_position.z = -0.20;
+    current_EE_pose.at(i).end_effector_pitch_angle = 0.0;
 #if 1  // Use grippers for climbing
     initial_EE_pose.at(i).end_effector_position.x = 0.18;
     initial_EE_pose.at(i).end_effector_position.y = 0.0;
-    initial_EE_pose.at(i).end_effector_position.z = -0.045;
+    initial_EE_pose.at(i).end_effector_position.z = 0.0;
     initial_EE_pose.at(i).end_effector_pitch_angle = M_PI_2;
 #else
     // Another initial pose for ball foot.
@@ -364,6 +368,7 @@ void LowLevelController::execLimbMotion(const lbr_msgs::msg::LimbMotionTask & li
   Eigen::Vector3d EE_displacement_from_initial_position;
   Eigen::Vector3d EE_displacement_from_initial_position_in_previous_step;
 
+  rclcpp::Rate rate(1000.0 / step_time);
   // Update displacement of end-effector position
   for (int step = 0; step < step_num; step++) {
     for (int i = 0; i < displacement_in_base_coordinate.size(); i++) {
@@ -405,7 +410,8 @@ void LowLevelController::execLimbMotion(const lbr_msgs::msg::LimbMotionTask & li
       d_EE_displacement.end_effector_position.z << std::endl;
 #endif  // DEBUG_ENABLED
     publishNextEndEffectorPose(d_EE_displacement);
-    std::this_thread::sleep_for(std::chrono::milliseconds(step_time));
+    //std::this_thread::sleep_for(std::chrono::milliseconds(step_time));
+    rate.sleep();
   }
 }
 
@@ -421,6 +427,7 @@ void LowLevelController::execLimbMotionArray(
   // Define step time
   const int step_num = 100;
   std::vector<int> step_time(lm_num);
+
   for (int i = 0; i < lm_num; i++) {
     step_time.at(i) = limb_motion_task_array.at(i).swing_duration / step_num;  // [ms]
     if (step_time.at(i) == 0) {
@@ -441,6 +448,7 @@ void LowLevelController::execLimbMotionArray(
   std::vector<Eigen::Matrix<double, 8, 3>,
     Eigen::aligned_allocator<Eigen::Matrix<double, 8, 3>>> spline_coefficient(lm_num);
   std::vector<double> elapsed_time(lm_num);
+
 
   for (int i = 0; i < lm_num; i++) {
     d_EE_displacement.at(i).limb_id = limb_motion_task_array.at(i).limb_id;
@@ -624,6 +632,7 @@ void LowLevelController::execBaseMotion(const lbr_msgs::msg::BaseMotionTask & ba
   Eigen::Vector3d d_rotation_in_base_coordinate =
     rotation_in_base_coordinate / (step_num - 1);
 
+  rclcpp::Rate rate(1000.0 / step_time);  // Convert ms to Hz
   for (int step = 0; step < step_num; step++) {
     for (int limb = 0; limb < LIMB_NUM; limb++) {
       lbr_msgs::msg::EndEffectorPoseFourDof d_EE_displacement;
@@ -654,7 +663,7 @@ void LowLevelController::execBaseMotion(const lbr_msgs::msg::BaseMotionTask & ba
 
       publishNextEndEffectorPose(d_EE_displacement);
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(step_time));
+    rate.sleep();
 #if DEBUG_ENABLED
     std::cout << "Base motion: " << step_time * step << " ms/" <<
       base_motion.motion_duration << " ms" << std::endl;
@@ -776,13 +785,18 @@ void LowLevelController::setDefaultEndEffectorPose(
     d_EE_displacement.at(limb).end_effector_position.z = moving_vector.at(limb).z / (step_num - 1);
     d_EE_displacement.at(limb).end_effector_pitch_angle =
       pitch_difference.at(limb) / (step_num - 1);
+
+    std::cout << "Initialize: x = " << moving_vector.at(limb).x << " | y = " << moving_vector.at(limb).y << " | z = " << moving_vector.at(limb).z << std::endl;
   }
+
+  rclcpp::Rate rate(1000.0 / step_time);  // Convert ms to Hz
 
   for (int step = 0; step < step_num; step++) {
     for (int limb = 0; limb < LIMB_NUM; limb++) {
       publishNextEndEffectorPose(d_EE_displacement.at(limb));
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(step_time));
+    rate.sleep();
+
 #if DEBUG_ENABLED
     float progress_percent = static_cast<float>(step) / static_cast<float>(step_num);
     std::cout << "Initialize: " << progress_percent * 100 << "%" << std::endl;

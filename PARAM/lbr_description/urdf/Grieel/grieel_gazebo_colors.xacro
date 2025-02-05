@@ -10,7 +10,13 @@
         <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_description.xacro" />
     </xacro:unless>
 
+    <xacro:property name="ambient" value="0.2 0.2 0.2 1"/>
+    <xacro:property name="diffuse" value="0.2 0.2 0.2 1"/>
+    <xacro:property name="specular" value="0.01 0.01 0.01 1"/>
+    <xacro:property name="emissive" value="0.01 0.01 0.01 1"/>
+
     <xacro:macro name="gazebo_colors_macro" params="prefix">
+
 
         <!-- Gazebo tag for support gripper/wheel phisical characteristics -->
         <!-- <xacro:if value="$(arg wheel_mode)">
@@ -35,10 +41,10 @@
           <material>Gazebo/Black</material>
             <visual>
               <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
               </material>
             </visual>
           </gazebo>
@@ -47,10 +53,10 @@
             <material>Gazebo/Black</material>
             <visual>
               <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
               </material>
             </visual>
           </gazebo>
@@ -59,10 +65,10 @@
             <material>Gazebo/Black</material>
             <visual>
               <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
               </material>
             </visual>
           </gazebo>
@@ -71,10 +77,10 @@
             <material>Gazebo/Black</material>
             <visual>
               <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
               </material>
             </visual>
           </gazebo>
@@ -83,10 +89,10 @@
             <material>Gazebo/Black</material>
             <visual>
               <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
               </material>
             </visual>
           </gazebo>
@@ -95,10 +101,10 @@
             <material>Gazebo/Black</material>
             <visual>
               <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
               </material>
             </visual>
           </gazebo>
@@ -107,10 +113,10 @@
             <material>Gazebo/Black</material>
             <visual>
               <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
               </material>
             </visual>
           </gazebo>
@@ -119,10 +125,10 @@
             <material>Gazebo/Black</material>
             <visual>
               <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
               </material>
             </visual>
           </gazebo>
@@ -155,10 +161,10 @@
             <material>Gazebo/Black</material>
             <visual>
               <material>
-                <ambient>0.2 0.2 0.2 1</ambient>
-                <diffuse>0.2 0.2 0.2 1</diffuse>
-                <specular>0.01 0.01 0.01 1</specular>
-                <emissive>0.01 0.01 0.01 1</emissive>
+                <ambient>${ambient}</ambient>
+                <diffuse>${diffuse}</diffuse>
+                <specular>${specular}</specular>
+                <emissive>${emissive}</emissive>
               </material>
             </visual>
             <mu1>1.0</mu1>
