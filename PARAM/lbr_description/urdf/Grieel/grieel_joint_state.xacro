@@ -17,20 +17,19 @@
             <!-- Gazebo plugin for joint state publisher  -->
         <gazebo>
             <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
-            <!-- <ros>
-                <namespace>${prefix}</namespace>
-                <remapping>~/out:=joint_states</remapping>
-            </ros> -->
-            <!-- <update_rate>500</update_rate> -->
-            <topic>${prefix}/joint_states</topic>
-            <joint_name>${prefix}_B2C</joint_name>
-            <joint_name>${prefix}_C2F</joint_name>
-            <joint_name>${prefix}_F2T</joint_name>
-            <joint_name>${prefix}_T2E</joint_name>
-            <joint_name>${prefix}_wristH</joint_name>
-            <joint_name>${prefix}_wristV</joint_name>
-            <joint_name>${prefix}_driving</joint_name>
-            <!-- <joint_name>${prefix}_F1_H2P1</joint_name> -->
+                <!-- <ros>
+                    <namespace>${prefix}</namespace>
+                    <remapping>~/out:=joint_states</remapping>
+                </ros> -->
+                <topic>${prefix}/joint_states</topic>
+                <joint_name>${prefix}_B2C</joint_name>
+                <joint_name>${prefix}_C2F</joint_name>
+                <joint_name>${prefix}_F2T</joint_name>
+                <joint_name>${prefix}_T2E</joint_name>
+                <joint_name>${prefix}_wristH</joint_name>
+                <joint_name>${prefix}_wristV</joint_name>
+                <joint_name>${prefix}_driving</joint_name>
+                <!-- <joint_name>${prefix}_F1_H2P1</joint_name> -->
             </plugin>
         </gazebo>
 

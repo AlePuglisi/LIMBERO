@@ -7,6 +7,8 @@
 
   <xacro:macro name="grieel_gripper_macro" params="prefix parent">
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_splitted.xacro" />
+    <xacro:property name="friction" value="0.1"/>
+    <xacro:property name="damping" value="0.05"/>
 
     <joint
       name="${prefix}_E2grieel"
@@ -128,7 +130,7 @@
       upper="3.14159265358"
       effort="8.0"
       velocity="4.0" />
-    <dynamics damping="0.1" friction="0.4"/>
+    <dynamics damping="${damping}" friction="${friction}"/>
   </joint>
 
 
@@ -191,7 +193,7 @@
       upper="1.57079632679"
       effort="8.0"
       velocity="4.0" />
-    <dynamics damping="0.1" friction="0.4"/>
+    <dynamics damping="${damping}" friction="${friction}"/>
   </joint>
 
   <!-- <link

@@ -53,8 +53,8 @@ IndipendentJointController::IndipendentJointController()
     Kpv[6] = 20.0;
     Tiv[6] = 0.1;
   }else if(grieel_state_ == "gripper"){
-    Kpv[6] = 20.0;
-    Tiv[6] = 0.1;
+    Kpv[6] = 0.0;
+    Tiv[6] = 1.0;
   }
 
   if(PID == 1){  
@@ -418,7 +418,10 @@ void IndipendentJointController::controlLoopPPI()
       // joint_velocity_error[i] = joint_velocity_reference[i] - current_joint_state.velocity.at(i);
       //joint_velocity_error[i] = joint_velocity_reference[i] - estimated_joint_velocity[i];
       joint_velocity_filtered[i] = joint_velocity_filtered[i]*(Tf-(Ts*1e-3))/Tf + (Ts*1e-3)/Tf * previous_joint_velocity[i];
-      joint_velocity_error[i] = joint_velocity_reference[i] - joint_velocity_filtered[i];
+      estimated_joint_velocity[i] = (current_joint_state.position.at(i) - previous_joint_position[i])/(Ts*1e-3);
+      
+      joint_velocity_error[i] = joint_velocity_reference[i] - estimated_joint_velocity[i];
+      //joint_velocity_error[i] = joint_velocity_reference[i] - joint_velocity_filtered[i];
 
       if(ANTI_WINDUP_METHOD == 1){ // back-calculation
         integral[i] += (Ts*1e-3)*(Kpv[i]/Tiv[i]*joint_velocity_error[i] + anti_wind_up[i]);
@@ -483,8 +486,8 @@ void IndipendentJointController::controlLoopPPI()
                   << joint_position_error[i]              << ","
                   << joint_velocity_reference[i]          << ","
                   //<< current_joint_state.velocity.at(i)   << ","
-                  //<< estimated_joint_velocity[i]          << ","
-                  << joint_velocity_filtered[i]          << ","
+                  << estimated_joint_velocity[i]          << ","
+                  //<< joint_velocity_filtered[i]          << ","
                   << joint_velocity_feed_forward[i]       << ","
                   << joint_velocity_error[i]              << ","
                   << integral[i]                          << ","

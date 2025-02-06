@@ -66,7 +66,7 @@
   <xacro:joint_state_macro prefix="RH"/>
   <xacro:joint_state_macro prefix="RF"/>
   
-  <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_grieel_joint_state.xacro" />
+  <!-- <xacro:include filename="$(find lbr_description)/urdf/Grieel/lbr_grieel_joint_state.xacro" /> -->
 
   <xacro:joint_actuator_macro prefix="LF"/>
   <xacro:joint_actuator_macro prefix="LH"/>

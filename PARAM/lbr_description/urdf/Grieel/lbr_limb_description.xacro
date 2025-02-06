@@ -7,6 +7,9 @@
 
   <xacro:macro name="limb_macro" params="prefix parent radius">
 
+    <xacro:property name="friction" value="0.1"/>
+    <xacro:property name="damping" value="0.05"/>
+
     <joint
       name="${prefix}_joint"
       type="fixed">
@@ -118,7 +121,7 @@
         upper="2.10"
         effort="16.0"
         velocity="3.0" />
-      <dynamics damping="0.1" friction="0.4"/>
+      <dynamics damping="${damping}" friction="${friction}"/>
     </joint>
 
     <!-- <transmission name="${prefix}_B2C_transmission">
@@ -190,7 +193,7 @@
         upper="1.3"
         effort="16.0"
         velocity="5.0" />
-      <dynamics damping="0.1" friction="0.4"/>
+      <dynamics damping="${damping}" friction="${friction}"/>
     </joint>
 
     <!-- <transmission name="${prefix}_C2F_transmission">
@@ -262,7 +265,7 @@
         upper="2.95"
         effort="10.0"
         velocity="5.0" />
-      <dynamics damping="0.1" friction="0.4"/>
+      <dynamics damping="${damping}" friction="${friction}"/>
       <initial_position value="${pi/2}"/>
     </joint>
 
@@ -335,7 +338,7 @@
         upper="1.57"
         effort="8.0"
         velocity="4.0" />
-      <dynamics damping="0.1" friction="0.4"/>
+      <dynamics damping="${damping}" friction="${friction}"/>
     </joint>
 
     <!-- <transmission name="${prefix}_T2E_transmission">

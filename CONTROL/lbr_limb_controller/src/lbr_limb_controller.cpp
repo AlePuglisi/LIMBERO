@@ -277,33 +277,40 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
 
   double delta_wristH = wristH - temp_joint_state.position.at(4);
   double delta_wristV = wristV - temp_joint_state.position.at(5);
-  double delta_T_wristH = abs(delta_wristH / MAX_WRIST_VEL);  
-  double delta_T_wristV = abs(delta_wristV / MAX_WRIST_VEL);  
-  double initial_time = this->now().seconds();
-  double current_time = this->now().seconds();
+  double delta_T_wristH = abs(delta_wristH / MAX_WRIST_VEL)*std::pow(10,9);  
+  double delta_T_wristV = abs(delta_wristV / MAX_WRIST_VEL)*std::pow(10,9);    
+  double initial_time = this->now().nanoseconds();
+  double current_time = this->now().nanoseconds();
   std::array<float, 6>  a_wristH = computeFifthOrderTraj(temp_joint_state.position.at(4),delta_wristH, delta_T_wristH);
   std::array<float, 6>  a_wristV = computeFifthOrderTraj(temp_joint_state.position.at(5),delta_wristV, delta_T_wristV);
   double dt = 0.0; 
 
-  std::cout << name_space << " Going from WristH: " << temp_joint_state.position.at(4) << "to final wristH:" << wristH << "in" << delta_T_wristH << std::endl;
-  std::cout << name_space << " Going from WristV: " << temp_joint_state.position.at(5) << "to final wristV:" << wristV << "in" << delta_T_wristV << std::endl;
+  std::cout << name_space << " Going from WristH: " << temp_joint_state.position.at(4) << "to final wristH:" << wristH << "in" << delta_T_wristH << "[ns]" << std::endl;
+  std::cout << name_space << " Going from WristV: " << temp_joint_state.position.at(5) << "to final wristV:" << wristV << "in" << delta_T_wristV << "[ns]" << std::endl;
   // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
-  while(!(current_time > initial_time + delta_T_wristH) || !(current_time > initial_time + delta_T_wristV)){
-    current_time = this->now().seconds();
+  rclcpp::Rate rate(1000.0 / 10.0);  // Convert ms to Hz
+  bool finish_wristH = false; 
+  bool finish_wristV = false; 
+  while(!finish_wristH || !finish_wristV){
+    current_time = this->now().nanoseconds();
     dt = current_time - initial_time;
     if(current_time < initial_time + delta_T_wristH){
       current_joint_state.position.at(4) = a_wristH[0] + a_wristH[1]*dt + a_wristH[2]*std::pow(dt,2) + a_wristH[3]*std::pow(dt,3) + a_wristH[4]*std::pow(dt,4) + a_wristH[5]*std::pow(dt,5);
+    } else{ finish_wristH = true; 
     }
     if(current_time < initial_time + delta_T_wristV){
         current_joint_state.position.at(5) = a_wristV[0] + a_wristV[1]*dt + a_wristV[2]*std::pow(dt,2)+ a_wristV[3]*std::pow(dt,3) + a_wristV[4]*std::pow(dt,4) + a_wristV[5]*std::pow(dt,5);
+    }
+    else{ finish_wristV = true; 
     }
     current_joint_state.velocity.at(6) = 0.0;
     // keep other joints position in the current state
     current_joint_state.header.stamp = this->now();
     joint_state_pub_->publish(current_joint_state);
-    std::this_thread::sleep_for(std::chrono::milliseconds(10)); // small sleep to avoid step like trajectory signal
+    //std::this_thread::sleep_for(std::chrono::milliseconds(10)); // small sleep to avoid step like trajectory signal
+    rate.sleep();
   }
-  std::cout << name_space << " Finish" << new_grieel_mode.data << " mode Transformation" << std::endl;
+  std::cout << name_space << " Finish " << new_grieel_mode.data << " mode Transformation" << std::endl;
   //std::this_thread::sleep_for(std::chrono::seconds(3));
   std_msgs::msg::String grieel_joint_finish;
   grieel_joint_finish.data = grieel_mode;

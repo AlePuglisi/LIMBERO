@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
   <world name="empty">
-    <physics name="1ms" type="ignored">
+    <physics name="default_physics" type="ode">
+      <real_time_update_rate>500</real_time_update_rate> <!-- 500 Hz update -->
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
     </physics>
@@ -72,9 +73,10 @@
             </plane>
           </geometry>
           <material>
-            <ambient>0.906 0.490 0.067 1</ambient>
-            <diffuse>0.906 0.490 0.067 1</diffuse>
-            <specular>0.906 0.490 0.067 1</specular>
+            <ambient>0.270455 0.270455 0.270455 1</ambient>
+            <diffuse>0.242280 0.048172 0.016807 1</diffuse>
+            <emissive>0.000000 0.000000 0.000000 1</emissive>
+            <specular>0.500000 0.500000 0.500000 1</specular>
           </material>
         </visual>
       </link> 
