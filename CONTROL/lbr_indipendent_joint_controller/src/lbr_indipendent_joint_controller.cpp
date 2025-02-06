@@ -7,8 +7,8 @@ IndipendentJointController::IndipendentJointController()
 
   // initialize variables and resize
   std::string name_space = std::string(this->get_namespace());
-  current_joint_state.position.resize(JOINT_NUM + 1);
-  current_joint_state.velocity.resize(JOINT_NUM + 1);
+  current_joint_state.position.resize(JOINT_NUM);
+  current_joint_state.velocity.resize(JOINT_NUM);
   reference_joint_state.position.resize(JOINT_NUM);
   reference_joint_state.velocity.resize(JOINT_NUM);
   torque_control_output.data.resize(JOINT_NUM*LIMB_NUM);
@@ -28,7 +28,6 @@ IndipendentJointController::IndipendentJointController()
 
   // Initialize controller gains and
   gravity_compensation = GRAVITY_COMPENSATION;
-  control_grieel = CONTROL_GRIEEL; 
 
   this->declare_parameter("wheel_mode", true);
 
@@ -53,14 +52,13 @@ IndipendentJointController::IndipendentJointController()
   if(grieel_state_ == "wheel"){
     Kpv[6] = 20.0;
     Tiv[6] = 0.1;
-    reference_grieel_state = M_PI/6;
   }else if(grieel_state_ == "gripper"){
-    // Kpv[6] = 20.0;
-    // Tiv[6] = 0.1;
-    reference_grieel_state = 0.0;
+    Kpv[6] = 20.0;
+    Tiv[6] = 0.1;
   }
 
-  if(PID == 1){  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
+  if(PID == 1){  
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
     end_effector_contact_state_sub_LH_;
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
     end_effector_contact_state_sub_RH_;
@@ -77,7 +75,6 @@ IndipendentJointController::IndipendentJointController()
     TI[JOINT_NUM-1] = 1.0;  
   }
 
-  Kp_GRIEEL = KP_GRIEEL;
 
   // initialize all controller related signals and reference joint state (only F2T as pi/2 initial desired position)
   for (int i=0; i < JOINT_NUM; i++){
@@ -188,8 +185,6 @@ IndipendentJointController::IndipendentJointController()
     torque_control_publishers_[i] = this-> create_publisher<std_msgs::msg::Float64>(
     name_space + joint_names[i] + "/joint_torques", 10);
   }
-  grieel_torque_publisher_ = this-> create_publisher<std_msgs::msg::Float64>(
-    name_space + "_F1_H2P1" + "/joint_torques", 10);
 
   // Set up control loop rate
   if(PID == 0){
@@ -205,7 +200,7 @@ void IndipendentJointController::currentJointStateCallback(
     const sensor_msgs::msg::JointState & joint_state)
 {
   // update current joint state with Gazebo feedback
-  for (int i=0; i < JOINT_NUM + 1; i++){
+  for (int i=0; i < JOINT_NUM; i++){
     current_joint_state.position.at(i) = joint_state.position.at(i);
     current_joint_state.velocity.at(i) = joint_state.velocity.at(i);
   }
@@ -480,6 +475,7 @@ void IndipendentJointController::controlLoopPPI()
 
       torque_control_data.data = torque_control_output.data.at(LIMB_ID*JOINT_NUM + i);
       torque_control_publishers_[i]->publish(torque_control_data);
+
       if(ANTI_WINDUP_METHOD == 1){
           file_out << reference_joint_state.position.at(i) << ","
                   << reference_joint_position_filtered[i] << ","
@@ -519,16 +515,6 @@ void IndipendentJointController::controlLoopPPI()
                   << integral[i]                          << ","
                   << torque_control_output.data.at(LIMB_ID*JOINT_NUM + i) <<","
                   << gravitational_torque[i] <<",";
-      }
-    }
-    if(control_grieel){
-      float grieel_torque; 
-      float grieel_error = reference_grieel_state - current_joint_state.position.at(JOINT_NUM);
-      if(abs(grieel_error) > 0.1){
-        grieel_torque = (grieel_error)*Kp_GRIEEL;
-        std_msgs::msg::Float64 grieel_msg;
-        grieel_msg.data = grieel_torque;
-        grieel_torque_publisher_->publish(grieel_msg);
       }
     }
     // Publish controller Torque output

@@ -136,7 +136,8 @@ private:
   // Variable
   std::vector<sensor_msgs::msg::JointState> encoder_joint_state;
   trajectory_msgs::msg::JointTrajectory lbr_joint_trajectory;
-  trajectory_msgs::msg::JointTrajectory lbr_drive_trajectory;
+  
+  //trajectory_msgs::msg::JointTrajectory lbr_drive_trajectory;
 
   trajectory_msgs::msg::JointTrajectoryPoint lbr_joint_trajectory_point;
   trajectory_msgs::msg::JointTrajectoryPoint lbr_drive_trajectory_point;

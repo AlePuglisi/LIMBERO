@@ -114,9 +114,9 @@ LowLevelController::LowLevelController()
 
   // Set EE pose as initial limb position.
   for (int i = 0; i < LIMB_NUM; i++) {
-    current_EE_pose.at(i).end_effector_position.x = 0.20;
+    current_EE_pose.at(i).end_effector_position.x = 0.40;
     current_EE_pose.at(i).end_effector_position.y = 0.0;
-    current_EE_pose.at(i).end_effector_position.z = -0.20;
+    current_EE_pose.at(i).end_effector_position.z = 0.0;
     current_EE_pose.at(i).end_effector_pitch_angle = 0.0;
 #if 1  // Use grippers for climbing
     initial_EE_pose.at(i).end_effector_position.x = 0.18;
