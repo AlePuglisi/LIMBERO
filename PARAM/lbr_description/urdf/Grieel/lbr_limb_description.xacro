@@ -10,6 +10,8 @@
     <xacro:property name="friction" value="0.1"/>
     <xacro:property name="damping" value="0.05"/>
 
+    <xacro:arg name="simplified" default="false" />
+
     <joint
       name="${prefix}_joint"
       type="fixed">
@@ -24,92 +26,140 @@
 
     <link
       name="${prefix}_limb_root">
-      <!-- <inertial>
-        <origin
-          xyz="-0.015029 -7.7571E-11 -0.047318"
-          rpy="0 0 0" />
-        <mass
-          value="0.08459" />
-        <inertia
-          ixx="2.1548E-05"
-          ixy="-4.775E-14"
-          ixz="-1.6188E-07"
-          iyy="3.834E-05"
-          iyz="-8.2973E-14"
-          izz="3.1728E-05" />
-      </inertial> -->
-      <xacro:inertial_box mass="0.08459" x="0.0585" y="0.0335" z="0.0543">
-            <origin xyz="${-0.015029+0.02925} -7.7571E-11 ${-0.047318-0.047551}" rpy="0 0 0"/>
-      </xacro:inertial_box>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/limb_root.STL" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0.02925 0 -0.047551"
-          rpy="0 0 0" />
-        <geometry>
-          <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/limb_root.STL" /> -->
-            <box size="0.0585 0.0335 0.0543" />
-        </geometry>
-      </collision>
+      <xacro:if value="$(arg simplified)">
+        <xacro:inertial_box mass="0.08459" x="0.0585" y="0.0335" z="0.0543">
+              <origin xyz="-0.015029 -7.7571E-11 -0.047318" rpy="0 0 0"/>
+        </xacro:inertial_box>
+        <visual>
+          <origin
+            xyz="0 0 -0.047551"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.0585 0.0335 0.0543" />
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 -0.047551"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.0585 0.0335 0.0543" />
+          </geometry>
+        </collision>
+      </xacro:if>
+      <xacro:unless value="$(arg simplified)">
+        <inertial>
+          <origin
+            xyz="-0.015029 -7.7571E-11 -0.047318"
+            rpy="0 0 0" />
+          <mass
+            value="0.08459" />
+          <inertia
+            ixx="2.1548E-05"
+            ixy="-4.775E-14"
+            ixz="-1.6188E-07"
+            iyy="3.834E-05"
+            iyz="-8.2973E-14"
+            izz="3.1728E-05" />
+        </inertial>
+        <visual>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/limb_root.STL" />
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/limb_root.STL" />
+          </geometry>
+        </collision>
+      </xacro:unless>
     </link>
 
     <link
       name="${prefix}_coxa">
-      <!-- <inertial>
-        <origin
-          xyz="0.015938 0.00063302 -0.0015013"
-          rpy="0 0 0" />
-        <mass
-          value="0.09109" />
-        <inertia
-          ixx="2.352E-05"
-          ixy="-1.6188E-07"
-          ixz="4.775E-14"
-          iyy="3.3634E-05"
-          iyz="8.2973E-14"
-          izz="4.2122E-05" />
-      </inertial> -->
-      <xacro:inertial_box mass="0.09109" x="0.0585" y="0.0543" z="0.0402">
-            <origin xyz="${0.015938+0.017478} 0.00063302 -0.0015013" rpy="0 0 0"/>
-      </xacro:inertial_box>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/coxa.STL" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0.017478 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/coxa.STL" /> -->
-            <box size="0.0585 0.0543 0.0402" />
-        </geometry>
-      </collision>
+      <xacro:if value="$(arg simplified)">
+        <xacro:inertial_box mass="0.09109" x="0.0585" y="0.0543" z="0.0402">
+              <origin xyz="0.015938 0.00063302 -0.0015013" rpy="0 0 0"/>
+        </xacro:inertial_box>
+        <visual>
+          <origin
+            xyz="0.017478 0 0"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.0585 0.0543 0.0402" />
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0.017478 0 0"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.0585 0.0543 0.0402" />
+          </geometry>
+        </collision>
+      </xacro:if>
+      <xacro:unless value="$(arg simplified)">
+        <inertial>
+          <origin
+            xyz="0.015938 0.00063302 -0.0015013"
+            rpy="0 0 0" />
+          <mass
+            value="0.09109" />
+          <inertia
+            ixx="2.352E-05"
+            ixy="-1.6188E-07"
+            ixz="4.775E-14"
+            iyy="3.3634E-05"
+            iyz="8.2973E-14"
+            izz="4.2122E-05" />
+        </inertial>
+        <visual>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/coxa.STL" />
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/coxa.STL" />
+          </geometry>
+        </collision>
+      </xacro:unless>
     </link>
 
     <joint
@@ -145,47 +195,71 @@
 
     <link
       name="${prefix}_femur">
-      <!-- <inertial>
-        <origin
-          xyz="0.10083 0.00014739 -3.217E-08"
-          rpy="0 0 0" />
-        <mass
-          value="0.12821" />
-        <inertia
-          ixx="3.7005E-05"
-          ixy="-1.9987E-08"
-          ixz="-3.8346E-12"
-          iyy="2.9934E-05"
-          iyz="2.5988E-11"
-          izz="4.8164E-05" />
-      </inertial> -->
-      <xacro:inertial_cylinder mass="0.12821" length="0.177" radius="0.013">
-            <origin xyz="${0.10083+0.11} 0.00014739 -3.217E-08" rpy="0 1.57079632679489661923 0"/>
-      </xacro:inertial_cylinder>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/femur.STL" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0.11 0 0"
-          rpy="0 1.57079632679489661923 0" />
-        <geometry>
-          <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/femur.STL" /> -->
-            <cylinder radius="0.013" length="0.177"/>     
-        </geometry>
-      </collision>
+      <xacro:if value="$(arg simplified)">
+        <xacro:inertial_cylinder mass="0.12821" length="0.177" radius="0.013">
+              <origin xyz="0.10083 0.00014739 -3.217E-08" rpy="0 1.57079632679489661923 0"/>
+        </xacro:inertial_cylinder>
+        <visual>
+          <origin
+            xyz="0.11 0 0"
+            rpy="0 1.5707963267948966192 0" />
+          <geometry>
+              <cylinder radius="0.013" length="0.177"/>     
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0.11 0 0"
+            rpy="0 1.5707963267948966192 0" />
+          <geometry>
+              <cylinder radius="0.013" length="0.177"/>     
+          </geometry>
+        </collision>
+      </xacro:if>
+      <xacro:unless value="$(arg simplified)">
+        <inertial>
+          <origin
+            xyz="0.10083 0.00014739 -3.217E-08"
+            rpy="0 0 0" />
+          <mass
+            value="0.12821" />
+          <inertia
+            ixx="3.7005E-05"
+            ixy="-1.9987E-08"
+            ixz="-3.8346E-12"
+            iyy="2.9934E-05"
+            iyz="2.5988E-11"
+            izz="4.8164E-05" />
+        </inertial>
+        <visual>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/femur.STL" />
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/femur.STL" /> 
+          </geometry>
+        </collision>
+      </xacro:unless>
     </link>
 
     <joint
@@ -221,47 +295,71 @@
 
     <link
       name="${prefix}_tibia">
-      <!-- <inertial>
-        <origin
-          xyz="0.10298 1.1638E-07 0.019231"
-          rpy="0 0 0" />
-        <mass
-          value="0.061841" />
-        <inertia
-          ixx="1.5486E-05"
-          ixy="4.7072E-09"
-          ixz="2.5637E-06"
-          iyy="2.1826E-05"
-          iyz="2.414E-08"
-          izz="2.8843E-05" />
-      </inertial> -->
-      <xacro:inertial_cylinder mass="0.061841" length="0.14" radius="0.01">
-            <origin xyz="${0.10298+0.08} 1.1638E-07 ${0.019231+0.027}" rpy="0 1.78023583703421616846 0"/>
-      </xacro:inertial_cylinder>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/tibia.STL" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0.08 0 0.027"
-          rpy="0 1.78023583703421616846 0" />
-        <geometry>
-          <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/tibia.STL" /> -->
-                <cylinder radius="0.01" length="0.14"/>
-        </geometry>
-      </collision>
+      <xacro:if value="$(arg simplified)">
+        <xacro:inertial_cylinder mass="0.061841" length="0.16" radius="0.01">
+              <origin xyz="0.10298 1.1638E-07 0.019231" rpy="0 1.78023583703421616846 0"/>
+        </xacro:inertial_cylinder>
+        <visual>
+          <origin
+            xyz="0.08 0 0.027"
+            rpy="0 1.78023583703421616846 0" />
+          <geometry>
+              <cylinder radius="0.01" length="0.16"/>
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0.08 0 0.027"
+            rpy="0 1.78023583703421616846 0" />
+          <geometry>
+                  <cylinder radius="0.01" length="0.16"/>
+          </geometry>
+        </collision>
+      </xacro:if>
+      <xacro:unless value="$(arg simplified)">
+        <inertial>
+          <origin
+            xyz="0.10298 1.1638E-07 0.019231"
+            rpy="0 0 0" />
+          <mass
+            value="0.061841" />
+          <inertia
+            ixx="1.5486E-05"
+            ixy="4.7072E-09"
+            ixz="2.5637E-06"
+            iyy="2.1826E-05"
+            iyz="2.414E-08"
+            izz="2.8843E-05" />
+        </inertial>
+        <visual>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/tibia.STL" />
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/tibia.STL" />
+          </geometry>
+        </collision>
+      </xacro:unless>
     </link>
 
     <joint
@@ -298,47 +396,71 @@
 
     <link
       name="${prefix}_limb_end">
-      <!-- <inertial>
-        <origin
-          xyz="-0.011645 0.00042918 -9.53E-12"
-          rpy="0 0 0" />
-        <mass
-          value="0.081999" />
-        <inertia
-          ixx="1.3061E-05"
-          ixy="-3.7211E-08"
-          ixz="3.1094E-14"
-          iyy="1.9634E-05"
-          iyz="-3.9438E-17"
-          izz="2.2308E-05" />
-      </inertial> -->
-      <xacro:inertial_box mass="0.081999" x="0.0465" y="0.04245" z="0.0285">
-            <origin xyz="${-0.011645-0.010236} 0.00042918 -9.53E-12" rpy="0 0 0"/>
-      </xacro:inertial_box>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/limb_end.STL" />
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="-0.010236 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/limb_end.STL" /> -->
-            <box size="0.0465 0.0424 0.0285" />  
-        </geometry>
-      </collision>
+      <xacro:if value="$(arg simplified)">
+        <xacro:inertial_box mass="0.081999" x="0.0465" y="0.04245" z="0.0285">
+              <origin xyz="-0.011645 0.00042918 -9.53E-12" rpy="0 0 0"/>
+        </xacro:inertial_box>
+        <visual>
+          <origin
+            xyz="-0.010236 0 0"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.0465 0.0424 0.0285" />  
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="-0.010236 0 0"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.0465 0.0424 0.0285" />  
+          </geometry>
+        </collision>
+      </xacro:if>
+      <xacro:unless value="$(arg simplified)">
+        <inertial>
+          <origin
+            xyz="-0.011645 0.00042918 -9.53E-12"
+            rpy="0 0 0" />
+          <mass
+            value="0.081999" />
+          <inertia
+            ixx="1.3061E-05"
+            ixy="-3.7211E-08"
+            ixz="3.1094E-14"
+            iyy="1.9634E-05"
+            iyz="-3.9438E-17"
+            izz="2.2308E-05" />
+        </inertial>
+        <visual>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/limb_end.STL" />
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/limb_end.STL" />
+          </geometry>
+        </collision>
+      </xacro:unless>
     </link>
 
     <joint

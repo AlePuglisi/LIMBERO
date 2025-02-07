@@ -10,6 +10,8 @@
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_first_finger_macro.xacro" />
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_description.xacro" />
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/inertial_macro.xacro" />
+  
+  <xacro:arg name="simplified" default="false" />
 
     <joint
         name="${prefix}_driving"
@@ -33,47 +35,74 @@
 
     <link
         name="${prefix}_hand_Link">
-        <!-- <inertial>
-        <origin
-            xyz="0.05982052 -0.00756175 0.00448521"
-            rpy="0 0 0" />
-        <mass
-            value="0.125" />
-        <inertia
-            ixx="1.00731433e-04"
-            ixy="-1.43025925e-05"
-            ixz="5.35158888e-06"
-            iyy="8.56906244e-05"
-            iyz="-2.56859397e-06"
-            izz="1.13275414e-04" />
-        </inertial> -->
-        <xacro:inertial_box mass="0.125" x="0.06" y="0.04" z="0.04">
-            <origin xyz="${0.05982052+0.065} -0.00756175 0.00448521" rpy="0 0 0"/>
-        </xacro:inertial_box>
-        <visual>
-        <origin
-            xyz="0 0 0"
-            rpy="0 0 0" />
-        <geometry>
-            <mesh
-            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_Hand.stl" />
-        </geometry>
-        <material
-            name="">
-            <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-        </visual>
-        <collision name="${prefix}_gripper_Link_collision">
-        <origin
-            xyz="0.065 0 0"
-            rpy="0 0 0" />
-        <geometry>
-            <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_Hand.stl" /> -->
-            <box size="0.06 0.04 0.04" />  
-        </geometry>
-        </collision>
+        <xacro:if value="$(arg simplified)">
+            <xacro:inertial_box mass="0.125" x="0.06" y="0.04" z="0.04">
+                <origin xyz="0.05982052 -0.00756175 0.00448521" rpy="0 0 0"/>
+            </xacro:inertial_box>
+            <visual>
+            <origin
+                xyz="0.065 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <box size="0.06 0.04 0.04" />  
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.2 0.2 0.2 1" />
+            </material>
+            </visual>
+            <collision name="${prefix}_gripper_Link_collision">
+            <origin
+                xyz="0.065 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <box size="0.06 0.04 0.04" />  
+            </geometry>
+            </collision>
+        </xacro:if>
+        <xacro:unless value="$(arg simplified)">
+            <!-- <inertial>
+            <origin
+                xyz="0.05982052 -0.00756175 0.00448521"
+                rpy="0 0 0" />
+            <mass
+                value="0.125" />
+            <inertia
+                ixx="1.00731433e-04"
+                ixy="-1.43025925e-05"
+                ixz="5.35158888e-06"
+                iyy="8.56906244e-05"
+                iyz="-2.56859397e-06"
+                izz="1.13275414e-04" />
+            </inertial> -->
+            <xacro:inertial_box mass="0.125" x="0.035" y="0.06" z="0.04">
+                <origin xyz="0.05982052 -0.00756175 0.00448521" rpy="0 0 0"/>
+            </xacro:inertial_box>  
+            <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_Hand.stl" />
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.2 0.2 0.2 1" />
+            </material>
+            </visual>
+            <collision name="${prefix}_gripper_Link_collision">
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_Hand.stl" />
+            </geometry>
+            </collision>
+        </xacro:unless>
     </link>
 
     <xacro:grieel_gripper_first_finger_macro prefix="${prefix}" name="F1">
@@ -106,7 +135,7 @@
 
 
     <!-- Gazebo plugin for contact sensor -->
-    <gazebo reference="${prefix}_hand_Link">
+    <!-- <gazebo reference="${prefix}_hand_Link">
         <sensor name="sensor_contact" type="contact">
             <contact>
                 <collision>${prefix}_gripper_Link_collision_collision</collision>
@@ -122,7 +151,7 @@
             <time>0.001</time>
             <enabled>true</enabled>
         </plugin>
-    </gazebo>
+    </gazebo> -->
 
 
 

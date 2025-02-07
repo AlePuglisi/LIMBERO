@@ -11,6 +11,8 @@
     <xacro:property name="friction" value="0.1"/>
     <xacro:property name="damping" value="0.05"/>
 
+    <xacro:arg name="simplified" default="false" />
+
     <joint
       name="${prefix}_E2grieel"
       type="fixed">
@@ -74,47 +76,71 @@
 
   <link
     name="${prefix}_wristV_Link">
-    <!-- <inertial>
-      <origin
-        xyz="0.0214166502499745 0.000471129500725836 0.0113219457469963"
-        rpy="0 0 0" />
-      <mass
-        value="0.102059813857681" />
-      <inertia
-        ixx="2.51506057023328E-05"
-        ixy="-5.87568310882068E-07"
-        ixz="-5.02138918625881E-10"
-        iyy="2.47069145197251E-05"
-        iyz="-1.3142285327366E-09"
-        izz="1.79824315026287E-05" />
-    </inertial> -->
-    <xacro:inertial_box mass="0.102059813857681" x="0.0489" y="0.0489" z="0.0465">
-            <origin xyz="${0.020217+0.0214166502499745} 0.000471129500725836 ${0.011897+0.0113219457469963}" rpy="0 0 0"/>
-    </xacro:inertial_box>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/wristV_Link.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.2 0.2 0.2 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0.020217 0 0.011897"
-        rpy="0 0 0" />
-      <geometry>
-        <!-- <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/wristV_Link.STL" /> -->
-            <box size="0.0489 0.0489 0.0465" />  
-      </geometry>
-    </collision>
+      <xacro:if value="$(arg simplified)">
+        <xacro:inertial_box mass="0.102059813857681" x="0.0489" y="0.0489" z="0.0465">
+                <origin xyz="0.020217 0.000471129500725836 0.0113219457469963" rpy="0 0 0"/>
+        </xacro:inertial_box>
+        <visual>
+          <origin
+            xyz="0.020217 0 0.011897"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.0489 0.0489 0.0465" />  
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0.020217 0 0.011897"
+            rpy="0 0 0" />
+          <geometry>
+                <box size="0.0489 0.0489 0.0465" />  
+          </geometry>
+        </collision>
+      </xacro:if>
+      <xacro:unless value="$(arg simplified)">
+        <inertial>
+          <origin
+            xyz="0.0214166502499745 0.000471129500725836 0.0113219457469963"
+            rpy="0 0 0" />
+          <mass
+            value="0.102059813857681" />
+          <inertia
+            ixx="2.51506057023328E-05"
+            ixy="-5.87568310882068E-07"
+            ixz="-5.02138918625881E-10"
+            iyy="2.47069145197251E-05"
+            iyz="-1.3142285327366E-09"
+            izz="1.79824315026287E-05" />
+        </inertial>
+        <visual>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/wristV_Link.STL" />
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/wristV_Link.STL" />
+          </geometry>
+        </collision>
+      </xacro:unless>
   </link>
 
 
@@ -141,47 +167,71 @@
 
   <link
     name="${prefix}_driving_Link">
-    <!-- <inertial>
-      <origin
-        xyz="5.44808065291863E-05 0.00431293338596027 0.0448909989385787"
-        rpy="0 0 0" />
-      <mass
-        value="0.132659951311712" />
-      <inertia
-        ixx="3.76031003493078E-05"
-        ixy="1.06164546307058E-08"
-        ixz="7.08867360655478E-09"
-        iyy="3.46919596241853E-05"
-        iyz="4.14273177876885E-09"
-        izz="4.32511275712205E-05" />
-    </inertial> -->
-    <xacro:inertial_box mass="0.132659951311712" x="0.0585" y="0.0595" z="0.0354">
-            <origin xyz="5.44808065291863E-05 0.00431293338596027 ${0.040724+0.0448909989385787}" rpy="0 0 0"/>
-    </xacro:inertial_box>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/driving_Link.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-        rgba="0.2 0.2 0.2 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0.040724"
-        rpy="0 0 0" />
-      <geometry>
-        <!-- <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/driving_Link.STL" /> -->
-            <box size="0.0585 0.0595 0.0354" />  
-      </geometry>
-    </collision>
+      <xacro:if value="$(arg simplified)">
+        <xacro:inertial_box mass="0.132659951311712" x="0.0585" y="0.0595" z="0.0354">
+                <origin xyz="5.44808065291863E-05 0.00431293338596027 0.0448909989385787" rpy="0 0 0"/>
+        </xacro:inertial_box>
+        <visual>
+          <origin
+            xyz="0 0 0.040724"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.0585 0.0595 0.0354" />  
+          </geometry>
+          <material
+            name="">
+            <color
+            rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 0.040724"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.0585 0.0595 0.0354" />  
+          </geometry>
+        </collision>
+      </xacro:if>
+      <xacro:unless value="$(arg simplified)">
+        <inertial>
+          <origin
+            xyz="5.44808065291863E-05 0.00431293338596027 0.0448909989385787"
+            rpy="0 0 0" />
+          <mass
+            value="0.132659951311712" />
+          <inertia
+            ixx="3.76031003493078E-05"
+            ixy="1.06164546307058E-08"
+            ixz="7.08867360655478E-09"
+            iyy="3.46919596241853E-05"
+            iyz="4.14273177876885E-09"
+            izz="4.32511275712205E-05" />
+        </inertial>
+        <visual>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/driving_Link.STL" />
+          </geometry>
+          <material
+            name="">
+            <color
+            rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/driving_Link.STL" />
+          </geometry>
+        </collision>
+      </xacro:unless>
   </link>
 
 

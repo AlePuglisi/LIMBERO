@@ -80,6 +80,7 @@ def generate_launch_description():
     models_env = SetEnvironmentVariable(
             'GZ_SIM_RESOURCE_PATH',
             PathJoinSubstitution([FindPackageShare('lbr_sim'), 'models']))
+    set_render_engine = SetEnvironmentVariable('GZ_SIM_RENDER_ENGINE', 'ogre2')
     
     default_world = os.path.join(
         get_package_share_directory('lbr_sim'),
@@ -263,6 +264,7 @@ def generate_launch_description():
         wheel_mode_arg,
         use_sim_time_arg,
         models_env,
+        set_render_engine, 
         #joint_state_publisher_node,
         robot_state_publisher_node,
         rviz_node,

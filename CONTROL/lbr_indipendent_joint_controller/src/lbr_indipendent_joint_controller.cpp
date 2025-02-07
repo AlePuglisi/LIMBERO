@@ -418,7 +418,7 @@ void IndipendentJointController::controlLoopPPI()
       //joint_velocity_error[i] = joint_velocity_reference[i] - current_joint_state.velocity.at(i);
       //joint_velocity_error[i] = joint_velocity_reference[i] - estimated_joint_velocity[i];
       joint_velocity_filtered[i] = joint_velocity_filtered[i]*(Tf-(Ts*1e-3))/Tf + (Ts*1e-3)/Tf * previous_joint_velocity[i];
-      estimated_joint_velocity[i] = (current_joint_state.position.at(i) - previous_joint_position[i])/(Ts*1e-3);
+      //estimated_joint_velocity[i] = (current_joint_state.position.at(i) - previous_joint_position[i])/(Ts*1e-3);
       
       joint_velocity_error[i] = joint_velocity_reference[i] - estimated_joint_velocity[i];
       //joint_velocity_error[i] = joint_velocity_reference[i] - joint_velocity_filtered[i];
@@ -485,8 +485,8 @@ void IndipendentJointController::controlLoopPPI()
                   << current_joint_state.position.at(i)   << ","
                   << joint_position_error[i]              << ","
                   << joint_velocity_reference[i]          << ","
-                  << current_joint_state.velocity.at(i)   << ","
-                  //<< estimated_joint_velocity[i]          << ","
+                  //<< current_joint_state.velocity.at(i)   << ","
+                  << estimated_joint_velocity[i]          << ","
                   //<< joint_velocity_filtered[i]          << ","
                   << joint_velocity_feed_forward[i]       << ","
                   << joint_velocity_error[i]              << ","

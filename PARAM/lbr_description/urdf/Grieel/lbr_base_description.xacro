@@ -13,49 +13,75 @@
   <xacro:property name="specular" value="0.01 0.01 0.01 1"/>
   <xacro:property name="emissive" value="0.01 0.01 0.01 1"/>
 
+  <xacro:arg name="simplified" default="false" />
+
     <link
       name="base_link">
-      <!-- <inertial>
-        <origin
-          xyz="0 0 -0.0030083"
-          rpy="0 0 0" />
-        <mass
-          value="3.1152" />
-        <inertia
-          ixx="0.0036482"
-          ixy="7.8081E-07"
-          ixz="1.7521E-06"
-          iyy="0.0062179"
-          iyz="-1.4424E-06"
-          izz="0.0034682" />
-      </inertial> -->
-      <xacro:inertial_box mass="3.1152" x="0.24" y="0.24" z="0.16">
-            <origin xyz="0 0 -0.0030083" rpy="0 0 0"/>
-      </xacro:inertial_box>
-      <visual>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/base.STL" scale="1.0 1.0 1.0"/>
-        </geometry>
-        <material
-          name="">
-          <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
-        <geometry>
-          <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/base.STL" scale="1.0 1.0 1.0"/> -->
-            <box size="0.24 0.24 0.16" />
-        </geometry>
-      </collision>
+      <xacro:if value="$(arg simplified)">
+        <xacro:inertial_box mass="3.1152" x="0.24" y="0.24" z="0.16">
+              <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+        <visual>
+          <origin
+            xyz="0 0 -0.0030083"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.24 0.24 0.16" />
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 -0.0030083"
+            rpy="0 0 0" />
+          <geometry>
+              <box size="0.24 0.24 0.16" />
+          </geometry>
+        </collision>
+      </xacro:if>
+      <xacro:unless value="$(arg simplified)">
+        <inertial>
+          <origin
+            xyz="0 0 -0.0030083"
+            rpy="0 0 0" />
+          <mass
+            value="3.1152" />
+          <inertia
+            ixx="0.0036482"
+            ixy="7.8081E-07"
+            ixz="1.7521E-06"
+            iyy="0.0062179"
+            iyz="-1.4424E-06"
+            izz="0.0034682" />
+        </inertial>
+        <visual>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/base.STL" scale="1.0 1.0 1.0"/>
+          </geometry>
+          <material
+            name="">
+            <color
+              rgba="0.2 0.2 0.2 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <geometry>
+            <mesh
+              filename="file://$(find lbr_description)/meshes/base.STL" scale="1.0 1.0 1.0"/>
+          </geometry>
+        </collision>
+      </xacro:unless>
     </link>
 
     <gazebo reference="base_link">

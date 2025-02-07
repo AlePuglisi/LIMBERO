@@ -10,6 +10,8 @@
   <xacro:property name="specular" value="0.01 0.01 0.01 1"/>
   <xacro:property name="emissive" value="0.01 0.01 0.01 1"/>
 
+  <xacro:arg name="simplified" default="false" />
+
   <xacro:macro name="grieel_gripper_first_finger_macro" params="prefix name *origin">
     <joint
         name="${prefix}_${name}_H2P1"
@@ -31,47 +33,71 @@
 
     <link
         name="${prefix}_${name}_phalanx1">
-        <!-- <inertial>
+        <xacro:if value="$(arg simplified)">
+            <xacro:inertial_box mass="0.003797793442763989" x="0.017" y="0.018" z="0.038">
+                <origin xyz="0.00162585 0.00031929 0.01672194" rpy="0 0 0"/>
+            </xacro:inertial_box>
+            <visual>
             <origin
-                xyz="0.00162585 0.00031929 0.01672194"
+                xyz="0 0 0.019"
                 rpy="0 0 0" />
-            <mass
-                value="0.003797793442763989" />
-            <inertia
-                ixx="3.31093803e-07"
-                ixy="3.15649096e-09"
-                ixz="-1.22740945e-09"
-                iyy="3.44910628e-07"
-                iyz="-4.29494199e-09"
-                izz="8.86398503e-08" />
-        </inertial> -->
-        <xacro:inertial_box mass="0.003797793442763989" x="0.017" y="0.018" z="0.038">
-            <origin xyz="0.00162585 0.00031929 0.019" rpy="0 0 0"/>
-        </xacro:inertial_box>
-        <visual>
-        <origin
-            xyz="0 0 0"
-            rpy="0 0 0" />
-        <geometry>
-            <mesh
-            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger1.stl" />
-        </geometry>
-        <material
-            name="">
-            <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-        </visual>
-        <collision>
-        <origin
-            xyz="0 0 0.019"
-            rpy="0 0 0" />
-        <geometry>
-            <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger1.stl" /> -->
-            <box size="0.017 0.018 0.038" />  
-        </geometry>
-        </collision>
+            <geometry>
+                <box size="0.017 0.018 0.038" />  
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.2 0.2 0.2 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0.019"
+                rpy="0 0 0" />
+            <geometry>
+                <box size="0.017 0.018 0.038" />  
+            </geometry>
+            </collision>
+        </xacro:if>
+        <xacro:unless value="$(arg simplified)">
+            <inertial>
+                <origin
+                    xyz="0.00162585 0.00031929 0.01672194"
+                    rpy="0 0 0" />
+                <mass
+                    value="0.003797793442763989" />
+                <inertia
+                    ixx="3.31093803e-07"
+                    ixy="3.15649096e-09"
+                    ixz="-1.22740945e-09"
+                    iyy="3.44910628e-07"
+                    iyz="-4.29494199e-09"
+                    izz="8.86398503e-08" />
+            </inertial>
+            <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger1.stl" />
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.2 0.2 0.2 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger1.stl" />
+            </geometry>
+            </collision>
+        </xacro:unless>
     </link>
     <gazebo reference="${prefix}_${name}_phalanx1">
         <material>Gazebo/Black</material>
@@ -112,47 +138,71 @@
 
     <link
         name="${prefix}_${name}_phalanx2">
-        <!-- <inertial>
+        <xacro:if value="$(arg simplified)">
+            <xacro:inertial_box mass="0.013082859723205855" x="0.017" y="0.04" z="0.036">
+                <origin xyz="-0.00673704 0.00047222 0.01186178" rpy="0 0 0"/>
+            </xacro:inertial_box>
+            <visual>
             <origin
-                xyz="-0.00673704 0.00047222 0.01186178"
+                xyz="0 0 0.018"
                 rpy="0 0 0" />
-            <mass
-                value="0.013082859723205855" />
-            <inertia
-                ixx="3.00003952e-06"
-                ixy="-6.39755832e-09"
-                ixz="-9.83815289e-08"
-                iyy="1.39153928e-06"
-                iyz="7.23067218e-09"
-                izz="2.30350901e-06" />
-        </inertial> -->
-        <xacro:inertial_box mass="0.013082859723205855" x="0.017" y="0.04" z="0.036">
-            <origin xyz="-0.00673704 0.00047222 0.018" rpy="0 0 0"/>
-        </xacro:inertial_box>
-        <visual>
-        <origin
-            xyz="0 0 0"
-            rpy="0 0 0" />
-        <geometry>
-            <mesh
-            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger2.stl" />
-        </geometry>
-        <material
-            name="">
-            <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-        </visual>
-        <collision>
-        <origin
-            xyz="0 0 0.018"
-            rpy="0 0 0" />
-        <geometry>
-            <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger2.stl" /> -->
-            <box size="0.017 0.04 0.036" />  
-        </geometry>
-        </collision>
+            <geometry>
+                <box size="0.017 0.04 0.036" />  
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.2 0.2 0.2 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0.018"
+                rpy="0 0 0" />
+            <geometry>
+                <box size="0.017 0.04 0.036" />  
+            </geometry>
+            </collision>
+        </xacro:if>
+        <xacro:unless value="$(arg simplified)">
+            <inertial>
+                <origin
+                    xyz="-0.00673704 0.00047222 0.01186178"
+                    rpy="0 0 0" />
+                <mass
+                    value="0.013082859723205855" />
+                <inertia
+                    ixx="3.00003952e-06"
+                    ixy="-6.39755832e-09"
+                    ixz="-9.83815289e-08"
+                    iyy="1.39153928e-06"
+                    iyz="7.23067218e-09"
+                    izz="2.30350901e-06" />
+            </inertial>
+            <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger2.stl" />
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.2 0.2 0.2 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger2.stl" />
+            </geometry>
+            </collision>
+        </xacro:unless>
     </link>
 
     <gazebo reference="${prefix}_${name}_phalanx2">
@@ -194,47 +244,74 @@
 
     <link
         name="${prefix}_${name}_phalanx3">
-        <!-- <inertial>
+        <xacro:if value="$(arg simplified)">
+            <xacro:inertial_box mass="0.0024217622661742476" x="0.017" y="0.012" z="0.028">
+                <origin xyz="-0.00232913 0.00061377 0.01268651" rpy="0 0 0"/>
+            </xacro:inertial_box>
+            <visual>
             <origin
-                xyz="-0.00232913 0.00061377 0.01268651"
+                xyz="0 0 0.014"
                 rpy="0 0 0" />
-            <mass
-                value="0.0024217622661742476" />
-            <inertia
-                ixx="1.24811429e-07"
-                ixy="5.11516670e-10"
-                ixz="1.67264903e-08"
-                iyy="1.28312272e-07"
-                iyz="1.69572891e-09"
-                izz="4.48441736e-08" />
-        </inertial> -->
-        <xacro:inertial_box mass="0.0024217622661742476" x="0.017" y="0.012" z="0.028">
-            <origin xyz="-0.00232913 0.00061377 0.014" rpy="0 0 0"/>
-        </xacro:inertial_box>
-        <visual>
-        <origin
-            xyz="0 0 0"
-            rpy="0 0 0" />
-        <geometry>
-            <mesh
-            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger3.stl" />
-        </geometry>
-        <material
-            name="">
-            <color
-            rgba="0.2 0.2 0.2 1" />
-        </material>
-        </visual>
-        <collision>
-        <origin
-            xyz="0 0 0.014"
-            rpy="0 0 0" />
-        <geometry>
-            <!-- <mesh
-            filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger3.stl" /> -->
-            <box size="0.017 0.012 0.028" />  
-        </geometry>
-        </collision>
+            <geometry>
+                <box size="0.017 0.012 0.028" />  
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.2 0.2 0.2 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0.014"
+                rpy="0 0 0" />
+            <geometry>
+                <box size="0.017 0.012 0.028" />  
+            </geometry>
+            </collision>
+        </xacro:if>
+        <xacro:unless value="$(arg simplified)">
+            <!-- <inertial>
+                <origin
+                    xyz="-0.00232913 0.00061377 0.01268651"
+                    rpy="0 0 0" />
+                <mass
+                    value="0.0024217622661742476" />
+                <inertia
+                    ixx="1.24811429e-07"
+                    ixy="5.11516670e-10"
+                    ixz="1.67264903e-08"
+                    iyy="1.28312272e-07"
+                    iyz="1.69572891e-09"
+                    izz="4.48441736e-08" />
+            </inertial> -->
+            <xacro:inertial_box mass="0.0024217622661742476" x="0.017" y="0.012" z="0.028">
+                <origin xyz="-0.00232913 0.00061377 0.01268651" rpy="0 0 0"/>
+            </xacro:inertial_box>
+            <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger3.stl" />
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.2 0.2 0.2 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/gripper_Link_finger3.stl" />
+            </geometry>
+            </collision>
+        </xacro:unless>
     </link>
 
     <gazebo reference="${prefix}_${name}_phalanx3">
