@@ -6,7 +6,7 @@
   name="LIMBERO_v1_7_Limb" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:macro name="limb_macro" params="prefix parent radius">
-
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/inertial_macro.xacro" />
     <xacro:property name="friction" value="0.1"/>
     <xacro:property name="damping" value="0.05"/>
 
@@ -24,7 +24,7 @@
 
     <link
       name="${prefix}_limb_root">
-      <inertial>
+      <!-- <inertial>
         <origin
           xyz="-0.015029 -7.7571E-11 -0.047318"
           rpy="0 0 0" />
@@ -37,7 +37,10 @@
           iyy="3.834E-05"
           iyz="-8.2973E-14"
           izz="3.1728E-05" />
-      </inertial>
+      </inertial> -->
+      <xacro:inertial_box mass="0.08459" x="0.0585" y="0.0335" z="0.0543">
+            <origin xyz="${-0.015029+0.02925} -7.7571E-11 ${-0.047318-0.047551}" rpy="0 0 0"/>
+      </xacro:inertial_box>
       <visual>
         <origin
           xyz="0 0 0"
@@ -54,18 +57,19 @@
       </visual>
       <collision>
         <origin
-          xyz="0 0 0"
+          xyz="0.02925 0 -0.047551"
           rpy="0 0 0" />
         <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/limb_root.STL" />
+          <!-- <mesh
+            filename="file://$(find lbr_description)/meshes/limb_root.STL" /> -->
+            <box size="0.0585 0.0335 0.0543" />
         </geometry>
       </collision>
     </link>
 
     <link
       name="${prefix}_coxa">
-      <inertial>
+      <!-- <inertial>
         <origin
           xyz="0.015938 0.00063302 -0.0015013"
           rpy="0 0 0" />
@@ -78,7 +82,10 @@
           iyy="3.3634E-05"
           iyz="8.2973E-14"
           izz="4.2122E-05" />
-      </inertial>
+      </inertial> -->
+      <xacro:inertial_box mass="0.09109" x="0.0585" y="0.0543" z="0.0402">
+            <origin xyz="${0.015938+0.017478} 0.00063302 -0.0015013" rpy="0 0 0"/>
+      </xacro:inertial_box>
       <visual>
         <origin
           xyz="0 0 0"
@@ -95,11 +102,12 @@
       </visual>
       <collision>
         <origin
-          xyz="0 0 0"
+          xyz="0.017478 0 0"
           rpy="0 0 0" />
         <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/coxa.STL" />
+          <!-- <mesh
+            filename="file://$(find lbr_description)/meshes/coxa.STL" /> -->
+            <box size="0.0585 0.0543 0.0402" />
         </geometry>
       </collision>
     </link>
@@ -137,7 +145,7 @@
 
     <link
       name="${prefix}_femur">
-      <inertial>
+      <!-- <inertial>
         <origin
           xyz="0.10083 0.00014739 -3.217E-08"
           rpy="0 0 0" />
@@ -150,7 +158,10 @@
           iyy="2.9934E-05"
           iyz="2.5988E-11"
           izz="4.8164E-05" />
-      </inertial>
+      </inertial> -->
+      <xacro:inertial_cylinder mass="0.12821" length="0.177" radius="0.013">
+            <origin xyz="${0.10083+0.11} 0.00014739 -3.217E-08" rpy="0 1.57079632679489661923 0"/>
+      </xacro:inertial_cylinder>
       <visual>
         <origin
           xyz="0 0 0"
@@ -167,11 +178,12 @@
       </visual>
       <collision>
         <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
+          xyz="0.11 0 0"
+          rpy="0 1.57079632679489661923 0" />
         <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/femur.STL" />
+          <!-- <mesh
+            filename="file://$(find lbr_description)/meshes/femur.STL" /> -->
+            <cylinder radius="0.013" length="0.177"/>     
         </geometry>
       </collision>
     </link>
@@ -209,7 +221,7 @@
 
     <link
       name="${prefix}_tibia">
-      <inertial>
+      <!-- <inertial>
         <origin
           xyz="0.10298 1.1638E-07 0.019231"
           rpy="0 0 0" />
@@ -222,7 +234,10 @@
           iyy="2.1826E-05"
           iyz="2.414E-08"
           izz="2.8843E-05" />
-      </inertial>
+      </inertial> -->
+      <xacro:inertial_cylinder mass="0.061841" length="0.14" radius="0.01">
+            <origin xyz="${0.10298+0.08} 1.1638E-07 ${0.019231+0.027}" rpy="0 1.78023583703421616846 0"/>
+      </xacro:inertial_cylinder>
       <visual>
         <origin
           xyz="0 0 0"
@@ -239,11 +254,12 @@
       </visual>
       <collision>
         <origin
-          xyz="0 0 0"
-          rpy="0 0 0" />
+          xyz="0.08 0 0.027"
+          rpy="0 1.78023583703421616846 0" />
         <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/tibia.STL" />
+          <!-- <mesh
+            filename="file://$(find lbr_description)/meshes/tibia.STL" /> -->
+                <cylinder radius="0.01" length="0.14"/>
         </geometry>
       </collision>
     </link>
@@ -282,7 +298,7 @@
 
     <link
       name="${prefix}_limb_end">
-      <inertial>
+      <!-- <inertial>
         <origin
           xyz="-0.011645 0.00042918 -9.53E-12"
           rpy="0 0 0" />
@@ -295,7 +311,10 @@
           iyy="1.9634E-05"
           iyz="-3.9438E-17"
           izz="2.2308E-05" />
-      </inertial>
+      </inertial> -->
+      <xacro:inertial_box mass="0.081999" x="0.0465" y="0.04245" z="0.0285">
+            <origin xyz="${-0.011645-0.010236} 0.00042918 -9.53E-12" rpy="0 0 0"/>
+      </xacro:inertial_box>
       <visual>
         <origin
           xyz="0 0 0"
@@ -312,11 +331,12 @@
       </visual>
       <collision>
         <origin
-          xyz="0 0 0"
+          xyz="-0.010236 0 0"
           rpy="0 0 0" />
         <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/limb_end.STL" />
+          <!-- <mesh
+            filename="file://$(find lbr_description)/meshes/limb_end.STL" /> -->
+            <box size="0.0465 0.0424 0.0285" />  
         </geometry>
       </collision>
     </link>

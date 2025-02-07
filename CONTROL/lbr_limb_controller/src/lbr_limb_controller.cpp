@@ -235,6 +235,7 @@ void LimbController::gripperCommandCallback(const std_msgs::msg::Bool & execute_
 
 std::array<float, 6> LimbController::computeFifthOrderTraj(float q0, float Dq, float T)
 {
+  T = T/(1e-9); // from [ns] to [s]
   std::array<float, 6>  coefficients;
   coefficients[0] = q0;
   coefficients[1] = 0.0; 
@@ -277,8 +278,8 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
 
   double delta_wristH = wristH - temp_joint_state.position.at(4);
   double delta_wristV = wristV - temp_joint_state.position.at(5);
-  double delta_T_wristH = abs(delta_wristH / MAX_WRIST_VEL)*std::pow(10,9);  
-  double delta_T_wristV = abs(delta_wristV / MAX_WRIST_VEL)*std::pow(10,9);    
+  double delta_T_wristH = abs(delta_wristH / MAX_WRIST_VEL)*1e9;  
+  double delta_T_wristV = abs(delta_wristV / MAX_WRIST_VEL)*1e9;    
   double initial_time = this->now().nanoseconds();
   double current_time = this->now().nanoseconds();
   std::array<float, 6>  a_wristH = computeFifthOrderTraj(temp_joint_state.position.at(4),delta_wristH, delta_T_wristH);

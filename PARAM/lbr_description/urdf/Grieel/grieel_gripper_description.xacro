@@ -6,7 +6,8 @@
   name="assembled_gripper_mode" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:macro name="grieel_gripper_macro" params="prefix parent">
-  <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_splitted.xacro" />
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_splitted.xacro" />
+    <xacro:include filename="$(find lbr_description)/urdf/Grieel/inertial_macro.xacro" />
     <xacro:property name="friction" value="0.1"/>
     <xacro:property name="damping" value="0.05"/>
 
@@ -73,7 +74,7 @@
 
   <link
     name="${prefix}_wristV_Link">
-    <inertial>
+    <!-- <inertial>
       <origin
         xyz="0.0214166502499745 0.000471129500725836 0.0113219457469963"
         rpy="0 0 0" />
@@ -86,7 +87,10 @@
         iyy="2.47069145197251E-05"
         iyz="-1.3142285327366E-09"
         izz="1.79824315026287E-05" />
-    </inertial>
+    </inertial> -->
+    <xacro:inertial_box mass="0.102059813857681" x="0.0489" y="0.0489" z="0.0465">
+            <origin xyz="${0.020217+0.0214166502499745} 0.000471129500725836 ${0.011897+0.0113219457469963}" rpy="0 0 0"/>
+    </xacro:inertial_box>
     <visual>
       <origin
         xyz="0 0 0"
@@ -103,11 +107,12 @@
     </visual>
     <collision>
       <origin
-        xyz="0 0 0"
+        xyz="0.020217 0 0.011897"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/wristV_Link.STL" />
+        <!-- <mesh
+          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/wristV_Link.STL" /> -->
+            <box size="0.0489 0.0489 0.0465" />  
       </geometry>
     </collision>
   </link>
@@ -136,7 +141,7 @@
 
   <link
     name="${prefix}_driving_Link">
-    <inertial>
+    <!-- <inertial>
       <origin
         xyz="5.44808065291863E-05 0.00431293338596027 0.0448909989385787"
         rpy="0 0 0" />
@@ -149,7 +154,10 @@
         iyy="3.46919596241853E-05"
         iyz="4.14273177876885E-09"
         izz="4.32511275712205E-05" />
-    </inertial>
+    </inertial> -->
+    <xacro:inertial_box mass="0.132659951311712" x="0.0585" y="0.0595" z="0.0354">
+            <origin xyz="5.44808065291863E-05 0.00431293338596027 ${0.040724+0.0448909989385787}" rpy="0 0 0"/>
+    </xacro:inertial_box>
     <visual>
       <origin
         xyz="0 0 0"
@@ -166,11 +174,12 @@
     </visual>
     <collision>
       <origin
-        xyz="0 0 0"
+        xyz="0 0 0.040724"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/driving_Link.STL" />
+        <!-- <mesh
+          filename="file://$(find lbr_description)/meshes/Grieel_gripper_mode/driving_Link.STL" /> -->
+            <box size="0.0585 0.0595 0.0354" />  
       </geometry>
     </collision>
   </link>

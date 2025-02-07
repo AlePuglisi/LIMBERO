@@ -6,6 +6,8 @@
   name="LIMBERO_v1_8_Base" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="base_macro">
 
+  <xacro:include filename="$(find lbr_description)/urdf/Grieel/inertial_macro.xacro" />
+
   <xacro:property name="ambient" value="0.2 0.2 0.2 1"/>
   <xacro:property name="diffuse" value="0.2 0.2 0.2 1"/>
   <xacro:property name="specular" value="0.01 0.01 0.01 1"/>
@@ -13,7 +15,7 @@
 
     <link
       name="base_link">
-      <inertial>
+      <!-- <inertial>
         <origin
           xyz="0 0 -0.0030083"
           rpy="0 0 0" />
@@ -26,7 +28,10 @@
           iyy="0.0062179"
           iyz="-1.4424E-06"
           izz="0.0034682" />
-      </inertial>
+      </inertial> -->
+      <xacro:inertial_box mass="3.1152" x="0.24" y="0.24" z="0.16">
+            <origin xyz="0 0 -0.0030083" rpy="0 0 0"/>
+      </xacro:inertial_box>
       <visual>
         <origin
           xyz="0 0 0"
@@ -46,8 +51,9 @@
           xyz="0 0 0"
           rpy="0 0 0" />
         <geometry>
-          <mesh
-            filename="file://$(find lbr_description)/meshes/base.STL" scale="1.0 1.0 1.0"/>
+          <!-- <mesh
+            filename="file://$(find lbr_description)/meshes/base.STL" scale="1.0 1.0 1.0"/> -->
+            <box size="0.24 0.24 0.16" />
         </geometry>
       </collision>
     </link>

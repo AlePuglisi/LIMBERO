@@ -6,7 +6,7 @@
 constexpr float TS = 2; // sampling time of discrete time controller [ms]
 
 // P+PI gains, tuned in MATLAB
-constexpr float KPP[JOINT_NUM] =  {20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 0.0};  
+constexpr float KPP[JOINT_NUM] =  {10.0, 20.0, 20.0, 20.0, 20.0, 20.0, 0.0};  
 // constexpr float KPV[JOINT_NUM] =  {1090.0, 970.0, 680.0, 820.0, 680.0, 970.0, 0.0};   // Velocity P gains
 // constexpr float TIV[JOINT_NUM] = {0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 1.0};           // Velocity I gains
 constexpr float KPV[JOINT_NUM] =  {40.0, 100.0, 80.0, 40.0, 80.0, 80.0, 0.0};       // Velocity P gains
@@ -20,11 +20,11 @@ constexpr float velocity_limit[JOINT_NUM] = {3.0, 5.0, 5.0, 4.0, 4.0, 4.0, 4.0};
 
 // additional control paramater
 constexpr float WCP_F = 1.0; // [Hz] cut off frequency of reference position LP filter
-constexpr float WCV_F = 15.0; // [Hz] cut off frequency of velocity derivation (feed forward action) LP filter, for REALIZABILITY of derivative
+constexpr float WCV_F = 12.0; // [Hz] cut off frequency of velocity derivation (feed forward action) LP filter, for REALIZABILITY of derivative
 
 constexpr float TF = 1.0/(WCP_F*2*M_PI);  // position refrence smoothed, LP filter time constant
 constexpr float TDF = 1.0/(WCV_F*2*M_PI); // velocity derivative feed forward, LP filter time constant
-constexpr float TC = TIV[0]*0.1; // anti-wind up feedback gain 
+constexpr float TC = TIV[0]*0.08; // anti-wind up feedback gain 
 
 constexpr float L = 20.0; // additional paramter for the de-saturation dynamic
 
