@@ -47,7 +47,7 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
-    - Alpha: 0.699999988079071
+    - Alpha: 0.9
       Class: rviz_default_plugins/RobotModel
       Collision Enabled: false
       Description File: ""
@@ -418,7 +418,7 @@ Visualization Manager:
       Value: true
   Enabled: true
   Global Options:
-    Background Color: 48; 48; 48
+    Background Color: 200; 200; 200
     Fixed Frame: base_link
     Frame Rate: 30
   Name: root

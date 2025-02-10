@@ -235,7 +235,6 @@ void LimbController::gripperCommandCallback(const std_msgs::msg::Bool & execute_
 
 std::array<float, 6> LimbController::computeFifthOrderTraj(float q0, float Dq, float T)
 {
-  T = T/(1e-9); // from [ns] to [s]
   std::array<float, 6>  coefficients;
   coefficients[0] = q0;
   coefficients[1] = 0.0; 
@@ -278,10 +277,10 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
 
   double delta_wristH = wristH - temp_joint_state.position.at(4);
   double delta_wristV = wristV - temp_joint_state.position.at(5);
-  double delta_T_wristH = abs(delta_wristH / MAX_WRIST_VEL)*1e9;  
-  double delta_T_wristV = abs(delta_wristV / MAX_WRIST_VEL)*1e9;    
-  double initial_time = this->now().nanoseconds();
-  double current_time = this->now().nanoseconds();
+  double delta_T_wristH = abs(delta_wristH / MAX_WRIST_VEL);  
+  double delta_T_wristV = abs(delta_wristV / MAX_WRIST_VEL);    
+  double initial_time = this->now().seconds();
+  double current_time = this->now().seconds();
   std::array<float, 6>  a_wristH = computeFifthOrderTraj(temp_joint_state.position.at(4),delta_wristH, delta_T_wristH);
   std::array<float, 6>  a_wristV = computeFifthOrderTraj(temp_joint_state.position.at(5),delta_wristV, delta_T_wristV);
   double dt = 0.0; 
@@ -289,11 +288,11 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
   std::cout << name_space << " Going from WristH: " << temp_joint_state.position.at(4) << "to final wristH:" << wristH << "in" << delta_T_wristH << "[ns]" << std::endl;
   std::cout << name_space << " Going from WristV: " << temp_joint_state.position.at(5) << "to final wristV:" << wristV << "in" << delta_T_wristV << "[ns]" << std::endl;
   // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
-  rclcpp::Rate rate(1000.0 / 10.0);  // Convert ms to Hz
+  rclcpp::Rate rate(100, this->get_clock());  // 100 Hz
   bool finish_wristH = false; 
   bool finish_wristV = false; 
   while(!finish_wristH || !finish_wristV){
-    current_time = this->now().nanoseconds();
+    current_time = this->now().seconds();
     dt = current_time - initial_time;
     if(current_time < initial_time + delta_T_wristH){
       current_joint_state.position.at(4) = a_wristH[0] + a_wristH[1]*dt + a_wristH[2]*std::pow(dt,2) + a_wristH[3]*std::pow(dt,3) + a_wristH[4]*std::pow(dt,4) + a_wristH[5]*std::pow(dt,5);
@@ -341,6 +340,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
     double current_time = this->now().seconds();
     std::array<float, 6>  a_wristH = computeFifthOrderTraj(temp_joint_state.position.at(4), delta_wristH, delta_T_wristH);
     double dt = 0.0; 
+    rclcpp::Rate rate(100, this->get_clock());  // 100 Hz
     // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
     while(!(current_time > initial_time + delta_T_wristH)){
       current_time = this->now().seconds();
@@ -351,7 +351,8 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
       // keep other joints position in the current state
       current_joint_state.header.stamp = this->now();
       joint_state_pub_->publish(current_joint_state);
-      std::this_thread::sleep_for(std::chrono::milliseconds(10)); // small sleep to avoid step like trajectory signal
+      rate.sleep();
+      //std::this_thread::sleep_for(std::chrono::milliseconds(10)); // small sleep to avoid step like trajectory signal
     }
   }
   if((driving_mode.data == 1) && (grieel_mode == "wheel")){
@@ -374,6 +375,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
     double current_time = this->now().seconds();
     std::array<float, 6>  a_wristH = computeFifthOrderTraj(temp_joint_state.position.at(4), delta_wristH, delta_T_wristH);
     double dt = 0.0; 
+    rclcpp::Rate rate(100, this->get_clock());  // 100 Hz
     // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
     while(!(current_time > initial_time + delta_T_wristH)){
       current_time = this->now().seconds();
@@ -384,7 +386,8 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
       // keep other joints position in the current state
       current_joint_state.header.stamp = this->now();
       joint_state_pub_->publish(current_joint_state);
-      std::this_thread::sleep_for(std::chrono::milliseconds(10)); // small sleep to avoid step like trajectory signal
+      rate.sleep();
+      //std::this_thread::sleep_for(std::chrono::milliseconds(10)); // small sleep to avoid step like trajectory signal
     }
   }
 
@@ -404,12 +407,14 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
         // temp_joint_state.velocity.resize(JOINT_NUM);
         // temp_joint_state.position = current_joint_state.position;
         // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
+        rclcpp::Rate rate(100, this->get_clock());  // 100 Hz
         while(!stop){
           current_joint_state.velocity.at(6) = 3.125*driving_speed;
           // keep other joints position in the current state
           current_joint_state.header.stamp = this->now();
           joint_state_pub_->publish(current_joint_state);
-          std::this_thread::sleep_for(std::chrono::milliseconds(15));
+          //std::this_thread::sleep_for(std::chrono::milliseconds(15));
+          rate.sleep();
           //std::cout << "Current STOP state: " << stop << std::endl; 
         }
       });
@@ -435,12 +440,14 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
         // temp_joint_state.velocity.resize(JOINT_NUM);
         // temp_joint_state.position = current_joint_state.position;
         // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
+        rclcpp::Rate rate(100, this->get_clock());  // 100 Hz
         while(!stop){
           current_joint_state.velocity.at(6) = direction*3.125*driving_speed;
           // keep other joints position in the current state
           current_joint_state.header.stamp = this->now();
           joint_state_pub_->publish(current_joint_state);
-          std::this_thread::sleep_for(std::chrono::milliseconds(15));
+          //std::this_thread::sleep_for(std::chrono::milliseconds(15));
+          rate.sleep();
         }
       });
 

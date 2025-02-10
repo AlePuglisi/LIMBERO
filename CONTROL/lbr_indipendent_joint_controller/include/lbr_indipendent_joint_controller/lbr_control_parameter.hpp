@@ -3,7 +3,7 @@
 
 // CONTROLLER PARAMETER:
 
-constexpr float TS = 2; // sampling time of discrete time controller [ms]
+constexpr float TS = 5; // sampling time of discrete time controller [ms]
 
 // P+PI gains, tuned in MATLAB
 constexpr float KPP[JOINT_NUM] =  {8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 0.0};  
