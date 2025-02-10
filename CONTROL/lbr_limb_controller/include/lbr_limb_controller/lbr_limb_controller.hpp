@@ -39,6 +39,9 @@
 #include "lbr_msgs/msg/end_effector_pose_four_dof.hpp"
 #include <lbr_parameter.hpp>
 
+#include <rclcpp_action/rclcpp_action.hpp>
+#include "control_msgs/action/gripper_command.hpp"
+
 class LimbController : public rclcpp::Node
 {
 public:
@@ -109,6 +112,9 @@ private:
   void publishGripperCommand(const std_msgs::msg::Bool execute_grasping);
   void publishEndEffectorTrajectory();
   std::array<float, 6> computeFifthOrderTraj(float q0, float Dq, float T);
+    
+  void sendGripperCommand(double position, double max_effort);
+  rclcpp_action::Client<control_msgs::action::GripperCommand>::SharedPtr gripper_action_client_;
 
   rclcpp::TimerBase::SharedPtr timer_;
 

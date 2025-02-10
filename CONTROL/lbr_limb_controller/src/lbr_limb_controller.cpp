@@ -99,6 +99,12 @@ LimbController::LimbController()
     joint_prefix = "RF";
   }
 
+  gripper_action_client_ = rclcpp_action::create_client<control_msgs::action::GripperCommand>(
+    this, "/grieel_action_controller_" + joint_prefix+ "/gripper_cmd");
+  if (!gripper_action_client_->wait_for_action_server(std::chrono::seconds(10))) {
+    RCLCPP_ERROR(this->get_logger(), "Gripper action server not available!");
+  }
+
   // Define joint limits.
   LOWER_LIMIT.resize(JOINT_NUM);
   LOWER_LIMIT.at(0) = JOINT1_LOWER;
@@ -247,6 +253,28 @@ std::array<float, 6> LimbController::computeFifthOrderTraj(float q0, float Dq, f
 }
 
 
+void LimbController::sendGripperCommand(double position, double max_effort){
+  if (!gripper_action_client_->wait_for_action_server(std::chrono::seconds(1))) {
+    RCLCPP_WARN(this->get_logger(), "Gripper action server not available!");
+    return;
+  }
+
+  auto goal_msg = control_msgs::action::GripperCommand::Goal();
+  goal_msg.command.position = position;
+  goal_msg.command.max_effort = max_effort;
+
+  auto send_goal_options = rclcpp_action::Client<control_msgs::action::GripperCommand>::SendGoalOptions();
+  send_goal_options.result_callback = [](const rclcpp_action::ClientGoalHandle<control_msgs::action::GripperCommand>::WrappedResult & result) {
+    if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
+      RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Gripper action succeeded.");
+    } else {
+      RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Gripper action failed.");
+    }
+  };
+
+  gripper_action_client_->async_send_goal(goal_msg, send_goal_options);
+}
+
 void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grieel_mode)
 {
   grieel_mode = new_grieel_mode.data;
@@ -312,6 +340,16 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
   }
   std::cout << name_space << " Finish " << new_grieel_mode.data << " mode Transformation" << std::endl;
   //std::this_thread::sleep_for(std::chrono::seconds(3));
+  // Send gripper action command (position: 0.523, max_effort: 10.0)
+  float finger_position; 
+  if(grieel_mode == "wheel"){
+    finger_position = 0.523;
+  }
+  else if(grieel_mode == "gripper"){
+    finger_position = 0.0;
+  }
+  sendGripperCommand(finger_position, 10.0);
+
   std_msgs::msg::String grieel_joint_finish;
   grieel_joint_finish.data = grieel_mode;
   grieel_joint_finish_pub_->publish(grieel_joint_finish);

@@ -80,12 +80,26 @@ HighLevelController::HighLevelController()
     "/RF/lbr_dynamixel_controller/grieel_transform_end",1,
     std::bind(&HighLevelController::grieelFinishCallback, this, std::placeholders::_1));
 
+  grieel_end_sub_LF_ = this->create_subscription<std_msgs::msg::String>(
+      "/LF/lbr_limb_controller/grieel_joint_finish", 1,
+      std::bind(&HighLevelController::updateGrieelState, this, std::placeholders::_1));
+  grieel_end_sub_LF_ = this->create_subscription<std_msgs::msg::String>(
+      "/LH/lbr_limb_controller/grieel_joint_finish", 1,
+      std::bind(&HighLevelController::updateGrieelState, this, std::placeholders::_1));
+  grieel_end_sub_LF_ = this->create_subscription<std_msgs::msg::String>(
+      "/RH/lbr_limb_controller/grieel_joint_finish", 1,
+      std::bind(&HighLevelController::updateGrieelState, this, std::placeholders::_1));
+  grieel_end_sub_LF_ = this->create_subscription<std_msgs::msg::String>(
+      "/RF/lbr_limb_controller/grieel_joint_finish", 1,
+      std::bind(&HighLevelController::updateGrieelState, this, std::placeholders::_1));
+  
 
 
   trot_gait_is_executing = false;
   motion_package_end = false;
   grieel_transformation_ = false;
   single_transform_end_ = false;
+  grieel_transform_end = false; 
   move = false;
   crawl_gate = false;
 
@@ -97,8 +111,14 @@ HighLevelController::HighLevelController()
   std::cout << "HLC: wheel_mode:= " << wheel_mode << std::endl; 
   if(wheel_mode == true){
     grieel_state_ = "wheel";
+    for(int i=0; i<LIMB_NUM; i++){
+      grieel_state_list_[i] = true; 
+    }
   } else if(wheel_mode == false){
     grieel_state_ = "gripper";
+    for(int i=0; i<LIMB_NUM; i++){
+      grieel_state_list_[i] = false; 
+    }
   }
 
   fake_contact.is_contact.resize(LIMB_NUM);
@@ -357,11 +377,11 @@ void::HighLevelController::grieelTransformation()
   bool first_time = true;
   while(i < LIMB_NUM){
 #if SIMULATION
-    if((motion_package_end || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
+    if((motion_package_end || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)&&(grieel_transform_end || first_time)){
 #endif //SIMULATION
 #if !SIMULATION
     if((single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
-#endif //NOT IN SIMULATION
+#endif //NOT IN SIMULATIONsingle_transform_end_
       for(int j=0; (j<LIMB_NUM) ; j++ ){
         if(j==i){fake_contact.is_contact.at(i) = false;}
         else{
@@ -389,7 +409,7 @@ void::HighLevelController::grieelTransformation()
   }
   std::cout << "Grieel Transform task end" << std::endl;
 
-  while(supporting_leg_polygon.end_effector_position.size() < 4){
+  while(supporting_leg_polygon.end_effector_position.size() <= 4){
     // wait for final limb to lay on the ground
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     if(supporting_leg_polygon.end_effector_position.size() == 4){
@@ -443,7 +463,7 @@ void HighLevelController::singleLegGrieelTransformation(
   const int task_num = 2;
 #endif
 #if SIMULATION
-  const int task_num = 4;
+  const int task_num = 2;
 #endif
   lbr_msgs::msg::MotionPackage basic_transfrom_sequence;
   lbr_msgs::msg::MotionTask motion_task;
@@ -496,16 +516,17 @@ void HighLevelController::singleLegGrieelTransformation(
   limb_motion_task.swing_duration = 3500;  // [ms]
   limb_motion_task.end_effector_displacement.x = 0.0;  // [m]
   limb_motion_task.end_effector_displacement.y = 0.0;
-#if !SIMULATION
-  if(grieel_state_ == "wheel"){
-    limb_motion_task.end_effector_displacement.z = 2*LIMB_TRANSFORM_HEIGHT;
-   }else if(grieel_state_ == "gripper"){
-    limb_motion_task.end_effector_displacement.z = LIMB_TRANSFORM_HEIGHT;
-  }
-#endif
-#if SIMULATION
   limb_motion_task.end_effector_displacement.z = LIMB_TRANSFORM_HEIGHT;
-#endif
+// #if !SIMULATION
+//   if(grieel_state_ == "wheel"){
+//     limb_motion_task.end_effector_displacement.z = 2*LIMB_TRANSFORM_HEIGHT;
+//    }else if(grieel_state_ == "gripper"){
+//     limb_motion_task.end_effector_displacement.z = LIMB_TRANSFORM_HEIGHT;
+//   }
+// #endif
+// #if SIMULATION
+//   limb_motion_task.end_effector_displacement.z = LIMB_TRANSFORM_HEIGHT;
+// #endif
 
   limb_motion_task.pitch_angle_displacement = 0.0;  // [rad]
   limb_motion_task.header.stamp = this->now();
@@ -514,36 +535,74 @@ void HighLevelController::singleLegGrieelTransformation(
   motion_task.task_id_array.at(1) = 0;
   basic_transfrom_sequence.motion_task_array.at(1) = motion_task;
 
+  motion_package_pub_->publish(basic_transfrom_sequence);
+
+  while(!motion_package_end){
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
+
 #if SIMULATION
-  // SEND COMMAND TO GRIEEL FOR TRANSITION MODE
-  limb_motion_task.limb_id = limb_id;
-  limb_motion_task.swing_duration = 6000;  // [ms]
-  limb_motion_task.end_effector_displacement.x = 0.0;  // [m]
-  limb_motion_task.end_effector_displacement.y = 0.0;
-  limb_motion_task.end_effector_displacement.z = 0.0;
-  limb_motion_task.pitch_angle_displacement = 0.0;  // [rad]
-  limb_motion_task.header.stamp = this->now();
+  lbr_msgs::msg::GrieelModeChange new_grieel_state;
+  new_grieel_state.limb_id = limb_id;
+  if(grieel_state_list_[limb_id] == true){
+    grieel_state_list_[limb_id] = false;
 
-  motion_task.limb_motion_task = limb_motion_task;
-  motion_task.task_id_array.at(2) = 0;
-  basic_transfrom_sequence.motion_task_array.at(2) = motion_task;
+    new_grieel_state.mode = "gripper";
+    grieel_mode_pub_->publish(new_grieel_state);
+  } else if(grieel_state_list_[limb_id] == false){
+    grieel_state_list_[limb_id] = true;
 
-  // HERE CHECK that grieel finish the transition, and put back leg after received feedback from grieel!
-  // the leg back on the ground will not be part of this motion package, but executed as limb motion later.
+    new_grieel_state.mode = "wheel";
+    grieel_mode_pub_->publish(new_grieel_state);
+  }
+
+  while(!grieel_transform_end){
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+  }
+  const int task_num_final = 1;  
+  motion_task.task_id_array.resize(task_num_final);
+  basic_transfrom_sequence.motion_task_array.resize(task_num_final);
   limb_motion_task.limb_id = limb_id;
   limb_motion_task.swing_duration = 3500;  // [ms]
   limb_motion_task.end_effector_displacement.x = 0.0;  // [m]
   limb_motion_task.end_effector_displacement.y = 0.0;
-  limb_motion_task.end_effector_displacement.z = - LIMB_TRANSFORM_HEIGHT;
-  limb_motion_task.pitch_angle_displacement = 0.0;  // [rad]
-  limb_motion_task.header.stamp = this->now();
-
+  limb_motion_task.end_effector_displacement.z = -LIMB_TRANSFORM_HEIGHT;
   motion_task.limb_motion_task = limb_motion_task;
-  motion_task.task_id_array.at(3) = 0;
-  basic_transfrom_sequence.motion_task_array.at(3) = motion_task;
+  motion_task.task_id_array.at(0) = 0;
+  basic_transfrom_sequence.motion_task_array.at(0) = motion_task;
+  motion_package_pub_->publish(basic_transfrom_sequence);
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  grieel_transform_end = false;
+
+  // SEND COMMAND TO GRIEEL FOR TRANSITION MODE
+  // limb_motion_task.limb_id = limb_id;
+  // limb_motion_task.swing_duration = 6000;  // [ms]
+  // limb_motion_task.end_effector_displacement.x = 0.0;  // [m]
+  // limb_motion_task.end_effector_displacement.y = 0.0;
+  // limb_motion_task.end_effector_displacement.z = 0.0;
+  // limb_motion_task.pitch_angle_displacement = 0.0;  // [rad]
+  // limb_motion_task.header.stamp = this->now();
+
+  // motion_task.limb_motion_task = limb_motion_task;
+  // motion_task.task_id_array.at(2) = 0;
+  // basic_transfrom_sequence.motion_task_array.at(2) = motion_task;
+
+  // // HERE CHECK that grieel finish the transition, and put back leg after received feedback from grieel!
+  // // the leg back on the ground will not be part of this motion package, but executed as limb motion later.
+  // limb_motion_task.limb_id = limb_id;
+  // limb_motion_task.swing_duration = 3500;  // [ms]
+  // limb_motion_task.end_effector_displacement.x = 0.0;  // [m]
+  // limb_motion_task.end_effector_displacement.y = 0.0;
+  // limb_motion_task.end_effector_displacement.z = - LIMB_TRANSFORM_HEIGHT;
+  // limb_motion_task.pitch_angle_displacement = 0.0;  // [rad]
+  // limb_motion_task.header.stamp = this->now();
+
+  // motion_task.limb_motion_task = limb_motion_task;
+  // motion_task.task_id_array.at(3) = 0;
+  // basic_transfrom_sequence.motion_task_array.at(3) = motion_task;
 #endif //SIMULATION
 
-  motion_package_pub_->publish(basic_transfrom_sequence);
+  // motion_package_pub_->publish(basic_transfrom_sequence);
 
   // SEND COMMAND TO GRIEEL FOR TRANSITION MODE
 #if !SIMULATION
@@ -625,6 +684,16 @@ void HighLevelController::grieelFinishCallback(const std_msgs::msg::String &grie
   std::cout <<"start lay down limb task" << std::endl;
 
 
+}
+
+void HighLevelController::updateGrieelState(const std_msgs::msg::String &grieel_finish_string){
+  // used only when dynamixel controller is running
+  //int limb_id;
+  if(grieel_finish_string.data == "wheel"){
+    grieel_transform_end = true;
+  } else if(grieel_finish_string.data == "gripper"){
+    grieel_transform_end = true;
+  } 
 }
 
 

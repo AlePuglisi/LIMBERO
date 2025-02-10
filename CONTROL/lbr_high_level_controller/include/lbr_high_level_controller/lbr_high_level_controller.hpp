@@ -145,6 +145,8 @@ private:
    */
   void crawlGate();
 
+  void updateGrieelState(const std_msgs::msg::String & grieel_finish_string);
+
   // Publisher
   rclcpp::Publisher<lbr_msgs::msg::BaseMotionTask>::SharedPtr base_motion_pub_;
   rclcpp::Publisher<lbr_msgs::msg::LimbMotionTask>::SharedPtr limb_motion_pub_;
@@ -172,14 +174,21 @@ private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr grieel_transform_end_sub_RH_;
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr grieel_transform_end_sub_RF_;
 
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr grieel_end_sub_LF_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr grieel_end_sub_LH_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr grieel_end_sub_RH_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr grieel_end_sub_RF_;
+
   // Variables
   bool trot_gait_is_executing;
   bool motion_package_end;
   bool grieel_transformation_;
+  bool grieel_transform_end; 
   bool single_transform_end_;
   bool move;
   bool crawl_gate;
   std::string grieel_state_;
+  bool grieel_state_list_[LIMB_NUM];
   lbr_msgs::msg::EndEffectorContactState supporting_leg_polygon;
 
   lbr_msgs::msg::EndEffectorContactState fake_contact;
