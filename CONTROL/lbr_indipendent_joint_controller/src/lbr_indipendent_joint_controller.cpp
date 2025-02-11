@@ -165,6 +165,10 @@ IndipendentJointController::IndipendentJointController()
     "/lbr_sim/contact_state", 1,
     std::bind(&IndipendentJointController::allEndEffectorContactStateCallback, this, std::placeholders::_1));
 
+  grieel_end_sub_ = this->create_subscription<std_msgs::msg::String>(
+    name_space + "/lbr_limb_controller/grieel_joint_finish", 1,
+    std::bind(&IndipendentJointController::updateGrieelState, this, std::placeholders::_1));
+
   // torque_control_pub_B2C_ = this-> create_publisher<std_msgs::msg::Float64>(
   //   name_space + "_B2C/joint_torques", 10);
   // torque_control_pub_C2F_ = this-> create_publisher<std_msgs::msg::Float64>(
@@ -248,6 +252,20 @@ void IndipendentJointController::allEndEffectorContactStateCallback(
   if(limb_in_contact == 4){
     start_control = true;
   }
+}
+
+void IndipendentJointController::updateGrieelState(const std_msgs::msg::String &grieel_finish_string){
+  // used only when dynamixel controller is running
+  //int limb_id;
+  if(grieel_finish_string.data == "wheel"){
+    grieel_state_ = "wheel";
+    Kpv[6] = 20.0;
+    Tiv[6] = 0.1;
+  } else if(grieel_finish_string.data == "gripper"){
+    grieel_state_ = "gripper";
+    Kpv[6] = 0.0;
+    Tiv[6] = 1.0;
+  } 
 }
 
 std::array<float, JOINT_NUM> IndipendentJointController::GravityCompensation(){

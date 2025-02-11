@@ -83,13 +83,13 @@ HighLevelController::HighLevelController()
   grieel_end_sub_LF_ = this->create_subscription<std_msgs::msg::String>(
       "/LF/lbr_limb_controller/grieel_joint_finish", 1,
       std::bind(&HighLevelController::updateGrieelState, this, std::placeholders::_1));
-  grieel_end_sub_LF_ = this->create_subscription<std_msgs::msg::String>(
+  grieel_end_sub_LH_ = this->create_subscription<std_msgs::msg::String>(
       "/LH/lbr_limb_controller/grieel_joint_finish", 1,
       std::bind(&HighLevelController::updateGrieelState, this, std::placeholders::_1));
-  grieel_end_sub_LF_ = this->create_subscription<std_msgs::msg::String>(
+  grieel_end_sub_RH_ = this->create_subscription<std_msgs::msg::String>(
       "/RH/lbr_limb_controller/grieel_joint_finish", 1,
       std::bind(&HighLevelController::updateGrieelState, this, std::placeholders::_1));
-  grieel_end_sub_LF_ = this->create_subscription<std_msgs::msg::String>(
+  grieel_end_sub_RF_ = this->create_subscription<std_msgs::msg::String>(
       "/RF/lbr_limb_controller/grieel_joint_finish", 1,
       std::bind(&HighLevelController::updateGrieelState, this, std::placeholders::_1));
   
@@ -100,6 +100,7 @@ HighLevelController::HighLevelController()
   grieel_transformation_ = false;
   single_transform_end_ = false;
   grieel_transform_end = false; 
+
   move = false;
   crawl_gate = false;
 
@@ -394,6 +395,7 @@ void::HighLevelController::grieelTransformation()
       motion_package_end = false;
       single_transform_end_ = false;
       first_time = false;
+      grieel_transform_end = false; 
       singleLegGrieelTransformation(supporting_leg_polygon, i);
 
       i = i+1;
@@ -556,23 +558,39 @@ void HighLevelController::singleLegGrieelTransformation(
     grieel_mode_pub_->publish(new_grieel_state);
   }
 
-  while(!grieel_transform_end){
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-  }
-  const int task_num_final = 1;  
-  motion_task.task_id_array.resize(task_num_final);
-  basic_transfrom_sequence.motion_task_array.resize(task_num_final);
-  limb_motion_task.limb_id = limb_id;
-  limb_motion_task.swing_duration = 3500;  // [ms]
-  limb_motion_task.end_effector_displacement.x = 0.0;  // [m]
-  limb_motion_task.end_effector_displacement.y = 0.0;
-  limb_motion_task.end_effector_displacement.z = -LIMB_TRANSFORM_HEIGHT;
-  motion_task.limb_motion_task = limb_motion_task;
-  motion_task.task_id_array.at(0) = 0;
-  basic_transfrom_sequence.motion_task_array.at(0) = motion_task;
-  motion_package_pub_->publish(basic_transfrom_sequence);
-  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-  grieel_transform_end = false;
+  std::thread wait_thread([this, limb_id]() {
+    bool wait = true;
+    while(wait){
+      if(grieel_transform_end){
+        wait = false;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }  
+    std::cout << " sending lay down command" << std::endl;
+    const int task_num_final = 1;  
+
+    lbr_msgs::msg::MotionPackage basic_transfrom_sequence;
+    lbr_msgs::msg::MotionTask motion_task;
+    lbr_msgs::msg::LimbMotionTask limb_motion_task;
+
+    motion_task.task_id_array.resize(task_num_final);
+    basic_transfrom_sequence.motion_task_array.resize(task_num_final);
+    limb_motion_task.limb_id = limb_id;
+    limb_motion_task.swing_duration = 3500;  // [ms]
+    limb_motion_task.end_effector_displacement.x = 0.0;  // [m]
+    limb_motion_task.end_effector_displacement.y = 0.0;
+    limb_motion_task.end_effector_displacement.z = -LIMB_TRANSFORM_HEIGHT;
+    limb_motion_task.pitch_angle_displacement = 0.0;  // [rad]
+    limb_motion_task.header.stamp = this->now();
+  
+    motion_task.limb_motion_task = limb_motion_task;
+    motion_task.task_id_array.at(0) = 0;
+  
+    basic_transfrom_sequence.motion_task_array.at(0) = motion_task;
+    motion_package_pub_->publish(basic_transfrom_sequence);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));});
+  wait_thread.detach();
+
 
   // SEND COMMAND TO GRIEEL FOR TRANSITION MODE
   // limb_motion_task.limb_id = limb_id;

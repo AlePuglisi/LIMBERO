@@ -22,6 +22,7 @@
 #include "std_msgs/msg/float64_multi_array.hpp"
 #include "std_msgs/msg/float64.hpp"
 #include "std_msgs/msg/bool.hpp"
+#include "std_msgs/msg/string.hpp"
 #include "lbr_msgs/msg/end_effector_contact_state.hpp"
 
 
@@ -78,6 +79,8 @@ private:
    */
   void allEndEffectorContactStateCallback(const lbr_msgs::msg::EndEffectorContactState & contact_state);
 
+  void updateGrieelState(const std_msgs::msg::String & grieel_finish_string);
+
   // Timer
   rclcpp::TimerBase::SharedPtr control_loop_timer_; // sets digital controller sampling time Ts
 
@@ -97,6 +100,7 @@ private:
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr current_joint_state_sub_; // received joint state from Gazebo node
   rclcpp::Subscription<lbr_msgs::msg::EndEffectorContactState>::SharedPtr whole_contact_state_sub_;
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr end_effector_contact_state_sub_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr grieel_end_sub_;
 
   // attributes
   int LIMB_ID; // LF=0, LH=1, RH=2, RF=3, identify IJC related limb

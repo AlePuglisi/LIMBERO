@@ -63,7 +63,7 @@ LimbController::LimbController()
   trajectory_array_pub_ = this->create_publisher<visualization_msgs::msg::MarkerArray>(
     topic_prefix + "/EE_trajectory_array", 10);
   grieel_joint_finish_pub_ = this->create_publisher<std_msgs::msg::String>(
-    topic_prefix + "/grieel_joint_finish", 10);
+    topic_prefix + "/grieel_joint_finish", 1);
 
   // Subscriber
   EE_pose_sub_ = this->create_subscription<lbr_msgs::msg::EndEffectorPoseFourDof>(
@@ -264,13 +264,20 @@ void LimbController::sendGripperCommand(double position, double max_effort){
   goal_msg.command.max_effort = max_effort;
 
   auto send_goal_options = rclcpp_action::Client<control_msgs::action::GripperCommand>::SendGoalOptions();
-  send_goal_options.result_callback = [](const rclcpp_action::ClientGoalHandle<control_msgs::action::GripperCommand>::WrappedResult & result) {
+  send_goal_options.result_callback = [this](const rclcpp_action::ClientGoalHandle<control_msgs::action::GripperCommand>::WrappedResult & result) {
     if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
-      RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Gripper action succeeded.");
-    } else {
-      RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Gripper action failed.");
-    }
-  };
+      RCLCPP_INFO(this->get_logger(), "Gripper action succeeded.");
+      
+      // Publish finish signal after action completes
+      std_msgs::msg::String grieel_joint_finish;
+      grieel_joint_finish.data = grieel_mode;
+      grieel_joint_finish_pub_->publish(grieel_joint_finish);
+      std::cout << "Published: " << grieel_joint_finish.data << " | finish signal to HLC" << std::endl;
+
+  } else {
+      RCLCPP_ERROR(this->get_logger(), "Gripper action failed.");
+  }
+};
 
   gripper_action_client_->async_send_goal(goal_msg, send_goal_options);
 }
@@ -313,8 +320,8 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
   std::array<float, 6>  a_wristV = computeFifthOrderTraj(temp_joint_state.position.at(5),delta_wristV, delta_T_wristV);
   double dt = 0.0; 
 
-  std::cout << name_space << " Going from WristH: " << temp_joint_state.position.at(4) << "to final wristH:" << wristH << "in" << delta_T_wristH << "[ns]" << std::endl;
-  std::cout << name_space << " Going from WristV: " << temp_joint_state.position.at(5) << "to final wristV:" << wristV << "in" << delta_T_wristV << "[ns]" << std::endl;
+  std::cout << name_space << " Going from WristH: " << temp_joint_state.position.at(4) << "to final wristH:" << wristH << "in" << delta_T_wristH << " [s]" << std::endl;
+  std::cout << name_space << " Going from WristV: " << temp_joint_state.position.at(5) << "to final wristV:" << wristV << "in" << delta_T_wristV << " [s]" << std::endl;
   // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
   rclcpp::Rate rate(100, this->get_clock());  // 100 Hz
   bool finish_wristH = false; 
@@ -349,10 +356,10 @@ void LimbController::grieelChangeCallback(const std_msgs::msg::String & new_grie
     finger_position = 0.0;
   }
   sendGripperCommand(finger_position, 10.0);
-
-  std_msgs::msg::String grieel_joint_finish;
-  grieel_joint_finish.data = grieel_mode;
-  grieel_joint_finish_pub_->publish(grieel_joint_finish);
+  // std::cout << name_space << " sending finish signal to HLC" << std::endl;
+  // std_msgs::msg::String grieel_joint_finish;
+  // grieel_joint_finish.data = grieel_mode;
+  // grieel_joint_finish_pub_->publish(grieel_joint_finish);
 }
 
 void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mode)//msg type)
@@ -366,7 +373,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
       wristH = 3*M_PI_4;
     }
     if ((LIMB_ID == 1) || (LIMB_ID == 3)){
-      wristH = -3*M_PI_4;
+      wristH = -M_PI_4;
     }
     sensor_msgs::msg::JointState temp_joint_state;
     temp_joint_state.position.resize(JOINT_NUM);
@@ -377,13 +384,18 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
     double initial_time = this->now().seconds();
     double current_time = this->now().seconds();
     std::array<float, 6>  a_wristH = computeFifthOrderTraj(temp_joint_state.position.at(4), delta_wristH, delta_T_wristH);
+    std::string name_space = std::string(this->get_namespace());
+    std::cout << name_space << " Going from WristH: " << temp_joint_state.position.at(4) << "to final wristH:" << wristH << "in" << delta_T_wristH << " [s]" << std::endl;
     double dt = 0.0; 
     rclcpp::Rate rate(100, this->get_clock());  // 100 Hz
     // send grieel joint wristH, wristV trajectory as 100 step from current to desired one
-    while(!(current_time > initial_time + delta_T_wristH)){
+    bool finish_wristH = false; 
+    while(!finish_wristH){
       current_time = this->now().seconds();
       dt = current_time - initial_time;
-      current_joint_state.position.at(4) = a_wristH[0] + a_wristH[1]*dt + a_wristH[2]*std::pow(dt,2) + a_wristH[3]*std::pow(dt,3) + a_wristH[4]*std::pow(dt,4) + a_wristH[5]*std::pow(dt,5);
+      if(current_time < initial_time + delta_T_wristH){
+        current_joint_state.position.at(4) = a_wristH[0] + a_wristH[1]*dt + a_wristH[2]*std::pow(dt,2) + a_wristH[3]*std::pow(dt,3) + a_wristH[4]*std::pow(dt,4) + a_wristH[5]*std::pow(dt,5);
+      } else{ finish_wristH = true;}
       current_joint_state.position.at(5) = M_PI_2;
       current_joint_state.velocity.at(6) = 0.0;
       // keep other joints position in the current state
