@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<sdf version="1.6">
+    <model name="perseverance">
+        <static>true</static>
+        <pose>0 0 0 0 0 0</pose>
+        <link name="perseverance">
+            <collision name="perseverance_collision">
+                <geometry>
+                    <mesh>
+                        <uri>models://perseverance/resources/perseverance.obj</uri>
+                        <scale>0.3 0.3 0.3</scale>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name="perseverance_vision">
+                <geometry>
+                    <mesh>
+                        <uri>models://perseverance/resources/perseverance.obj</uri>
+                        <scale>0.3 0.3 0.3</scale>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+    </model>
+</sdf>

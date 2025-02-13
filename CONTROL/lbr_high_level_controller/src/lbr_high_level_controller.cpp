@@ -383,8 +383,8 @@ void::HighLevelController::grieelTransformation()
 #if !SIMULATION
     if((single_transform_end_ || first_time)&&(supporting_leg_polygon.end_effector_position.size() > 3)){
 #endif //NOT IN SIMULATIONsingle_transform_end_
-      for(int j=0; (j<LIMB_NUM) ; j++ ){
-        if(j==i){fake_contact.is_contact.at(i) = false;}
+      for(int j=0; j<LIMB_NUM ; j++ ){
+        if(j==i){fake_contact.is_contact.at(j) = false;}
         else{
           fake_contact.is_contact.at(j) = true;
         }
@@ -557,7 +557,8 @@ void HighLevelController::singleLegGrieelTransformation(
     new_grieel_state.mode = "wheel";
     grieel_mode_pub_->publish(new_grieel_state);
   }
-
+  
+  motion_package_end = false; 
   std::thread wait_thread([this, limb_id]() {
     bool wait = true;
     while(wait){
@@ -588,7 +589,8 @@ void HighLevelController::singleLegGrieelTransformation(
   
     basic_transfrom_sequence.motion_task_array.at(0) = motion_task;
     motion_package_pub_->publish(basic_transfrom_sequence);
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));});
+    //std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    });
   wait_thread.detach();
 
 
@@ -642,6 +644,9 @@ void HighLevelController::singleLegGrieelTransformation(
     }}});
   wait_thread.detach();
 #endif //NOT IN SIMULATION
+    while(!motion_package_end){
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
     fake_contact.is_contact.at(0) = true;
     fake_contact.is_contact.at(1) = true;
     fake_contact.is_contact.at(2) = true;
@@ -776,7 +781,7 @@ void HighLevelController::crawlGate(){
       if(motion_package_end || first_time){
         std::cout << "Crawl gate step: " << i << " start." << std::endl;
         i = i+1;
-        int task_num = 4*3+1;  // One sequence consists of 4 limb motion and 1 base motion.
+        int task_num = 4*3+1;  // One sequence consists of 3 limb motion * 4 and 1 base motion.
         lbr_msgs::msg::MotionPackage crawl_gait_motion_package;
         crawl_gait_motion_package.motion_task_array.resize(task_num);
         lbr_msgs::msg::MotionTask motion_task;
@@ -806,7 +811,7 @@ void HighLevelController::crawlGate(){
 
         std::vector<int> gait_numbers = {0, 2, 1, 3};
         for (int i = 0; i < 2; i++) {
-          limb_up.limb_id = gait_numbers.at(0+i*3);
+          limb_up.limb_id = gait_numbers.at(i);
           limb_up.header.stamp = this->now();
           motion_task.limb_motion_task = limb_up;
           motion_task.task_id_array.at(0+i*3) = 0;  // ID of limb motion task is 0.

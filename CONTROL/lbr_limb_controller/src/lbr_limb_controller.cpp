@@ -373,7 +373,7 @@ void LimbController::drivingModeCallback(const std_msgs::msg::Int64 & driving_mo
       wristH = 3*M_PI_4;
     }
     if ((LIMB_ID == 1) || (LIMB_ID == 3)){
-      wristH = -M_PI_4;
+      wristH = -3*M_PI_4;
     }
     sensor_msgs::msg::JointState temp_joint_state;
     temp_joint_state.position.resize(JOINT_NUM);

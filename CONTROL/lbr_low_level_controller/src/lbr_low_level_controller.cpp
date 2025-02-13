@@ -368,7 +368,7 @@ void LowLevelController::execLimbMotion(const lbr_msgs::msg::LimbMotionTask & li
   Eigen::Vector3d EE_displacement_from_initial_position;
   Eigen::Vector3d EE_displacement_from_initial_position_in_previous_step;
 
-  rclcpp::Rate rate(1000.0 / step_time);
+  rclcpp::Rate rate(1000.0 / step_time, this->get_clock());
   // Update displacement of end-effector position
   for (int step = 0; step < step_num; step++) {
     for (int i = 0; i < displacement_in_base_coordinate.size(); i++) {
@@ -632,7 +632,7 @@ void LowLevelController::execBaseMotion(const lbr_msgs::msg::BaseMotionTask & ba
   Eigen::Vector3d d_rotation_in_base_coordinate =
     rotation_in_base_coordinate / (step_num - 1);
 
-  rclcpp::Rate rate(1000.0 / step_time);  // Convert ms to Hz
+  rclcpp::Rate rate(1000.0 / step_time, this->get_clock());  // Convert ms to Hz
   for (int step = 0; step < step_num; step++) {
     for (int limb = 0; limb < LIMB_NUM; limb++) {
       lbr_msgs::msg::EndEffectorPoseFourDof d_EE_displacement;

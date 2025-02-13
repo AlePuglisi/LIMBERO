@@ -51,11 +51,16 @@
       <direction>-0.5 0.1 -0.9</direction>
     </light>
 
-    <!-- <include>
-      <uri> mars_surface </uri>
-    </include> -->
+    <include>
+      <uri> mars_surface_2 </uri>
+    </include>
 
-    <model name="ground_plane">
+    <include>
+      <uri> perseverance </uri>
+      <pose> 3.4 -8.0 -0.02 1.57 0 2.25 </pose>
+    </include>
+
+    <!-- <model name="ground_plane">
       <static>true</static>
       <link name="link">
         <collision name="collision_plane">
@@ -65,6 +70,20 @@
               <size>100 100</size>
             </plane>
           </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>1.0</mu>  
+                <mu2>1.0</mu2>  
+              </ode>
+              <torsional>
+                <coefficient>0.5</coefficient>  
+                <use_patch_radius>1</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
+                <surface_radius>0.2</surface_radius>
+              </torsional>
+            </friction>
+          </surface>
         </collision>
         <visual name="visual">
           <geometry>
@@ -80,39 +99,8 @@
             <specular>0.500000 0.500000 0.500000 1</specular>
           </material>
         </visual>
-      </link> 
+      </link>  
 
-
-
-      <!-- <plugin filename="gz-sim-touchplugin-system"
-              name="gz::sim::systems::TouchPlugin">
-        <target>LIMBERO/link/LF_gripper_Link</target>
-        <namespace>LF</namespace>
-        <time>0.001</time>
-        <enabled>true</enabled>
-      </plugin>
-      <plugin filename="gz-sim-touchplugin-system"
-              name="gz::sim::systems::TouchPlugin">
-        <target>LIMBERO/link/LH_gripper_Link</target>
-        <namespace>LH</namespace>
-        <time>0.001</time>
-        <enabled>true</enabled>
-      </plugin>
-      <plugin filename="gz-sim-touchplugin-system"
-              name="gz::sim::systems::TouchPlugin">
-        <target>LIMBERO/link/RH_gripper_Link</target>
-        <namespace>RH</namespace>
-        <time>0.001</time>
-        <enabled>true</enabled>
-      </plugin>
-      <plugin filename="gz-sim-touchplugin-system"
-              name="gz::sim::systems::TouchPlugin">
-        <target>LIMBERO/link/RF_gripper_Link</target>
-        <namespace>RF</namespace>
-        <time>0.001</time>
-        <enabled>true</enabled>
-      </plugin>   -->
-
-    </model>
+    </model> -->
   </world>
 </sdf>

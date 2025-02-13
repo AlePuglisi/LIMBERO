@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<sdf version="1.6">
+    <model name="mars_surface_2">
+        <static>true</static>
+        <pose>0 0 0 1.57 0 0</pose>
+        <link name="mars_surface_link">
+            <!-- <collision name="mars_surface_link_collision">
+                <geometry>
+                    <mesh>
+                        <uri>models://mars_surface_2/resources/mars_surface_2.obj</uri>
+                        <scale>1 1 1</scale>
+                    </mesh>
+                </geometry>
+            </collision> -->
+            <collision name="mars_surface_link_collision">
+                <pose>0 0.1 0 0 0 0</pose>
+                <geometry>
+                    <plane>
+                    <normal>0 1 0</normal>
+                    <size>50 50</size>
+                    </plane>
+                </geometry>
+                <surface>
+                    <friction>
+                    <ode>
+                        <mu>1.0</mu>  
+                        <mu2>1.0</mu2>  
+                    </ode>
+                    <torsional>
+                        <coefficient>0.5</coefficient>  
+                        <use_patch_radius>1</use_patch_radius>
+                        <patch_radius>0.1</patch_radius>
+                        <surface_radius>0.2</surface_radius>
+                    </torsional>
+                    </friction>
+                </surface>
+            </collision>
+            <visual name="mars_surface_link_visual">
+                <geometry>
+                    <mesh>
+                        <uri>models://mars_surface_2/resources/mars_surface_2.obj</uri>
+                        <scale>1 1 1</scale>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+    </model>
+</sdf>
