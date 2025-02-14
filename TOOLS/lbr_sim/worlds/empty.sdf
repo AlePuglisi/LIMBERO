@@ -37,7 +37,7 @@
       name="gz::sim::systems::Contact">
     </plugin>  -->
 
-    <light type="directional" name="sun">
+    <!-- <light type="directional" name="sun">
       <cast_shadows>false</cast_shadows>
       <pose>0 0 7 0 0 0</pose>
       <diffuse>0.6 0.6 0.6 1</diffuse>
@@ -49,6 +49,20 @@
         <quadratic>0.001</quadratic>
       </attenuation>
       <direction>-0.5 0.1 -0.9</direction>
+    </light> -->
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.5 0.5 0.5 1</specular>
+      <attenuation>
+        <range>200</range>
+        <constant>0.8</constant>
+        <linear>0.01</linear>
+        <quadratic>0.0005</quadratic>
+      </attenuation>
+      <direction>-0.3 0.2 -1</direction>
     </light>
 
     <include>
@@ -57,7 +71,7 @@
 
     <include>
       <uri> perseverance </uri>
-      <pose> 3.4 -8.0 -0.02 1.57 0 2.25 </pose>
+      <pose> 1.5 -4.0 0.1 1.57 -0.1 2.25 </pose>
     </include>
 
     <!-- <model name="ground_plane">

@@ -7,8 +7,8 @@
 
   <xacro:macro name="limb_macro" params="prefix parent radius">
     <xacro:include filename="$(find lbr_description)/urdf/Grieel/inertial_macro.xacro" />
-    <xacro:property name="friction" value="0.1"/>
-    <xacro:property name="damping" value="0.05"/>
+    <xacro:property name="friction" value="0.4"/>
+    <xacro:property name="damping" value="0.15"/>
 
     <xacro:arg name="simplified" default="false" />
 

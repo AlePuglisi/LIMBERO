@@ -13,7 +13,7 @@
                 </geometry>
             </collision> -->
             <collision name="mars_surface_link_collision">
-                <pose>0 0.1 0 0 0 0</pose>
+                <pose>0 0 0 0 0 0</pose>
                 <geometry>
                     <plane>
                     <normal>0 1 0</normal>
