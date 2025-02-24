@@ -53,11 +53,11 @@
 
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
-      <pose>0 0 10 0 0 0</pose>
-      <diffuse>1 1 1 1</diffuse>
-      <specular>0.5 0.5 0.5 1</specular>
+      <pose>4.2 -7.0 5 0 0 0</pose>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>1.0 1.0 1.0 1</specular>
       <attenuation>
-        <range>200</range>
+        <range>500</range>
         <constant>0.8</constant>
         <linear>0.01</linear>
         <quadratic>0.0005</quadratic>

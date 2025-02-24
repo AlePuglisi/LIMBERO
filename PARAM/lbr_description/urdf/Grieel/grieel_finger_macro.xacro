@@ -8,10 +8,6 @@
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/inertial_macro.xacro" />
   <xacro:arg name="not_first_finger" default="false" />
 
-  <xacro:property name="ambient" value="0.1 0.1 0.1 1"/>
-  <xacro:property name="diffuse" value="0.2 0.2 0.2 1"/>
-  <xacro:property name="specular" value="0.4 0.4 0.4 1"/>
-  <xacro:property name="emissive" value="0 0 0 1"/>
 
   <xacro:arg name="simplified" default="false" />
 
@@ -104,22 +100,6 @@
         </xacro:unless>
     </link>
 
-    <gazebo reference="${prefix}_${name}_phalanx1">
-        <material>Gazebo/Black</material>
-        <visual>
-            <material>
-                <ambient>${ambient}</ambient>
-                <diffuse>${diffuse}</diffuse>
-                <specular>${specular}</specular>
-                <emissive>${emissive}</emissive>
-            </material>
-        </visual>
-
-        <mu1>1.5</mu1>
-        <mu2>1.5</mu2>
-        <kp>1000000</kp>
-        <kd>1.0</kd>
-    </gazebo>
 
     <joint
         name="${prefix}_${name}_P12P2"
@@ -210,22 +190,6 @@
             </collision>
         </xacro:unless>
     </link>
-
-    <gazebo reference="${prefix}_${name}_phalanx2">
-        <material>Gazebo/Black</material>
-        <visual>
-            <material>
-                <ambient>${ambient}</ambient>
-                <diffuse>${diffuse}</diffuse>
-                <specular>${specular}</specular>
-                <emissive>${emissive}</emissive>
-            </material>
-        </visual>
-        <mu1>1.5</mu1>
-        <mu2>1.5</mu2>
-        <kp>1000000</kp>
-        <kd>1.0</kd>
-    </gazebo>
 
 
    <joint
@@ -320,22 +284,6 @@
             </collision>
         </xacro:unless>
     </link>
-
-    <gazebo reference="${prefix}_${name}_phalanx3">
-        <material>Gazebo/Black</material>
-        <visual>
-            <material>
-                <ambient>${ambient}</ambient>
-                <diffuse>${diffuse}</diffuse>
-                <specular>${specular}</specular>
-                <emissive>${emissive}</emissive>
-            </material>
-        </visual>
-        <mu1>1.5</mu1>
-        <mu2>1.5</mu2>
-        <kp>1000000</kp>
-        <kd>1.0</kd>
-    </gazebo>
 
 
   </xacro:macro>

@@ -8,10 +8,10 @@
 
   <xacro:include filename="$(find lbr_description)/urdf/Grieel/inertial_macro.xacro" />
 
-  <xacro:property name="ambient" value="0.2 0.2 0.2 1"/>
-  <xacro:property name="diffuse" value="0.35 0.35 0.35 1"/>
-  <xacro:property name="specular" value="0.4 0.4 0.4 1"/>
-  <xacro:property name="emissive" value="0 0 0 1"/>
+    <xacro:property name="ambient" value="0.3 0.3 0.3 1"/>
+    <xacro:property name="diffuse" value="0.45 0.45 0.45 1"/>
+    <xacro:property name="specular" value="0.4 0.4 0.4 1"/>
+    <xacro:property name="emissive" value="0 0 0 1"/>
 
   <xacro:arg name="simplified" default="false" />
 
@@ -83,22 +83,6 @@
         </collision>
       </xacro:unless>
     </link>
-
-    <gazebo reference="base_link">
-      <material>Gazebo/Black</material>
-      <visual>
-        <material>
-            <ambient>${ambient}</ambient>
-            <diffuse>${diffuse}</diffuse>
-            <specular>${specular}</specular>
-            <emissive>${emissive}</emissive>
-        </material>
-      </visual>
-      <mu1>1.0</mu1>
-      <mu2>1.0</mu2>
-      <kp>1000000</kp>
-      <kd>1.0</kd>
-    </gazebo>
 <!-- 
     <link name="base_frame"/>
 

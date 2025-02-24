@@ -8,8 +8,9 @@
   <xacro:macro name="grieel_gripper_macro" params="prefix parent">
     <xacro:include filename="$(find lbr_description)/urdf/Grieel/grieel_gripper_splitted.xacro" />
     <xacro:include filename="$(find lbr_description)/urdf/Grieel/inertial_macro.xacro" />
-    <xacro:property name="friction" value="0.4"/>
-    <xacro:property name="damping" value="0.15"/>
+
+    <xacro:property name="friction" value="0.5"/>
+    <xacro:property name="damping" value="0.2"/>
 
     <xacro:arg name="simplified" default="false" />
 

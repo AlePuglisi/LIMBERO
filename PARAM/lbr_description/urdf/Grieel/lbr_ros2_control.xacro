@@ -31,11 +31,11 @@
         </state_interface>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
-        <!-- <transmission name="${prefix}_B2C_transmission">
+        <transmission name="${prefix}_B2C_transmission">
           <plugin>transmission_interface/SimpleTransmission</plugin>
           <param name="joint_to_actuator">272.5</param>
           <hardwareInterface>EffortJointInterface</hardwareInterface>
-        </transmission> -->
+        </transmission>
       </joint>
 
       <joint name="${prefix}_C2F">
@@ -60,11 +60,11 @@
         </state_interface>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
-        <!-- <transmission name="${prefix}_C2F_transmission">
+        <transmission name="${prefix}_C2F_transmission">
           <plugin>transmission_interface/SimpleTransmission</plugin>
           <param name="joint_to_actuator">272.5</param>
           <hardwareInterface>EffortJointInterface</hardwareInterface>
-        </transmission> -->
+        </transmission>
       </joint>
 
       <joint name="${prefix}_F2T">
@@ -89,11 +89,11 @@
         </state_interface>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
-        <!-- <transmission name="${prefix}_F2T_transmission">
+        <transmission name="${prefix}_F2T_transmission">
           <plugin>transmission_interface/SimpleTransmission</plugin>
           <param name="joint_to_actuator">353.5</param>
           <hardwareInterface>EffortJointInterface</hardwareInterface>
-        </transmission> -->
+        </transmission>
       </joint>
 
       <joint name="${prefix}_T2E">
@@ -118,11 +118,11 @@
         </state_interface>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
-        <!-- <transmission name="${prefix}_T2E_transmission">
+        <transmission name="${prefix}_T2E_transmission">
           <plugin>transmission_interface/SimpleTransmission</plugin>
           <param name="joint_to_actuator">353.5</param>
           <hardwareInterface>EffortJointInterface</hardwareInterface>
-        </transmission> -->
+        </transmission>
       </joint>
 
 
@@ -153,11 +153,11 @@
         </state_interface>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
-        <!-- <transmission name="${prefix}_wristH_transmission">
+        <transmission name="${prefix}_wristH_transmission">
           <plugin>transmission_interface/SimpleTransmission</plugin>
           <param name="joint_to_actuator">257.4</param>
           <hardwareInterface>EffortJointInterface</hardwareInterface>
-        </transmission> -->
+        </transmission>
       </joint>
 
       <joint name="${prefix}_wristV">
@@ -187,11 +187,11 @@
         </state_interface>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
-        <!-- <transmission name="${prefix}_wristV_transmission">
+        <transmission name="${prefix}_wristV_transmission">
           <plugin>transmission_interface/SimpleTransmission</plugin>
           <param name="joint_to_actuator">257.4</param>
           <hardwareInterface>EffortJointInterface</hardwareInterface>
-        </transmission> -->
+        </transmission>
       </joint>
 
       <joint name="${prefix}_driving">
@@ -221,11 +221,11 @@
         </state_interface>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
-        <!-- <transmission name="${prefix}_driving_transmission">
+        <transmission name="${prefix}_driving_transmission">
           <plugin>transmission_interface/SimpleTransmission</plugin>
           <param name="joint_to_actuator">353.4</param>
           <hardwareInterface>EffortJointInterface</hardwareInterface>
-        </transmission> -->
+        </transmission>
       </joint>
 
 

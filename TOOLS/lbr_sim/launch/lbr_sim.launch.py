@@ -230,7 +230,9 @@ def generate_launch_description():
                    '-name', 'LIMBERO',
                    '-z', '0.5',
                    '-x', '4.2',
-                   '-y', '-6.0'],
+                   '-y', '-6.0',
+                   '-Y', '1.57'],
+
                 #    '-z', '3.5',
                 #    '-x', '-3',
                 #    '-y', '8'],
@@ -252,6 +254,7 @@ def generate_launch_description():
     ros_gz_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
+        parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
         arguments=[
             '--ros-args',
             '-p',

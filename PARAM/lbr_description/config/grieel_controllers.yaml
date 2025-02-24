@@ -1,7 +1,11 @@
+gz_ros_control:
+  ros__parameters:
+    use_sim_time: true
+
 controller_manager:
   ros__parameters:
     update_rate: 1000
-    #use_sim_time: true
+    use_sim_time: true
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -21,7 +25,11 @@ controller_manager:
       type: position_controllers/GripperActionController
     grieel_action_controller_RF:
       type: position_controllers/GripperActionController
-      
+  
+joint_state_broadcaster:
+  ros__parameters:
+    use_sim_time: true
+
 # limb_controller:
 #   ros__parameters:
 #     use_sim_time: true
@@ -289,7 +297,7 @@ controller_manager:
 
 grieel_action_controller_LF:
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joint: LF_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
@@ -300,7 +308,7 @@ grieel_action_controller_LF:
 
 grieel_action_controller_LH:
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joint: LH_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
@@ -311,7 +319,7 @@ grieel_action_controller_LH:
 
 grieel_action_controller_RH:
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joint: RH_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
@@ -321,7 +329,7 @@ grieel_action_controller_RH:
     stall_timeout: 1.0
 grieel_action_controller_RF:
   ros__parameters:
-    #use_sim_time: true
+    use_sim_time: true
     joint: RF_F1_H2P1
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
