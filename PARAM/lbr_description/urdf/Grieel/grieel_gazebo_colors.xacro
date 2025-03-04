@@ -43,15 +43,15 @@
         </xacro:unless> -->
 
           <gazebo reference="base_link">
-            <material>Gazebo/Black</material>
-            <visual>
+            <material>Gazebo/DarkGrey</material>
+            <!-- <visual>
               <material>
                   <ambient>${ambient}</ambient>
                   <diffuse>${diffuse}</diffuse>
                   <specular>${specular}</specular>
                   <emissive>${emissive}</emissive>
               </material>
-            </visual>
+            </visual> -->
             <mu1>${mu1}</mu1>
             <mu2>${mu2}</mu2>
             <kp>${kp}</kp>
@@ -59,7 +59,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_femur">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
               <visual>
                 <material>
                   <ambient>${ambient}</ambient>
@@ -71,7 +71,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_tibia">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>${ambient}</ambient>
@@ -83,7 +83,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_limb_end">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>${ambient}</ambient>
@@ -95,7 +95,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_limb_root">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>${ambient}</ambient>
@@ -107,7 +107,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_coxa">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>${ambient}</ambient>
@@ -119,7 +119,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_wristH_Link">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>${ambient}</ambient>
@@ -131,7 +131,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_wristV_Link">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>${ambient}</ambient>
@@ -143,7 +143,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_driving_Link">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>${ambient}</ambient>
@@ -155,7 +155,7 @@
           </gazebo>
 
           <!-- <gazebo reference="${prefix}_gripper_Link">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>0.2 0.2 0.2 1</ambient>
@@ -167,7 +167,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_wheel_Link">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>0.2 0.2 0.2 1</ambient>
@@ -179,7 +179,7 @@
           </gazebo> -->
 
           <gazebo reference="${prefix}_hand_Link">
-            <material>Gazebo/Black</material>
+            <material>Gazebo/DarkGrey</material>
             <visual>
               <material>
                 <ambient>${ambient}</ambient>
@@ -195,7 +195,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F1_phalanx1">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -211,7 +211,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F1_phalanx2">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -226,7 +226,7 @@
               <kd>${kd}</kd>
           </gazebo>
           <gazebo reference="${prefix}_F1_phalanx3">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -242,7 +242,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F2_phalanx1">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -258,7 +258,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F2_phalanx2">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -274,7 +274,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F2_phalanx3">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -290,7 +290,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F3_phalanx1">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -306,7 +306,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F3_phalanx2">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -321,7 +321,7 @@
               <kd>${kd}</kd>
           </gazebo>
           <gazebo reference="${prefix}_F3_phalanx3">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -337,7 +337,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F4_phalanx1">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -353,7 +353,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F4_phalanx2">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -368,7 +368,7 @@
               <kd>${kd}</kd>
           </gazebo>
           <gazebo reference="${prefix}_F4_phalanx3">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -384,7 +384,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F5_phalanx1">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -400,7 +400,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F5_phalanx2">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -415,7 +415,7 @@
               <kd>${kd}</kd>
           </gazebo>
           <gazebo reference="${prefix}_F5_phalanx3">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -431,7 +431,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F6_phalanx1">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -446,7 +446,7 @@
               <kd>${kd}</kd>
           </gazebo>
           <gazebo reference="${prefix}_F6_phalanx2">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -461,7 +461,7 @@
               <kd>${kd}</kd>
           </gazebo>
           <gazebo reference="${prefix}_F6_phalanx3">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -478,7 +478,7 @@
 
 
           <gazebo reference="${prefix}_F7_phalanx1">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -494,7 +494,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F7_phalanx2">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -509,7 +509,7 @@
               <kd>${kd}</kd>
           </gazebo>
           <gazebo reference="${prefix}_F7_phalanx3">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -525,7 +525,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F8_phalanx1">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -541,7 +541,7 @@
           </gazebo>
 
           <gazebo reference="${prefix}_F8_phalanx2">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>
@@ -556,7 +556,7 @@
               <kd>${kd}</kd>
           </gazebo>
           <gazebo reference="${prefix}_F8_phalanx3">
-              <material>Gazebo/Black</material>
+              <material>Gazebo/DarkGrey</material>
               <visual>
                   <material>
                       <ambient>${ambient}</ambient>

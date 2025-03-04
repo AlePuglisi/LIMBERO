@@ -25,6 +25,7 @@ IndipendentJointController::IndipendentJointController()
   initial_time = 0;
   limb_in_contact = 4; // assume initially 4 limbs in contact
   swing_counter = 0;
+  mode_changed = false; 
 
   // Initialize controller gains and
   gravity_compensation = GRAVITY_COMPENSATION;
@@ -266,6 +267,7 @@ void IndipendentJointController::updateGrieelState(const std_msgs::msg::String &
     Kpv[6] = 0.0;
     Tiv[6] = 1.0;
   } 
+  mode_changed = true; 
 }
 
 std::array<float, JOINT_NUM> IndipendentJointController::GravityCompensation(){
@@ -426,7 +428,18 @@ void IndipendentJointController::controlLoopPPI()
 
       estimated_joint_velocity[i] = (1-(1/Tdf)*Ts*1e-3)*estimated_joint_velocity[i] + (1/Tdf)*(current_joint_state.position.at(i) - previous_joint_position[i]);
      
-     if((i == 6) && (grieel_state_ == "wheel")){
+    //  if((i == 6) && (grieel_state_ == "wheel")){
+    //     joint_velocity_reference[i] = reference_joint_state.velocity.at(i);
+    //     //estimated_joint_velocity[6] = current_joint_state.velocity.at(6);
+    //   }
+
+      if((i == 6)){
+        if(mode_changed == true){
+          integral[i] = 0.0; 
+          joint_velocity_error[i] = 0.0;
+          estimated_joint_velocity[i] = 0.0; 
+          mode_changed = false; 
+        }
         joint_velocity_reference[i] = reference_joint_state.velocity.at(i);
         //estimated_joint_velocity[6] = current_joint_state.velocity.at(6);
       }

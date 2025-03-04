@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="mars">
+  
+    <physics name="1ms" type="ignored">
+      <real_time_update_rate>100</real_time_update_rate> 
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <scene>
+      <ambient>0.5 0.5 0.5 1</ambient>
+      <background>0.69 0.5 0.29 1</background>
+      <grid>false</grid>
+      <shadows>false</shadows>
+    </scene>
+
+    <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <!-- <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>none</render_engine>
+    </plugin> -->
+    <!-- <plugin
+      filename="gz-sim-contact-system"
+      name="gz::sim::systems::Contact">
+    </plugin>  -->
+
+    <!-- <light type="directional" name="sun">
+      <cast_shadows>false</cast_shadows>
+      <pose>0 0 7 0 0 0</pose>
+      <diffuse>0.6 0.6 0.6 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>100</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light> -->
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>4.2 -7.0 5 0 0 0</pose>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>1.0 1.0 1.0 1</specular>
+      <attenuation>
+        <range>500</range>
+        <constant>0.8</constant>
+        <linear>0.01</linear>
+        <quadratic>0.0005</quadratic>
+      </attenuation>
+      <direction>-0.3 0.2 -1</direction>
+    </light>
+
+    <include>
+      <uri> mars_surface_2 </uri>
+    </include>
+
+    <include>
+      <uri> perseverance </uri>
+      <pose> 1.5 -4.0 0.1 1.57 -0.1 2.25 </pose>
+    </include>
+
+    <!-- <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision_plane">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>1.0</mu>  
+                <mu2>1.0</mu2>  
+              </ode>
+              <torsional>
+                <coefficient>0.5</coefficient>  
+                <use_patch_radius>1</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
+                <surface_radius>0.2</surface_radius>
+              </torsional>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.270455 0.270455 0.270455 1</ambient>
+            <diffuse>0.242280 0.048172 0.016807 1</diffuse>
+            <emissive>0.000000 0.000000 0.000000 1</emissive>
+            <specular>0.500000 0.500000 0.500000 1</specular>
+          </material>
+        </visual>
+      </link>  
+
+    </model> -->
+  </world>
+</sdf>

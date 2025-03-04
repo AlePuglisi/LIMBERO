@@ -146,6 +146,7 @@ private:
   bool in_contact;      // check if leg in contact
   bool start_control;   // flag variabl related to robot spawning in Gazebo environment
 
+  bool mode_changed; //track change of mode
   // gravity compensation related variable
   std::array<float, JOINT_NUM> gravitational_torque;
   int gravity_compensation;
@@ -162,6 +163,7 @@ private:
   sensor_msgs::msg::JointState reference_joint_state; // store current joint reference from LC
   std_msgs::msg::Float64MultiArray torque_control_output; // store torque control values
   std_msgs::msg::Float64 torque_control_data; 
+
 };
 
 #endif  // LBR_INDIPENDENT_JOINT_CONTROLLER__LBR_INDIPENDENT_JOINT_CONTROLLER_HPP_
