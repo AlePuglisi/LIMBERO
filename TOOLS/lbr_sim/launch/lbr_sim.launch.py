@@ -86,7 +86,8 @@ def generate_launch_description():
         get_package_share_directory('lbr_sim'),
         'worlds',
         #'moon.sdf'
-        'empty.sdf'
+        #'empty.sdf'
+        'mars.sdf'
         )  
       
     world = LaunchConfiguration('world')
