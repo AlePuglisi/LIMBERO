@@ -1,487 +1,3 @@
-# LIMBERO
-
-When using GRIEEL, refer to [LIMBERO WITH GRIEEL](#limbero-with-grieel) section for GRIEEL specific aspect and simulation.
-For the set-up of ROS2 environment (including Gazebo) and some troubleshooting, refer to this section.
-
-## Summary
-
-[![ROS 2 Humble build workflow](https://github.com/Space-Robotics-Laboratory/LIMBERO/actions/workflows/build_humble.yaml/badge.svg)](https://github.com/Space-Robotics-Laboratory/LIMBERO/actions/workflows/build_humble.yaml)
-
-This repository is for LIMBERO in SRL-Limb Team.
-
-* Ubuntu 22 and ROS 2 Humble are required environment.
-* PS4 controller is needed if you want to operate LIMBERO manually.
-* ROS packages are written in lowercase letters and others are written in capital letters.
-  * For example, `lbr_low_level_controller` is a ROS package, and `SETUP_SCRIPT` is not.
-
-## Environment Setup
-
-> [!IMPORTANT]
-> Please refer README in develop branch because it is the latest information for setup.
-
-Required environment is Ubuntu 22 for installing ROS 2 Humble and related modules. Ubuntu 22 on virtual environment or Docker container is not ensured to work.  
-If you have not used Git on your environment, you have to install and setup Git beforehand.
-You can refer to [this wiki page](https://srl.esa.io/posts/217) for setting up Git.
-
-You can prepare environment needed for development of LIMBERO with following steps.
-
-1. Clone LIMBERO repository
-
-    ```bash
-    $ mkdir -p ~/lbr_ws/src
-    $ cd ~/lbr_ws/src
-    $ git clone -b develop --recursive git@github.com:Space-Robotics-Laboratory/LIMBERO.git
-    $ cd LIMBERO
-    $ git status
-    On branch develop
-    Your branch is up to date with 'origin/develop'.
-
-    nothing to commit, working tree clean
-    ```
-
-2. Install ROS 2 Humble
-
-    If you have not set up ROS 2 Humble, you can set up with `install_humble.sh` in `TOOLS/SETUP_SCRIPT`. The script file is based on [official documentation](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html#ubuntu-debian-packages).
-
-    When you run the script, **it is recommended to connect LAN cable** because it takes time to install them.
-
-    ```bash
-    cd ~/lbr_ws/src/LIMBERO/TOOLS/SETUP_SCRIPT
-    bash install_humble.sh
-    # You have to press Enter two times to continue this installation.
-    ```
-
-    After the installation is finished, let's try the talker and listener demo to check it completed successfully.  
-    In the first terminal,
-
-    ```bash
-    source ~/.bashrc
-    ros2 run demo_nodes_cpp talker
-    ```
-
-    If talker node is successfully run, you can see below messages:
-
-    ```bash
-    [INFO] [1693552353.069226373] [talker]: Publishing: 'Hello World: 1'
-    [INFO] [1693552354.069247400] [talker]: Publishing: 'Hello World: 2'
-    [INFO] [1693552355.069244847] [talker]: Publishing: 'Hello World: 3'
-    ```
-
-    Keeping the talker node running, let's start lister node in the second terminal.
-
-    ```bash
-    $ ros2 run demo_nodes_py listener
-    [INFO] [1693552415.090892954] [listener]: I heard: [Hello World: 1]
-    [INFO] [1693552416.083413710] [listener]: I heard: [Hello World: 2]
-    [INFO] [1693552417.083434944] [listener]: I heard: [Hello World: 3]
-    ```
-
-    If you see listener node subscribes topics that are published by talker node, ROS 2 environment setup seems to be finished.
-
-3. Build the whole workspace
-
-    ```bash
-    cd ~/lbr_ws
-    colcon build --symlink-install
-    source install/setup.bash
-    ```
-
-    **If you cannot build workspace, run the below command and try again.**
-
-    ```bash
-    rm -r ~/lbr_ws/build ~/lbr_ws/install ~/lbr_ws/log  # Delete cache files
-    ```
-
-> [!TIP]
-> You can run build and source in one command using `&&`.
->
-> ```bash
-> colcon build --symlink-install && source install/setup.bash
-> ```
-
-## Development
-
-### [Optional] Install Visual Studio Code (VSC) Extensions
-
-If you want to install extensions for VSC, you can do with following steps.
-
-1. Open VSC
-1. Click `File` -> `Open Folder`
-1. Select `LIMBERO` folder
-1. In Extensions tab, you can see recommended ones
-
-Also, you check them in `extensions.json` inside `.vscode` directory.
-
-### Code Check
-
-This repository follows the code style and language versions for ROS 2 Humble.
-
-You can use code check with `colcon test` and see its result. It is highly encouraged to check your code before creating pull-request to merge into develop branch.
-
-```bash
-cd ~/lbr_ws
-colcon test && colcon test && colcon test-result --verbose
-```
-
-If you want to check only packages with `lbr_` prefix, use the below command.
-
-```bash
-colcon build --packages-select-regex 'lbr_*' && colcon test --packages-select-regex 'lbr_*' && colcon test-result --verbose
-```
-
- See also: [Code style and language versions](https://docs.ros.org/en/humble/The-ROS2-Project/Contributing/Code-Style-Language-Versions.html#code-style-and-language-versions)
-
-### Debug
-
-`backward_ros` is useful for debugging. You can use it with below command:
-
-```bash
-colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Debug
-```
-
-## Tutorial
-
-### Run Your Code in Simulation
-
-You can check your software implementation using Gazebo simulation. The below command launches all nodes needed for the simulation.
-
-```bash
-# First terminal
-ros2 launch ~/lbr_ws/src/LIMBERO/TOOLS/LAUNCH/lbr_gazebo.launch.py
-```
-
-After Gazebo is started, you have to start `lbr_command_interface` to send command.
-
-```bash
-# Second terminal
-ros2 run lbr_command_interface lbr_command_interface
-```
-
-Then, you can see commands list on terminal and some instruction. Let's open the third terminal and send command `initialize` to set LIMBERO as initial pose.
-
-Also, you can operate LIMBERO using PS4 controller. See details below:
-
-* OPTION button initializes the robot pose
-* Right buttons are used to select one of limbs
-* Left joy stick is used to move a limb in x-y direction
-* L1/L2 buttons are used to move a limb in z direction
-* Tilting both joy sticks makes base translation motion in x-y direction
-* Pressing L1 & R1 or L2 & R2 makes base translation motion in z direction
-
-If you do not want to launch Gazebo simulation, please use `rviz_debug.launch.py` instead of `lbr_gazebo.launch.py`.
-
-```bash
-ros2 launch ~/lbr_ws/src/LIMBERO/TOOLS/LAUNCH/rviz_debug.launch.py
-```
-
-You have to change parameters to visualize joint states in RViz. In another terminal, run the below command.
-
-```bash
-ros2 param set /LF/lbr_limb_controller rviz_debug true && ros2 param set /LH/lbr_limb_controller rviz_debug true && ros2 param set /RH/lbr_limb_controller rviz_debug true && ros2 param set /RF/lbr_limb_controller rviz_debug true
-```
-
-### Run Your Code with LIMBERO
-
-The below command launches all nodes needed to move LIMBERO.
-
-```bash
-ros2 launch ~/lbr_ws/src/LIMBERO/TOOLS/LAUNCH/limbero.launch.py
-```
-
-As same as Gazebo simulation, you have to run `lbr_command_interface` to send commands.
-
-## Trouble-Shooting
-
-**Please add information if you solve troubles about this repository.**
-
-### Fail to build dynamixel_sdk
-
-Confirm you are in `ros2` branch in DynamixelSDK. You may be needed to clear cache after checking out `ros2` branch.
-
-### Dynamixels are not detected
-
-Confirm all cables are connected correctly, or see the emergency stop button is not pushed.
-If hardware settings are correct, check source codes, for example baudrate, Dynamixel IDs, or port settings. (See `lbr_dynamixel_controller`)
-
-Also, you have to check the ports are specified correctly.
-The default code sets LF as `/dev/ttyUSB0`, LH as `/dev/ttyUSB1`, RH as `/dev/ttyUSB2`, and RF as `/dev/ttyUSB3`.
-You can set them by unplugging all then re-plug from LF to RF.
-
-### PS4 controller is not detected
-
-Confirm read/write access for port such as `/dev/ttyACM0` or `/dev/ttyUSB0` with below command.
-
-```bash
-$ ls -l /dev/ttyACM* /dev/ttyUSB*
-crw-rw---- 1 root dialout 166, 0 Aug 18 15:50 /dev/ttyACM0  # This doesn't have access
-crw-rw-rw- 1 root dialout 166, 0 Aug 18 15:50 /dev/ttyACM0  # This is OK
-```
-
-You can change the permission using `chmod`.
-
-```bash
-sudo chmod 666 /dev/ttyUSB* /dev/ttyACM*
-```
-
-### Gazebo does not launched with following error messages
-
-```bash
-[spawner-6] [INFO] [1705979024.982934819] [spawner_joint_state_broadcaster]: Waiting for '/controller_manager' node to exist
-[spawner-5] [INFO] [1705979024.987846261] [spawner_joint_trajectory_controller]: Waiting for '/controller_manager' node to exist
-[spawner-6] [INFO] [1705979026.998388349] [spawner_joint_state_broadcaster]: Waiting for '/controller_manager' node to exist
-[spawner-5] [INFO] [1705979027.001791117] [spawner_joint_trajectory_controller]: Waiting for '/controller_manager' node to exist
-[spawner-6] [INFO] [1705979029.012531351] [spawner_joint_state_broadcaster]: Waiting for '/controller_manager' node to exist
-[spawner-5] [INFO] [1705979029.015486244] [spawner_joint_trajectory_controller]: Waiting for '/controller_manager' node to exist
-[spawner-6] [INFO] [1705979031.027275114] [spawner_joint_state_broadcaster]: Waiting for '/controller_manager' node to exist
-[spawner-5] [INFO] [1705979031.030469718] [spawner_joint_trajectory_controller]: Waiting for '/controller_manager' node to exist
-[spawner-6] [ERROR] [1705979033.041177524] [spawner_joint_state_broadcaster]: Controller manager not available
-[spawner-5] [ERROR] [1705979033.045346479] [spawner_joint_trajectory_controller]: Controller manager not available
-[ERROR] [spawner-6]: process has died [pid 14647, exit code 1, cmd '/opt/ros/humble/lib/controller_manager/spawner joint_state_broadcaster --controller-manager /controller_manager --ros-args'].
-[ERROR] [spawner-5]: process has died [pid 14645, exit code 1, cmd '/opt/ros/humble/lib/controller_manager/spawner joint_trajectory_controller --controller-manager /controller_manager --ros-args'].
-```
-
-Try this command:
-
-```bash
-source /usr/share/gazebo/setup.bash
-```
-
-The log file of Gazebo would be also helpful for debugging. (stored in `/home/<user_name>/.gazebo/client-11345/default.log`)
-
-### Can't display the robot model in gazebo
-
-Check your environmental condition
-
-```bash
-gzserver --verbose
-```
-
-If you get this error, your gzserver  have already opened.
-
-```bash
-[Err] [Master.cc:96] EXCEPTION: Unable to start server[bind: Address already in use]. There is probably another Gazebo process running.
-```
-
-You have to kill previous connection.
-
-```bash
-killall gzserver
-```
-If it doesn't work, you should try in new terminal.
-
-## Repository Description
-
-### Directory Structure
-
-```bash
-LIMBERO
-├── CONTROL  # Contains packages related control
-│   ├── lbr_dynamixel_controller
-│   ├── lbr_high_level_controller
-│   ├── lbr_limb_controller
-│   └── lbr_low_level_controller
-├── PARAM
-│   ├── lbr_description
-│   ├── lbr_msgs
-│   └── lbr_parameter.hpp
-├── PLANNER  # Contains packages related planning
-│   └── lbr_grasping_guarantee
-├── README.md
-├── SLAM  # Contains packages related SLAM
-│   ├── lbr_contact_determination
-│   ├── lbr_state_estimator
-│   └── SENSOR
-├── SUBMODULE  # Submodule repositories
-│   ├── DynamixelSDK
-│   └── rt_usb_9axisimu_driver
-└── TOOLS
-    ├── CONFIG
-    ├── LAUNCH  # ROS 2 launch files
-    ├── lbr_command_interface
-    ├── lbr_sim
-    └── SETUP_SCRIPT
-```
-
-### Schematic Diagram
-
-If you want to know more detailed structure, use `rqt_graph` after launching nodes.
-
-```mermaid
-graph TD;
-    subgraph Operator
-        User[Command Interface]
-    end
-    Operator -- Operator commands --> LIMBERO
-    subgraph LIMBERO
-        subgraph CONTROL
-            HLC[High Level Controller]--
-                Command in Base Coordinate
-                (Base/Limb motion)
-            -->LLC[Low Level Controller];
-            LLC--End effector displacement-->LC[Limb Controller];
-            LC--Target joint angle-->DC[Dynamixel Controller];
-        end
-        subgraph PLANNER
-            GG[grasping guarantee]
-        end
-        DC--
-            Joint position
-            Joint velocity
-            Joint current
-        --> SLAM
-        subgraph SLAM
-            CD[contact determination]
-            SE[State Estimator]
-            subgraph SENSOR
-                IMU((IMU))
-                LiDAR((LiDAR))
-                FT((
-                    FT
-                    Sensor
-                ))
-            end
-        end
-        SLAM --> PLANNER
-        PLANNER --> CONTROL
-    end
-```
-
-### lbr_command_interface
-
-This package handles all of input from operators e.g. terminal commands or controller commands.
-
-### lbr_description
-
-This package stores URDF file or STL data for visualization and simulation.
-
-### lbr_dynamixel_controller
-
-This package sends command to Dynamixels and obtains Dynamixel sensor information.
-
-### lbr_high_level_controller
-
-High Level Controller (HLC) handles high level commands such as gait planning or base motion.
-These commands are expressed in base coordinate and sent to Low Level Controller (LLC).
-
-### lbr_limb_controller
-
-Limb Controller (LC) subscribes target end effector pose from LLC. It solves inverse kinematics and sends commands to joints.
-
-### lbr_low_level_controller
-
-Low Level Controller (LLC) controls the limbs based on high level command i.e. motion package.
-
-### lbr_msgs
-
-This package defines the custom messages for LIMBERO.
-
-### lbr_sim
-
-This package is for Gazebo simulation about LIMBERO.
-
-### lbr_state_estimator
-
-This package estimates current robot states such as joint angle, robot position or pose.
-
-## Author(s) and Maintainer(s)
-
-Contributors are shown in below, and feel free to contact them if you have any interest or question.  
-*Names are shown in alphabetical order.*
-
-* Dr. Kentaro Uno (unoken at tohoku.ac.jp)
-* Kazuki Takada (kazuki.takada.s2 at dc.tohoku.ac.jp)
-* [OB] Masahiro Uda
-* Masazumi Imai (imai.masazumi.p2 at dc.tohoku.ac.jp)
-* [OB] Mikio Eguchi
-* Ryo Nishibe (nishibe.ryo.q4 at dc.tohoku.ac.jp)
-* Taku Okawara (okawara.taku.t3 at dc.tohoku.ac.jp)
-* Teruhiro Kataonami (kataonami.teruhiro.q7 at dc.tohoku.ac.jp)
-* [Intern] Tom Hauser
-
-## Command Cheat Sheet
-
-You can note commands here.
-
-### Send debug command for crawl gait
-
-```bash
-ros2 topic pub --once /user_command std_msgs/msg/String '{data: Crawl_Gait_debug}'
-```
-
-### Send limb motion task form terminal
-
-```bash
-ros2 topic pub --once /lbr_high_level_controller/motion_package/limb_motion_task lbr_msgs/msg/LimbMotionTask '{limb_id: 0, swing_duration: 3000, swing_mid_point: {x: 0.0, y: 0.0, z: 0.0}, end_effector_displacement: {x: 0.0, y: 0.0, z: 0.0}, pitch_angle_displacement: 0.0}'
-```
-
-### Send base motion task form terminal
-
-```bash
-ros2 topic pub --once /lbr_high_level_controller/motion_package/base_motion_task lbr_msgs/msg/BaseMotionTask '{motion_duration: 3000, base_displacement: {x: 0.0, y: 0.0, z: 0.0}, base_angle_displacement: {x: 0.0, y: 0.0, z: 0.0}}'
-```
-
-### Send command to joint trajectory controller in ros2_control
-
-```bash
-ros2 topic pub /joint_trajectory_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory '{header: {stamp: {sec: 0, nanosec: 0}}, joint_names: ["LF_B2C", "LF_C2F", "LF_F2T", "LF_T2E", "LH_B2C", "LH_C2F", "LH_F2T", "LH_T2E", "RH_B2C", "RH_C2F", "RH_F2T", "RH_T2E", "RF_B2C", "RF_C2F", "RF_F2T", "RF_T2E"], points: [{positions: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], velocities: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], accelerations: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 1, nanosec: 0}}]}'
-```
-
-### Run `lbr_dynamixel_controller` only
-
-You have to specify namespace of limb.
-
-```bash
-ros2 run lbr_dynamixel_controller lbr_dynamixel_controller --ros-args -r __ns:=/LF
-```
-
-### Connect SSH to Jetson Orin NX
-
-Check network setting. If ping command works, it is fine.
-
-```bash
-$ ping 192.168.10.189
-PING 192.168.10.189 (192.168.10.189) 56(84) bytes of data.
-64 bytes from 192.168.10.189: icmp_seq=1 ttl=64 time=94.4 ms
-64 bytes from 192.168.10.189: icmp_seq=2 ttl=64 time=15.1 ms
-64 bytes from 192.168.10.189: icmp_seq=3 ttl=64 time=343 ms
-64 bytes from 192.168.10.189: icmp_seq=4 ttl=64 time=69.5 ms
-```
-
-Below command is connecting SSH and `-X` is needed for using GUI on the operation machine.
-
-```bash
-sudo ssh limbero@192.168.10.189 -X
-```
-
-## Table of Dynamixel IDs
-
-Labeled Number is defined for each Dynamixel in Limb team, and it is different from assigned ID that is used for Dynamixel recognition.
-
-| Limb | Which part? | Dynamixel model number | Labeled No.# | Assigned ID | Control mode |
-|------|-------------|------------------------|---------------|-------------|-----|
-| LF   | B2C         | XM540-W270-R           | #10           | 1           | Position |
-| LF   | C2F         | XM540-W270-R           | #18           | 2           | Position |
-| LF   | F2T         | XM430-W350-R           | #11           | 3           | Position |
-| LF   | T2G         | XM430-W350-R           | #12           | 4           | Position |
-| LF   | Gripper     | XC330-T288-T           | #33           | 5           | Current |
-| LH   | B2C         | XM540-W270-R           | #24           | 6           | Position |
-| LH   | C2F         | XM540-W270-R           | #25           | 7           | Position |
-| LH   | F2T         | XM430-W350-R           | #28           | 8           | Position |
-| LH   | T2G         | XM430-W350-R           | #27           | 9           | Position |
-| LH   | Gripper     | XC330-T288-T           | #32         | 10          | Current |
-| RH   | B2C         | XM540-W270-R           | #22           | 11          | Position |
-| RH   | C2F         | XM540-W270-R           | #23           | 12          | Position |
-| RH   | F2T         | XM430-W350-R           | #30           | 13          | Position |
-| RH   | T2G         | XM430-W350-R           | #9            | 14          | Position |
-| RH   | Gripper     | XC330-T288-T           | #34         | 15          | Current |
-| RF   | B2C         | XM540-W270-R           | #20           | 16          | Position |
-| RF   | C2F         | XM540-W270-R           | #21           | 17          | Position |
-| RF   | F2T         | XM430-W350-R           | #26           | 18          | Position |
-| RF   | T2G         | XM430-W350-R           | #29           | 19          | Position |
-| RF   | Gripper     | XC330-T288-T           | #35         | 20          | Current |
-
----
-
 # LIMBERO WITH GRIEEL
 
 ### (Reffer to this part of documentation when Grieel is used as end-effector)
@@ -1024,3 +540,487 @@ In future, implementing Grieel related packages like a `grieel_high_level_comman
 Tentative LIMBERO branch, to implement a joint controller from scratch, without using ros2_control JointTrajectoryController.
 
 For the complete LIMBERO+GRIEEL Readme, look [here](https://github.com/AlePuglisi/LIMBERO/blob/jointTrajectoryController/README.md)
+
+# LIMBERO
+
+When using GRIEEL, refer to [LIMBERO WITH GRIEEL](#limbero-with-grieel) section for GRIEEL specific aspect and simulation.
+For the set-up of ROS2 environment (including Gazebo) and some troubleshooting, refer to this section.
+
+## Summary
+
+[![ROS 2 Humble build workflow](https://github.com/Space-Robotics-Laboratory/LIMBERO/actions/workflows/build_humble.yaml/badge.svg)](https://github.com/Space-Robotics-Laboratory/LIMBERO/actions/workflows/build_humble.yaml)
+
+This repository is for LIMBERO in SRL-Limb Team.
+
+* Ubuntu 22 and ROS 2 Humble are required environment.
+* PS4 controller is needed if you want to operate LIMBERO manually.
+* ROS packages are written in lowercase letters and others are written in capital letters.
+  * For example, `lbr_low_level_controller` is a ROS package, and `SETUP_SCRIPT` is not.
+
+## Environment Setup
+
+> [!IMPORTANT]
+> Please refer README in develop branch because it is the latest information for setup.
+
+Required environment is Ubuntu 22 for installing ROS 2 Humble and related modules. Ubuntu 22 on virtual environment or Docker container is not ensured to work.  
+If you have not used Git on your environment, you have to install and setup Git beforehand.
+You can refer to [this wiki page](https://srl.esa.io/posts/217) for setting up Git.
+
+You can prepare environment needed for development of LIMBERO with following steps.
+
+1. Clone LIMBERO repository
+
+    ```bash
+    $ mkdir -p ~/lbr_ws/src
+    $ cd ~/lbr_ws/src
+    $ git clone -b develop --recursive git@github.com:Space-Robotics-Laboratory/LIMBERO.git
+    $ cd LIMBERO
+    $ git status
+    On branch develop
+    Your branch is up to date with 'origin/develop'.
+
+    nothing to commit, working tree clean
+    ```
+
+2. Install ROS 2 Humble
+
+    If you have not set up ROS 2 Humble, you can set up with `install_humble.sh` in `TOOLS/SETUP_SCRIPT`. The script file is based on [official documentation](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html#ubuntu-debian-packages).
+
+    When you run the script, **it is recommended to connect LAN cable** because it takes time to install them.
+
+    ```bash
+    cd ~/lbr_ws/src/LIMBERO/TOOLS/SETUP_SCRIPT
+    bash install_humble.sh
+    # You have to press Enter two times to continue this installation.
+    ```
+
+    After the installation is finished, let's try the talker and listener demo to check it completed successfully.  
+    In the first terminal,
+
+    ```bash
+    source ~/.bashrc
+    ros2 run demo_nodes_cpp talker
+    ```
+
+    If talker node is successfully run, you can see below messages:
+
+    ```bash
+    [INFO] [1693552353.069226373] [talker]: Publishing: 'Hello World: 1'
+    [INFO] [1693552354.069247400] [talker]: Publishing: 'Hello World: 2'
+    [INFO] [1693552355.069244847] [talker]: Publishing: 'Hello World: 3'
+    ```
+
+    Keeping the talker node running, let's start lister node in the second terminal.
+
+    ```bash
+    $ ros2 run demo_nodes_py listener
+    [INFO] [1693552415.090892954] [listener]: I heard: [Hello World: 1]
+    [INFO] [1693552416.083413710] [listener]: I heard: [Hello World: 2]
+    [INFO] [1693552417.083434944] [listener]: I heard: [Hello World: 3]
+    ```
+
+    If you see listener node subscribes topics that are published by talker node, ROS 2 environment setup seems to be finished.
+
+3. Build the whole workspace
+
+    ```bash
+    cd ~/lbr_ws
+    colcon build --symlink-install
+    source install/setup.bash
+    ```
+
+    **If you cannot build workspace, run the below command and try again.**
+
+    ```bash
+    rm -r ~/lbr_ws/build ~/lbr_ws/install ~/lbr_ws/log  # Delete cache files
+    ```
+
+> [!TIP]
+> You can run build and source in one command using `&&`.
+>
+> ```bash
+> colcon build --symlink-install && source install/setup.bash
+> ```
+
+## Development
+
+### [Optional] Install Visual Studio Code (VSC) Extensions
+
+If you want to install extensions for VSC, you can do with following steps.
+
+1. Open VSC
+1. Click `File` -> `Open Folder`
+1. Select `LIMBERO` folder
+1. In Extensions tab, you can see recommended ones
+
+Also, you check them in `extensions.json` inside `.vscode` directory.
+
+### Code Check
+
+This repository follows the code style and language versions for ROS 2 Humble.
+
+You can use code check with `colcon test` and see its result. It is highly encouraged to check your code before creating pull-request to merge into develop branch.
+
+```bash
+cd ~/lbr_ws
+colcon test && colcon test && colcon test-result --verbose
+```
+
+If you want to check only packages with `lbr_` prefix, use the below command.
+
+```bash
+colcon build --packages-select-regex 'lbr_*' && colcon test --packages-select-regex 'lbr_*' && colcon test-result --verbose
+```
+
+ See also: [Code style and language versions](https://docs.ros.org/en/humble/The-ROS2-Project/Contributing/Code-Style-Language-Versions.html#code-style-and-language-versions)
+
+### Debug
+
+`backward_ros` is useful for debugging. You can use it with below command:
+
+```bash
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Debug
+```
+
+## Tutorial
+
+### Run Your Code in Simulation
+
+You can check your software implementation using Gazebo simulation. The below command launches all nodes needed for the simulation.
+
+```bash
+# First terminal
+ros2 launch ~/lbr_ws/src/LIMBERO/TOOLS/LAUNCH/lbr_gazebo.launch.py
+```
+
+After Gazebo is started, you have to start `lbr_command_interface` to send command.
+
+```bash
+# Second terminal
+ros2 run lbr_command_interface lbr_command_interface
+```
+
+Then, you can see commands list on terminal and some instruction. Let's open the third terminal and send command `initialize` to set LIMBERO as initial pose.
+
+Also, you can operate LIMBERO using PS4 controller. See details below:
+
+* OPTION button initializes the robot pose
+* Right buttons are used to select one of limbs
+* Left joy stick is used to move a limb in x-y direction
+* L1/L2 buttons are used to move a limb in z direction
+* Tilting both joy sticks makes base translation motion in x-y direction
+* Pressing L1 & R1 or L2 & R2 makes base translation motion in z direction
+
+If you do not want to launch Gazebo simulation, please use `rviz_debug.launch.py` instead of `lbr_gazebo.launch.py`.
+
+```bash
+ros2 launch ~/lbr_ws/src/LIMBERO/TOOLS/LAUNCH/rviz_debug.launch.py
+```
+
+You have to change parameters to visualize joint states in RViz. In another terminal, run the below command.
+
+```bash
+ros2 param set /LF/lbr_limb_controller rviz_debug true && ros2 param set /LH/lbr_limb_controller rviz_debug true && ros2 param set /RH/lbr_limb_controller rviz_debug true && ros2 param set /RF/lbr_limb_controller rviz_debug true
+```
+
+### Run Your Code with LIMBERO
+
+The below command launches all nodes needed to move LIMBERO.
+
+```bash
+ros2 launch ~/lbr_ws/src/LIMBERO/TOOLS/LAUNCH/limbero.launch.py
+```
+
+As same as Gazebo simulation, you have to run `lbr_command_interface` to send commands.
+
+## Trouble-Shooting
+
+**Please add information if you solve troubles about this repository.**
+
+### Fail to build dynamixel_sdk
+
+Confirm you are in `ros2` branch in DynamixelSDK. You may be needed to clear cache after checking out `ros2` branch.
+
+### Dynamixels are not detected
+
+Confirm all cables are connected correctly, or see the emergency stop button is not pushed.
+If hardware settings are correct, check source codes, for example baudrate, Dynamixel IDs, or port settings. (See `lbr_dynamixel_controller`)
+
+Also, you have to check the ports are specified correctly.
+The default code sets LF as `/dev/ttyUSB0`, LH as `/dev/ttyUSB1`, RH as `/dev/ttyUSB2`, and RF as `/dev/ttyUSB3`.
+You can set them by unplugging all then re-plug from LF to RF.
+
+### PS4 controller is not detected
+
+Confirm read/write access for port such as `/dev/ttyACM0` or `/dev/ttyUSB0` with below command.
+
+```bash
+$ ls -l /dev/ttyACM* /dev/ttyUSB*
+crw-rw---- 1 root dialout 166, 0 Aug 18 15:50 /dev/ttyACM0  # This doesn't have access
+crw-rw-rw- 1 root dialout 166, 0 Aug 18 15:50 /dev/ttyACM0  # This is OK
+```
+
+You can change the permission using `chmod`.
+
+```bash
+sudo chmod 666 /dev/ttyUSB* /dev/ttyACM*
+```
+
+### Gazebo does not launched with following error messages
+
+```bash
+[spawner-6] [INFO] [1705979024.982934819] [spawner_joint_state_broadcaster]: Waiting for '/controller_manager' node to exist
+[spawner-5] [INFO] [1705979024.987846261] [spawner_joint_trajectory_controller]: Waiting for '/controller_manager' node to exist
+[spawner-6] [INFO] [1705979026.998388349] [spawner_joint_state_broadcaster]: Waiting for '/controller_manager' node to exist
+[spawner-5] [INFO] [1705979027.001791117] [spawner_joint_trajectory_controller]: Waiting for '/controller_manager' node to exist
+[spawner-6] [INFO] [1705979029.012531351] [spawner_joint_state_broadcaster]: Waiting for '/controller_manager' node to exist
+[spawner-5] [INFO] [1705979029.015486244] [spawner_joint_trajectory_controller]: Waiting for '/controller_manager' node to exist
+[spawner-6] [INFO] [1705979031.027275114] [spawner_joint_state_broadcaster]: Waiting for '/controller_manager' node to exist
+[spawner-5] [INFO] [1705979031.030469718] [spawner_joint_trajectory_controller]: Waiting for '/controller_manager' node to exist
+[spawner-6] [ERROR] [1705979033.041177524] [spawner_joint_state_broadcaster]: Controller manager not available
+[spawner-5] [ERROR] [1705979033.045346479] [spawner_joint_trajectory_controller]: Controller manager not available
+[ERROR] [spawner-6]: process has died [pid 14647, exit code 1, cmd '/opt/ros/humble/lib/controller_manager/spawner joint_state_broadcaster --controller-manager /controller_manager --ros-args'].
+[ERROR] [spawner-5]: process has died [pid 14645, exit code 1, cmd '/opt/ros/humble/lib/controller_manager/spawner joint_trajectory_controller --controller-manager /controller_manager --ros-args'].
+```
+
+Try this command:
+
+```bash
+source /usr/share/gazebo/setup.bash
+```
+
+The log file of Gazebo would be also helpful for debugging. (stored in `/home/<user_name>/.gazebo/client-11345/default.log`)
+
+### Can't display the robot model in gazebo
+
+Check your environmental condition
+
+```bash
+gzserver --verbose
+```
+
+If you get this error, your gzserver  have already opened.
+
+```bash
+[Err] [Master.cc:96] EXCEPTION: Unable to start server[bind: Address already in use]. There is probably another Gazebo process running.
+```
+
+You have to kill previous connection.
+
+```bash
+killall gzserver
+```
+If it doesn't work, you should try in new terminal.
+
+## Repository Description
+
+### Directory Structure
+
+```bash
+LIMBERO
+├── CONTROL  # Contains packages related control
+│   ├── lbr_dynamixel_controller
+│   ├── lbr_high_level_controller
+│   ├── lbr_limb_controller
+│   └── lbr_low_level_controller
+├── PARAM
+│   ├── lbr_description
+│   ├── lbr_msgs
+│   └── lbr_parameter.hpp
+├── PLANNER  # Contains packages related planning
+│   └── lbr_grasping_guarantee
+├── README.md
+├── SLAM  # Contains packages related SLAM
+│   ├── lbr_contact_determination
+│   ├── lbr_state_estimator
+│   └── SENSOR
+├── SUBMODULE  # Submodule repositories
+│   ├── DynamixelSDK
+│   └── rt_usb_9axisimu_driver
+└── TOOLS
+    ├── CONFIG
+    ├── LAUNCH  # ROS 2 launch files
+    ├── lbr_command_interface
+    ├── lbr_sim
+    └── SETUP_SCRIPT
+```
+
+### Schematic Diagram
+
+If you want to know more detailed structure, use `rqt_graph` after launching nodes.
+
+```mermaid
+graph TD;
+    subgraph Operator
+        User[Command Interface]
+    end
+    Operator -- Operator commands --> LIMBERO
+    subgraph LIMBERO
+        subgraph CONTROL
+            HLC[High Level Controller]--
+                Command in Base Coordinate
+                (Base/Limb motion)
+            -->LLC[Low Level Controller];
+            LLC--End effector displacement-->LC[Limb Controller];
+            LC--Target joint angle-->DC[Dynamixel Controller];
+        end
+        subgraph PLANNER
+            GG[grasping guarantee]
+        end
+        DC--
+            Joint position
+            Joint velocity
+            Joint current
+        --> SLAM
+        subgraph SLAM
+            CD[contact determination]
+            SE[State Estimator]
+            subgraph SENSOR
+                IMU((IMU))
+                LiDAR((LiDAR))
+                FT((
+                    FT
+                    Sensor
+                ))
+            end
+        end
+        SLAM --> PLANNER
+        PLANNER --> CONTROL
+    end
+```
+
+### lbr_command_interface
+
+This package handles all of input from operators e.g. terminal commands or controller commands.
+
+### lbr_description
+
+This package stores URDF file or STL data for visualization and simulation.
+
+### lbr_dynamixel_controller
+
+This package sends command to Dynamixels and obtains Dynamixel sensor information.
+
+### lbr_high_level_controller
+
+High Level Controller (HLC) handles high level commands such as gait planning or base motion.
+These commands are expressed in base coordinate and sent to Low Level Controller (LLC).
+
+### lbr_limb_controller
+
+Limb Controller (LC) subscribes target end effector pose from LLC. It solves inverse kinematics and sends commands to joints.
+
+### lbr_low_level_controller
+
+Low Level Controller (LLC) controls the limbs based on high level command i.e. motion package.
+
+### lbr_msgs
+
+This package defines the custom messages for LIMBERO.
+
+### lbr_sim
+
+This package is for Gazebo simulation about LIMBERO.
+
+### lbr_state_estimator
+
+This package estimates current robot states such as joint angle, robot position or pose.
+
+## Author(s) and Maintainer(s)
+
+Contributors are shown in below, and feel free to contact them if you have any interest or question.  
+*Names are shown in alphabetical order.*
+
+* Dr. Kentaro Uno (unoken at tohoku.ac.jp)
+* Kazuki Takada (kazuki.takada.s2 at dc.tohoku.ac.jp)
+* [OB] Masahiro Uda
+* Masazumi Imai (imai.masazumi.p2 at dc.tohoku.ac.jp)
+* [OB] Mikio Eguchi
+* Ryo Nishibe (nishibe.ryo.q4 at dc.tohoku.ac.jp)
+* Taku Okawara (okawara.taku.t3 at dc.tohoku.ac.jp)
+* Teruhiro Kataonami (kataonami.teruhiro.q7 at dc.tohoku.ac.jp)
+* [Intern] Tom Hauser
+
+## Command Cheat Sheet
+
+You can note commands here.
+
+### Send debug command for crawl gait
+
+```bash
+ros2 topic pub --once /user_command std_msgs/msg/String '{data: Crawl_Gait_debug}'
+```
+
+### Send limb motion task form terminal
+
+```bash
+ros2 topic pub --once /lbr_high_level_controller/motion_package/limb_motion_task lbr_msgs/msg/LimbMotionTask '{limb_id: 0, swing_duration: 3000, swing_mid_point: {x: 0.0, y: 0.0, z: 0.0}, end_effector_displacement: {x: 0.0, y: 0.0, z: 0.0}, pitch_angle_displacement: 0.0}'
+```
+
+### Send base motion task form terminal
+
+```bash
+ros2 topic pub --once /lbr_high_level_controller/motion_package/base_motion_task lbr_msgs/msg/BaseMotionTask '{motion_duration: 3000, base_displacement: {x: 0.0, y: 0.0, z: 0.0}, base_angle_displacement: {x: 0.0, y: 0.0, z: 0.0}}'
+```
+
+### Send command to joint trajectory controller in ros2_control
+
+```bash
+ros2 topic pub /joint_trajectory_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory '{header: {stamp: {sec: 0, nanosec: 0}}, joint_names: ["LF_B2C", "LF_C2F", "LF_F2T", "LF_T2E", "LH_B2C", "LH_C2F", "LH_F2T", "LH_T2E", "RH_B2C", "RH_C2F", "RH_F2T", "RH_T2E", "RF_B2C", "RF_C2F", "RF_F2T", "RF_T2E"], points: [{positions: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], velocities: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], accelerations: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 1, nanosec: 0}}]}'
+```
+
+### Run `lbr_dynamixel_controller` only
+
+You have to specify namespace of limb.
+
+```bash
+ros2 run lbr_dynamixel_controller lbr_dynamixel_controller --ros-args -r __ns:=/LF
+```
+
+### Connect SSH to Jetson Orin NX
+
+Check network setting. If ping command works, it is fine.
+
+```bash
+$ ping 192.168.10.189
+PING 192.168.10.189 (192.168.10.189) 56(84) bytes of data.
+64 bytes from 192.168.10.189: icmp_seq=1 ttl=64 time=94.4 ms
+64 bytes from 192.168.10.189: icmp_seq=2 ttl=64 time=15.1 ms
+64 bytes from 192.168.10.189: icmp_seq=3 ttl=64 time=343 ms
+64 bytes from 192.168.10.189: icmp_seq=4 ttl=64 time=69.5 ms
+```
+
+Below command is connecting SSH and `-X` is needed for using GUI on the operation machine.
+
+```bash
+sudo ssh limbero@192.168.10.189 -X
+```
+
+## Table of Dynamixel IDs
+
+Labeled Number is defined for each Dynamixel in Limb team, and it is different from assigned ID that is used for Dynamixel recognition.
+
+| Limb | Which part? | Dynamixel model number | Labeled No.# | Assigned ID | Control mode |
+|------|-------------|------------------------|---------------|-------------|-----|
+| LF   | B2C         | XM540-W270-R           | #10           | 1           | Position |
+| LF   | C2F         | XM540-W270-R           | #18           | 2           | Position |
+| LF   | F2T         | XM430-W350-R           | #11           | 3           | Position |
+| LF   | T2G         | XM430-W350-R           | #12           | 4           | Position |
+| LF   | Gripper     | XC330-T288-T           | #33           | 5           | Current |
+| LH   | B2C         | XM540-W270-R           | #24           | 6           | Position |
+| LH   | C2F         | XM540-W270-R           | #25           | 7           | Position |
+| LH   | F2T         | XM430-W350-R           | #28           | 8           | Position |
+| LH   | T2G         | XM430-W350-R           | #27           | 9           | Position |
+| LH   | Gripper     | XC330-T288-T           | #32         | 10          | Current |
+| RH   | B2C         | XM540-W270-R           | #22           | 11          | Position |
+| RH   | C2F         | XM540-W270-R           | #23           | 12          | Position |
+| RH   | F2T         | XM430-W350-R           | #30           | 13          | Position |
+| RH   | T2G         | XM430-W350-R           | #9            | 14          | Position |
+| RH   | Gripper     | XC330-T288-T           | #34         | 15          | Current |
+| RF   | B2C         | XM540-W270-R           | #20           | 16          | Position |
+| RF   | C2F         | XM540-W270-R           | #21           | 17          | Position |
+| RF   | F2T         | XM430-W350-R           | #26           | 18          | Position |
+| RF   | T2G         | XM430-W350-R           | #29           | 19          | Position |
+| RF   | Gripper     | XC330-T288-T           | #35         | 20          | Current |
+
+---
